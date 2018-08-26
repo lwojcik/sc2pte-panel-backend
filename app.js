@@ -8,6 +8,7 @@
 require('dotenv').config();
 
 const fs = require('fs');
+const http = require('http');
 const https = require('https');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -92,13 +93,21 @@ app.use((err, req, res, error) => {
   res.render('error');
 });
 
+/** Exposing HTTP or HTTPS server depending on .env config */
+const createServer = (protocol, appToServe, callback) => {
+  if (protocol === 'https') {
+    return https.createServer(options, appToServe).listen(config.port, callback);
+  }
+  return http.createServer(app).listen(config.port, callback);
+};
+
 /** App server creation */
 module.exports = mongoose.connect(db.connectionString)
   .then(() => {
-    https.createServer(options, app).listen(config.port, () => {
-      console.log(`Started at port ${config.port}`); // eslint-disable-line no-console
+    createServer(config.protocol, app, () => {
+      console.log(`${config.protocol} server started at port ${config.port}`); // eslint-disable-line no-console
     });
   })
   .catch((err) => {
-    console.log(`Unable to connect to the server. Please start the server. Error: ${err}`); // eslint-disable-line no-console
+    console.log(`Unable to start the server. Error: ${err}`); // eslint-disable-line no-console
   });
