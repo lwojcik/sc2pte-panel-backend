@@ -11,7 +11,7 @@ const apicache = require('apicache').options({ debug: cache.debug }).middleware;
 
 const getViewerData = require('../../controllers/viewer/get');
 
-router.get('/:channelId', apicache(cache.request), async (req, res) => {
+router.get('/:channelId', apicache(cache.expensiveRequest), async (req, res) => {
   try {
     const { channelId } = req.params;
     const { token } = req.headers;

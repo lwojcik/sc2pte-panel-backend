@@ -12,7 +12,7 @@ const apicache = require('apicache').options({ debug: cache.debug }).middleware;
 const { getConfig } = require('../../controllers/config/get');
 const saveConfig = require('../../controllers/config/save');
 
-router.get('/:channelId', apicache(cache.request), async (req, res) => {
+router.get('/:channelId', apicache(cache.expensiveRequest), async (req, res) => {
   try {
     const { channelId } = req.params;
     const { token } = req.headers;
