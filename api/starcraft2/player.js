@@ -247,7 +247,7 @@ const prepareSingleLadderSummary = (playerData) => {
   playerData.forEach((ladderObject) => {
     ladderSummaryObject.totalLadders += 1;
     ladderSummaryObject.topRankId =
-      ladderObject.leagueInfo.league_id > ladderSummaryObject.topRank ?
+      ladderObject.leagueInfo.league_id > ladderSummaryObject.topRankId ?
         ladderObject.leagueInfo.league_id :
         ladderSummaryObject.topRankId;
     ladderSummaryObject.topRank = sc2Config.matchMaking.ranks[ladderSummaryObject.topRankId];
