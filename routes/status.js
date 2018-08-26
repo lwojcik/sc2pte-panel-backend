@@ -14,32 +14,4 @@ router.get('/', (req, res) => {
   });
 });
 
-router.post('/:channelId', async (req, res) => {
-  try {
-    const { channelId } = req.params;
-
-    const {
-      server,
-      playerid,
-      region,
-      name,
-      token,
-    } = req.headers;
-
-    const configObject = {
-      channelId,
-      server,
-      playerid,
-      region,
-      name,
-      token,
-    };
-
-    const response = await saveConfig(configObject);
-    return res.status(response.status).json(response);
-  } catch (error) {
-    return res.status(400).json({ status: 400, message: 'Bad request' });
-  }
-});
-
 module.exports = router;
