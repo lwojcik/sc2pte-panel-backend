@@ -18,6 +18,6 @@ cacheConfig.semistatic = '1 hour';
 /** Cache time for endpoints which update frequently but regenerating them consumes time */
 cacheConfig.expensiveRequest = '5 minutes';
 /** Cache time for endpoints which update frequently but regenerating them is cheap */
-cacheConfig.request = '3 seconds';
+cacheConfig.request = '5 seconds';
 
 module.exports = cacheConfig;
