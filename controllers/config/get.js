@@ -19,7 +19,7 @@ const getChannelConfigFromDb = async (channelId) => {
 const getConfig = async (channelId, token) => {
   try {
     const channelIdIsValid = validateChannelId(channelId);
-    const tokenIsValid = validateToken(channelId, token);
+    const tokenIsValid = validateToken(channelId, token, 'broadcaster');
 
     if (channelIdIsValid && tokenIsValid) {
       const channelConfig = await getChannelConfigFromDb(channelId);
