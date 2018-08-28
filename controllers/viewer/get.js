@@ -23,7 +23,7 @@ const getSC2Data = async (playerConfig) => {
 const getViewerData = async (channelId, token) => {
   try {
     if (channelId && token) {
-      const isTokenValid = validateToken(channelId, token, 'viewer');
+      const isTokenValid = validateToken(channelId, token, 'viewer') || validateToken(channelId, token, 'broadcaster');
 
       if (isTokenValid) {
         const channelConfig = await getChannelConfigFromDb(channelId);
