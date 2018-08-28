@@ -9,21 +9,19 @@ const jwt = require('jsonwebtoken');
 
 const twitchConfig = require('../config/api/twitch');
 
-const validateTokenPermissions = (payload, channelId) => (
-  payload.user_id === channelId &&
+const validateTokenPermissions = (payload, channelId, role) => (
   payload.channel_id === channelId &&
-  payload.opaque_user_id === `U${channelId}` &&
-  payload.role === 'broadcaster'
+  payload.role === role
 );
 
-const validateToken = (channelId, token) => {
+const validateToken = (channelId, token, role) => {
   const tokenNotEmpty = token.length > 0;
   const tokenSyntaxLooksCorrect = token.split('.').length === 3;
 
   if (tokenNotEmpty && tokenSyntaxLooksCorrect) {
     try {
       const payload = jwt.verify(token, twitchConfig.sharedSecret);
-      const sufficientPermissions = validateTokenPermissions(payload, channelId);
+      const sufficientPermissions = validateTokenPermissions(payload, channelId, role);
       if (sufficientPermissions) return true;
       return false;
     } catch (error) {
