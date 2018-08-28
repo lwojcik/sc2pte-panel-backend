@@ -89,7 +89,7 @@ const saveConfig = async (configObject) => {
     };
 
     const isConfigValid = await validateConfig(playerConfig);
-    const isTokenValid = validateToken(channelId, token);
+    const isTokenValid = validateToken(channelId, token, 'broadcaster');
 
     if (isTokenValid && isConfigValid) {
       const configSaved = await saveConfigObjectInDatabase(playerConfig);
