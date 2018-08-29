@@ -9,9 +9,12 @@ const router = require('express').Router();
 const cache = require('../../config/cache');
 const apicache = require('apicache').options({ debug: cache.debug }).middleware;
 
+const onlyStatus200 = (req, res) => res.statusCode === 200;
+const cacheSuccesses = apicache(cache.expensiveRequest, onlyStatus200);
+
 const getViewerData = require('../../controllers/viewer/get');
 
-router.get('/:channelId', apicache(cache.expensiveRequest), async (req, res) => {
+router.get('/:channelId', cacheSuccesses, async (req, res) => {
   try {
     const { channelId } = req.params;
     const { token } = req.headers;

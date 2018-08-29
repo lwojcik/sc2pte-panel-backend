@@ -9,10 +9,13 @@ const router = require('express').Router();
 const cache = require('../../config/cache');
 const apicache = require('apicache').options({ debug: cache.debug }).middleware;
 
+const onlyStatus200 = (req, res) => res.statusCode === 200;
+const cacheSuccesses = apicache(cache.request, onlyStatus200);
+
 const { getConfig } = require('../../controllers/config/get');
 const saveConfig = require('../../controllers/config/save');
 
-router.get('/:channelId', apicache(cache.request), async (req, res) => {
+router.get('/:channelId', cacheSuccesses, async (req, res) => {
   try {
     const { channelId } = req.params;
     const { token } = req.headers;

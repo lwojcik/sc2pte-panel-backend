@@ -16,7 +16,7 @@ cacheConfig.static = '2 weeks';
 /** Cache time for semi-static endpoints (which get updated very rarely) */
 cacheConfig.semistatic = '1 hour';
 /** Cache time for endpoints which update frequently but regenerating them consumes time */
-cacheConfig.expensiveRequest = '1 minute';
+cacheConfig.expensiveRequest = '5 minutes';
 /** Cache time for endpoints which update frequently but regenerating them is cheap */
 cacheConfig.request = '5 seconds';
 
