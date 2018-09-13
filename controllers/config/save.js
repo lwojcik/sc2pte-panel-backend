@@ -69,23 +69,12 @@ const saveConfigObjectInDatabase = configObject => new Promise((resolve, reject)
   );
 });
 
-const saveConfig = async (configObject) => {
+const saveConfig = async ({ channelId, server, bnetUsername, token }) => {
   try {
-    const {
-      channelId,
-      server,
-      playerid,
-      region,
-      name,
-      token,
-    } = configObject;
-
     const playerConfig = {
       channelId,
       server,
-      playerid,
-      region,
-      name,
+      bnetUsername,
     };
 
     const isConfigValid = await validateConfig(playerConfig);
