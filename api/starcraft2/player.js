@@ -30,7 +30,7 @@ const getSc2PlayerData = async (resource, player) => {
     const requestUri = `${serverUri}${requestPath}`;
 
     const playerData = await bnetApi.query(requestUri);
-
+    console.log(playerData); // eslint-disable-line
     if (playerData.status === 'nok') {
       return {
         error: 'battlenet_api_error',
