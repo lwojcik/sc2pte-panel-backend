@@ -7,8 +7,6 @@
 
 /* eslint-disable global-require */
 module.exports = (app) => {
-  app.use('/v0/config', require('./routes/v0/config'));
-  app.use('/v0/viewer', require('./routes/v0/viewer'));
   app.use('/v1/config', require('./routes/v1/config'));
   app.use('/v1/viewer', require('./routes/v1/viewer'));
   app.use('/status', require('./routes/status'));
