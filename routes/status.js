@@ -1,5 +1,5 @@
 /**
- * @file    v0 API status route file.
+ * @file    API status route file.
  * @author  Łukasz Wójcik
  * @license MIT
  * @since   2018-08-26
