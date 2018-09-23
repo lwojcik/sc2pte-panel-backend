@@ -20,7 +20,7 @@ $ sudo service mongod start
 $ tail -f /var/log/mongodb/mongod.log
 ```
 
-Also, create a `db` directory inside a project directory. API uses a local disk database to cache short-lived data for quick access.
+Also, create a `db/` folder inside a project directory. The API app uses it as a disk database to cache short-lived data for quick access.
 
 Use `cp .env.sample .env` to create an environment variables file based on the provided template. Fill it with the following details:
 
