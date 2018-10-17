@@ -12,10 +12,10 @@ const checkIfConfigIsComplete = (configObject) => {
   } = configObject;
 
   return (
-    server.length !== 0 &&
-    playerid.length !== 0 &&
-    region.length !== 0 &&
-    name.length !== 0
+    server.length !== 0
+    && playerid.length !== 0
+    && region.length !== 0
+    && name.length !== 0
   );
 };
 
