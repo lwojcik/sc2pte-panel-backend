@@ -38,7 +38,7 @@ When configured correctly, you can launch the project, e.g. using `nodemon`:
 $ nodemon start
 ```
 
-You can now proceed to set up the [extension frontend](https://github.com/lukemsc/sc2profile-twitch-extension-frontend).
+You can now proceed to set up the [extension frontend](https://github.com/lukemnet/sc2profile-twitch-extension-frontend).
 
 ## Contact
 
