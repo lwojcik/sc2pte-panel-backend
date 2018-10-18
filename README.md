@@ -1,5 +1,5 @@
 # sc2profile-twitch-extension-api
-[![Travis Build Status](https://api.travis-ci.org/lukemsc/sc2profile-twitch-extension-api.svg?branch=master)](https://travis-ci.org/lukemsc/sc2profile-twitch-extension-api)
+[![Travis Build Status](https://travis-ci.org/lukemnet/sc2profile-twitch-extension-api.svg?branch=master)](https://travis-ci.org/lukemnet/sc2profile-twitch-extension-api)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/lwojcik/sc2profile-twitch-extension-api?svg=true)](https://ci.appveyor.com/project/lwojcik/sc2profile-twitch-extension-api)
 [![Greenkeeper badge](https://badges.greenkeeper.io/lukemsc/sc2profile-twitch-extension-api.svg)](https://greenkeeper.io/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4ddf21ea36bf5b14d74a/maintainability)](https://codeclimate.com/github/lukemsc/sc2profile-twitch-extension-api/maintainability)
