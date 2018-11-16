@@ -8,7 +8,7 @@
 const fetch = require('node-fetch');
 const diskdb = require('diskdb');
 
-const bnetConfig = require('../config/api/battlenet');
+const bnetConfig = require('../../config/v1.1/api/battlenet');
 
 const db = diskdb.connect('./db', ['accessToken']);
 

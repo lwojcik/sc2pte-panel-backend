@@ -1,5 +1,5 @@
-const ChannelConfig = require('../../../models/v1/ChannelConfigModel');
-const SC2PlayerApi = require('../../../api/v1/starcraft2/player');
+const ChannelConfig = require('../../../models/v1.1/ChannelConfigModel');
+const SC2PlayerApi = require('../../../api/v1.1/starcraft2/player');
 
 const { validateToken } = require('../../../helpers/shared/jwt');
 

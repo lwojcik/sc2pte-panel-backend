@@ -1,4 +1,4 @@
-const ChannelConfig = require('../../../models/v1/ChannelConfigModel');
+const ChannelConfig = require('../../../models/v1.1/ChannelConfigModel');
 
 const { validateToken } = require('../../../helpers/shared/jwt');
 

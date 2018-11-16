@@ -1,4 +1,4 @@
-const ChannelConfig = require('../../../models/v1/ChannelConfigModel');
+const ChannelConfigLegacy = require('../../../models/v1/ChannelConfigLegacyModel');
 
 const { validateToken } = require('../../../helpers/shared/jwt');
 
@@ -6,7 +6,7 @@ const validateChannelId = channelId => channelId.length > 0;
 
 const getChannelConfigFromDb = async (channelId) => {
   try {
-    const channelConfig = await ChannelConfig.findOne({ channelId });
+    const channelConfig = await ChannelConfigLegacy.findOne({ channelId });
     return channelConfig;
   } catch (error) {
     return {
@@ -16,7 +16,7 @@ const getChannelConfigFromDb = async (channelId) => {
   }
 };
 
-const getConfig = async (channelId, token) => {
+const getConfig = async (channelId, token) => { // eslint-disable-line
   try {
     const channelIdIsValid = validateChannelId(channelId);
     const tokenIsValid = validateToken(channelId, token, 'broadcaster');
