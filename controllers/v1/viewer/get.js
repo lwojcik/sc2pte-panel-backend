@@ -1,8 +1,8 @@
-const { validateToken } = require('../../helpers/jwt');
+const { validateToken } = require('../../../helpers/shared/jwt');
 const { getChannelConfigFromDb } = require('../config/get');
 
-const { getHeaderData } = require('../../helpers/starcraft2/header/index');
-const { getLadderData } = require('../../helpers/starcraft2/ladder/index');
+const { getHeaderData } = require('../../../helpers/v1/starcraft2/header/index');
+const { getLadderData } = require('../../../helpers/v1/starcraft2/ladder/index');
 
 const getSC2Data = async (playerConfig) => {
   try {

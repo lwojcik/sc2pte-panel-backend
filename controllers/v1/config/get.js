@@ -1,6 +1,6 @@
-const ChannelConfig = require('../../models/ChannelConfigModel');
+const ChannelConfig = require('../../../models/v1/ChannelConfigModel');
 
-const { validateToken } = require('../../helpers/jwt');
+const { validateToken } = require('../../../helpers/shared/jwt');
 
 const validateChannelId = channelId => channelId.length > 0;
 

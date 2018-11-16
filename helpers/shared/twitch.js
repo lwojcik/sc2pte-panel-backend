@@ -4,4 +4,3 @@
  * @license MIT
  * @since   2018-06-19
  */
-

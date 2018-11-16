@@ -6,9 +6,9 @@
  * @since   2018-08-10
  */
 
-const bnetConfig = require('../../config/api/battlenet');
-const sc2Config = require('../../config/api/starcraft2');
-const bnetApi = require('../../api/battlenet');
+const bnetConfig = require('../../../config/v1/api/battlenet');
+const sc2Config = require('../../../config/v1/api/starcraft2');
+const bnetApi = require('../../../api/v1/battlenet');
 const ladderApi = require('./ladder');
 
 /**

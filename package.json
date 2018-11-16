@@ -22,7 +22,6 @@
   "homepage": "https://github.com/lukemsc/sc2profile-twitch-extension-api",
   "dependencies": {
     "apicache": "1.2.3",
-    "app-root-path": "2.1.0",
     "body-parser": "1.18.3",
     "compression": "1.7.3",
     "diskdb": "0.1.17",

@@ -5,8 +5,8 @@
  * @since   2018-08-10
  */
 
-const bnetConfig = require('../../config/api/battlenet');
-const bnetApi = require('../../api/battlenet');
+const bnetConfig = require('../../../config/v1/api/battlenet');
+const bnetApi = require('../../../api/v1/battlenet');
 
 /**
  * Fetches StarCraft 2 ladder data available with Battle.net API key. No MMR info is returned here.

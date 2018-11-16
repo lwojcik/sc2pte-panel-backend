@@ -7,11 +7,11 @@
 
 const jwt = require('jsonwebtoken');
 
-const twitchConfig = require('../config/api/twitch');
+const twitchConfig = require('../../config/shared/api/twitch');
 
 const validateTokenPermissions = (payload, channelId, role) => (
-  payload.channel_id === channelId &&
-  payload.role === role
+  payload.channel_id === channelId
+  && payload.role === role
 );
 
 const validateToken = (channelId, token, role) => {

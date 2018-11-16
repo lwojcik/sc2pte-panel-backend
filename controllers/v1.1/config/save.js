@@ -1,7 +1,7 @@
-const ChannelConfig = require('../../models/ChannelConfigModel');
-const SC2PlayerApi = require('../../api/starcraft2/player');
+const ChannelConfig = require('../../../models/v1/ChannelConfigModel');
+const SC2PlayerApi = require('../../../api/v1/starcraft2/player');
 
-const { validateToken } = require('../../helpers/jwt');
+const { validateToken } = require('../../../helpers/shared/jwt');
 
 const checkIfConfigIsComplete = (configObject) => {
   const {

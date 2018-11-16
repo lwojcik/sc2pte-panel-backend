@@ -1,4 +1,4 @@
-const sc2playerApi = require('../../../api/starcraft2/player');
+const sc2playerApi = require('../../../../api/v1/starcraft2/player');
 
 const getLadderData = async (player) => {
   try {
