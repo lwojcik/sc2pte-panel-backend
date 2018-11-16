@@ -9,8 +9,8 @@ const router = require('express').Router();
 const cache = require('../../config/cache'); // eslint-disable-line
 const apicache = require('apicache').options({ debug: cache.debug }).middleware; // eslint-disable-line
 
-const { getConfig } = require('../../controllers/v1/config/get');
-const saveConfig = require('../../controllers/v1/config/save');
+const { getConfig } = require('../../controllers/config/get');
+const saveConfig = require('../../controllers/config/save');
 
 const onlyStatus200 = (req, res) => res.statusCode === 200;
 const cacheSuccessesOnly = apicache(cache.request, onlyStatus200);

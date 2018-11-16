@@ -17,10 +17,10 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 
-const config = require('./config/app');
-const db = require('./config/database');
-const ssl = require('./config/ssl');
-const logging = require('./config/logging');
+const config = require('./config/shared/app');
+const db = require('./config/shared/database');
+const ssl = require('./config/shared/ssl');
+const logging = require('./config/shared/logging');
 
 const app = express();
 
