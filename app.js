@@ -102,7 +102,7 @@ const createServer = (protocol, appToServe, callback) => {
 };
 
 /** App server creation */
-module.exports = mongoose.connect(db.connectionString)
+module.exports = mongoose.connect(db.connectionString, { useNewUrlParser: true })
   .then(() => {
     createServer(config.protocol, app, () => {
       console.log(`${config.protocol} server started at port ${config.port}`); // eslint-disable-line no-console
