@@ -4,18 +4,17 @@ const SC2PlayerApi = require('../../../api/v1.1/starcraft2/player');
 const { validateToken } = require('../../../helpers/shared/jwt');
 
 const checkIfConfigIsComplete = (configObject) => {
+  console.log(configObject); // eslint-disable-line
   const {
-    server,
-    playerid,
-    region,
-    name,
+    regionId,
+    realmId,
+    playerId,
   } = configObject;
 
   return (
-    server.length !== 0
-    && playerid.length !== 0
-    && region.length !== 0
-    && name.length !== 0
+    regionId.length !== 0
+    && realmId.length !== 0
+    && playerId.length !== 0
   );
 };
 
@@ -25,17 +24,15 @@ const validateConfig = async (configObject) => {
   if (isConfigComplete) {
     try {
       const {
-        server,
-        playerid,
-        region,
-        name,
+        regionId,
+        realmId,
+        playerId,
       } = configObject;
 
       const configToValidate = {
-        server,
-        id: playerid,
-        region,
-        name,
+        regionId,
+        realmId,
+        playerId,
       };
 
       const apiPlayerConfig = await SC2PlayerApi.getPlayerProfile(configToValidate);
@@ -73,19 +70,17 @@ const saveConfig = async (configObject) => {
   try {
     const {
       channelId,
-      server,
-      playerid,
-      region,
-      name,
+      regionId,
+      realmId,
+      playerId,
       token,
     } = configObject;
 
     const playerConfig = {
       channelId,
-      server,
-      playerid,
-      region,
-      name,
+      regionId,
+      realmId,
+      playerId,
     };
 
     const isConfigValid = await validateConfig(playerConfig);
@@ -109,6 +104,7 @@ const saveConfig = async (configObject) => {
       message: 'Bad request',
     };
   } catch (error) {
+    console.log(error); // eslint-disable-line
     return {
       status: 500,
       message: 'Error while saving config',

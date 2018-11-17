@@ -29,21 +29,18 @@ router.get('/get/:channelId', cacheSuccessesOnly, async (req, res) => {
 router.post('/save/:channelId', async (req, res) => {
   try {
     const { channelId } = req.params;
-
     const {
-      server,
+      regionid,
+      realmid,
       playerid,
-      region,
-      name,
       token,
     } = req.headers;
 
     const configObject = {
       channelId,
-      server,
-      playerid,
-      region,
-      name,
+      regionId: regionid,
+      realmId: realmid,
+      playerId: playerid,
       token,
     };
 

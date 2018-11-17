@@ -1,8 +1,8 @@
 /**
- * @file    Battle.net authentication and data retrieval functions.
+ * @file    Battle.net new API - authentication and data retrieval functions.
  * @author  Łukasz Wójcik
  * @license MIT
- * @since   2017-12-17
+ * @since   2018-11-17
  */
 
 const fetch = require('node-fetch');
@@ -13,25 +13,10 @@ const bnetConfig = require('../../config/v1.1/api/battlenet');
 const db = diskdb.connect('./db', ['accessToken']);
 
 /**
- * General method for fetching data from selected Battle.net endpoint.
- * @function
- * @param {string} requestUri - full URL to request from.
- * @returns {Promise} A promise that returns Battle.net data if resolved and error if rejected.
- */
-const query = async (requestUri) => {
-  try {
-    const data = await fetch(`${requestUri}?apikey=${bnetConfig.api.key}`);
-    return data.json();
-  } catch (error) {
-    return error;
-  }
-};
-
-/**
  * Returns cached token object from file system.
  * @function
  * @param {string} server - Battle.net API server to request data from.
- * @returns {Promise} Promise object representing access token object fetched from Battle.net API.
+ * @returns {object} Access token object fetched from Battle.net API.
  */
 const getAccessTokenObjectFromLocalDb = () => {
   try {
@@ -41,7 +26,6 @@ const getAccessTokenObjectFromLocalDb = () => {
     return error;
   }
 };
-
 
 const updateCachedAccessToken = (accessToken) => {
   try {
@@ -60,10 +44,10 @@ const updateCachedAccessToken = (accessToken) => {
  * @param {string} server - Battle.net API server to request data from.
  * @returns {Promise} Promise object representing access token object fetched from Battle.net API.
  */
-const getAccessTokenObjectFromBattleNet = async (server) => {
+const getAccessTokenObjectFromBattleNet = async (regionId) => {
   const clientId = bnetConfig.api.key;
   const clientSecret = bnetConfig.api.secret;
-  const accessTokenRequestServer = bnetConfig.getAccessTokenUri[server];
+  const accessTokenRequestServer = bnetConfig.getAccessTokenUri[regionId];
   const accessTokenApiPath = `/oauth/token?grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`;
   const accessTokenRequestUri = `${accessTokenRequestServer}${accessTokenApiPath}`;
 
@@ -112,17 +96,17 @@ const getDataWithAccessToken = async (accessToken, requestPath) => {
  * @param {string} requestPath - Path to request from.
  * @returns {Promise} Promise object representing data fetched from Battle.net API.
  */
-const queryWithAccessToken = async (server, requestPath) => {
+const queryWithAccessToken = async (regionId, requestPath) => {
   try {
-    const accessTokenObject = await getAccessTokenObject(server);
+    const accessTokenObject = await getAccessTokenObject(regionId);
     const accessToken = accessTokenObject.access_token;
-    const authenticatedRequestUri = bnetConfig.api.url[server];
+    const authenticatedRequestUri = bnetConfig.api.url[regionId];
     const authenticatedRequestPath = `${authenticatedRequestUri}${requestPath}`;
 
     const data = await getDataWithAccessToken(accessToken, authenticatedRequestPath);
 
     if (data.code === 403) {
-      const newAccessTokenObject = await getAccessTokenObjectFromBattleNet(server);
+      const newAccessTokenObject = await getAccessTokenObjectFromBattleNet(regionId);
       const updatedCachedAccessToken = updateCachedAccessToken(newAccessTokenObject);
       const newAccessToken = updatedCachedAccessToken.access_token;
       const newData = await getDataWithAccessToken(newAccessToken, authenticatedRequestPath);
@@ -136,6 +120,5 @@ const queryWithAccessToken = async (server, requestPath) => {
 };
 
 module.exports = {
-  query,
   queryWithAccessToken,
 };

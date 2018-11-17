@@ -16,9 +16,9 @@ bnetConfig.servers = ['eu', 'kr', 'us'];
 bnetConfig.api = {};
 bnetConfig.api.url = {};
 /** Battle.net API URL for American region */
-bnetConfig.api.url.us = 'https://us.api.battle.net';
+bnetConfig.api.url.us = 'https://us.api.blizzard.com';
 /** Battle.net API URL for European region */
-bnetConfig.api.url.eu = 'https://eu.api.api.blizzard.com';
+bnetConfig.api.url.eu = 'https://eu.api.blizzard.com';
 /** Battle.net API URL for Korean region */
 bnetConfig.api.url.kr = 'https://kr.api.blizzard.com';
 /** Battle.net API URL for Taiwanese region */

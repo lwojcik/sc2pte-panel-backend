@@ -30,10 +30,9 @@ const getViewerData = async (channelId, token) => {
 
         if (channelConfig) {
           const playerConfig = {
-            server: channelConfig.server,
-            id: channelConfig.playerid,
-            region: channelConfig.region,
-            name: channelConfig.name,
+            regionId: channelConfig.regionId,
+            realmId: channelConfig.realmId,
+            playerId: channelConfig.playerId,
           };
 
           const viewerData = await getSC2Data(playerConfig);

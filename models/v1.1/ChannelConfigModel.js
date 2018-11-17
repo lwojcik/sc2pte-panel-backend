@@ -8,26 +8,19 @@ const ChannelConfigSchema = new Schema({
     required: [true, 'channelId required'],
     unique: true,
   },
-  server: {
-    type: String,
-    enum: ['eu', 'us', 'kr'],
-    required: [true, 'server required'],
-  },
-  playerid: {
+  regionId: {
     type: Number,
-    required: [true, 'playerid required'],
+    enum: [1, 2, 3, 5],
+    required: [true, 'regionId required'],
   },
-  region: {
+  realmId: {
     type: Number,
-    min: 0,
-    max: 9,
-    required: [true, 'region required'],
+    enum: [1, 2],
+    required: [true, 'realmId required'],
   },
-  name: {
-    type: String,
-    min: 1,
-    max: 12,
-    required: [true, 'name required'],
+  playerId: {
+    type: Number,
+    required: [true, 'playerId required'],
   },
 });
 
