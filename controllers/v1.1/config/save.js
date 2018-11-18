@@ -95,7 +95,7 @@ const saveConfig = async (configObject) => {
       }
       return {
         status: 500,
-        message: 'Error while saving config (save)',
+        message: 'Error while saving config. Config or token invalid.',
       };
     }
     return {
@@ -105,7 +105,7 @@ const saveConfig = async (configObject) => {
   } catch (error) {
     return {
       status: 500,
-      message: 'Error while saving config',
+      message: 'Error while saving config. Something went terribly wrong.',
     };
   }
 };

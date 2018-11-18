@@ -109,6 +109,7 @@ const saveConfig = async (configObject) => {
       message: 'Bad request',
     };
   } catch (error) {
+    console.log(error);
     return {
       status: 500,
       message: 'Error while saving config',

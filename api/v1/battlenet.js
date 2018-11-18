@@ -36,19 +36,19 @@ const query = async (requestUri) => {
 const getAccessTokenObjectFromLocalDb = () => {
   try {
     const data = db.loadCollections(['accessTokenLegacy']);
-    return data.accessToken.findOne();
+    return data.accessTokenLegacy.findOne();
   } catch (error) {
     return error;
   }
 };
 
 
-const updateCachedAccessToken = (accessToken) => {
+const updateCachedAccessToken = (accessTokenLegacy) => {
   try {
     const data = db.loadCollections(['accessTokenLegacy']);
-    data.accessToken.remove({ token_type: 'bearer' }, true);
-    data.accessToken.update({}, accessToken, { upsert: true });
-    return accessToken;
+    data.accessTokenLegacy.remove({ token_type: 'bearer' }, true);
+    data.accessTokenLegacy.update({}, accessTokenLegacy, { upsert: true });
+    return accessTokenLegacy;
   } catch (error) {
     return error;
   }
@@ -76,18 +76,18 @@ const getAccessTokenObjectFromBattleNet = async (server) => {
 };
 
 const getAccessTokenObject = async (server) => {
-  const cachedAccessToken = getAccessTokenObjectFromLocalDb();
+  const cachedAccessTokenLegacy = getAccessTokenObjectFromLocalDb();
 
-  if (cachedAccessToken === undefined) {
+  if (cachedAccessTokenLegacy === undefined) {
     try {
-      const accessToken = await getAccessTokenObjectFromBattleNet(server);
-      return updateCachedAccessToken(accessToken);
+      const accessTokenLegacy = await getAccessTokenObjectFromBattleNet(server);
+      return updateCachedAccessToken(accessTokenLegacy);
     } catch (error) {
       return error;
     }
   }
 
-  return cachedAccessToken;
+  return cachedAccessTokenLegacy;
 };
 /**
  * Fetches data from Battle.net API using provided access token.
@@ -96,9 +96,9 @@ const getAccessTokenObject = async (server) => {
  * @param {string} requestPath - API endpoint to request data from.
  * @returns {Promise} Promise object representing data fetched from Battle.net API.
  */
-const getDataWithAccessToken = async (accessToken, requestPath) => {
+const getDataWithAccessToken = async (accessTokenLegacy, requestPath) => {
   try {
-    const data = await fetch(`${requestPath}?access_token=${accessToken}`);
+    const data = await fetch(`${requestPath}?access_token=${accessTokenLegacy}`);
     return data.json();
   } catch (error) {
     return error;
@@ -115,11 +115,11 @@ const getDataWithAccessToken = async (accessToken, requestPath) => {
 const queryWithAccessToken = async (server, requestPath) => {
   try {
     const accessTokenObject = await getAccessTokenObject(server);
-    const accessToken = accessTokenObject.access_token;
+    const accessTokenLegacy = accessTokenObject.access_token;
     const authenticatedRequestUri = bnetConfig.api.url[server];
     const authenticatedRequestPath = `${authenticatedRequestUri}${requestPath}`;
 
-    const data = await getDataWithAccessToken(accessToken, authenticatedRequestPath);
+    const data = await getDataWithAccessToken(accessTokenLegacy, authenticatedRequestPath);
 
     if (data.code === 403) {
       const newAccessTokenObject = await getAccessTokenObjectFromBattleNet(server);
