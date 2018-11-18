@@ -15,7 +15,7 @@ const ladderApi = require('./ladder');
  * General method for fetching StarCraft II player data available with Battle.net API key.
  * @function
  * @param {string} resource - Name of the Battle.net API resource to fetch.
- * @param {Object} player - Player object including server, id, region and name.
+ * @param {Object} player - Player object including region id, realm id and player id.
  * @returns {Object} Player data object.
  */
 const getSc2PlayerData = async (resource, player) => {
@@ -47,7 +47,7 @@ const getSc2PlayerData = async (resource, player) => {
 /**
  * Fetches StarCraft 2 player profile.
  * @function
- * @param {Object} player - Player object including server, id, region and name.
+ * @param {Object} player - Player object including region id, realm id and player id.
  * @returns {Object} Player profile object.
  */
 const getPlayerProfile = player => getSc2PlayerData('profile', player);
@@ -106,7 +106,7 @@ const selectTopLadder = (ladderObjects) => {
  * Fetches StarCraft 2 player ladders data.
  * @function
  * @param {string} mode - Player matchmaking mode (e.g. 1v1).
- * @param {Object} player - Player object including server, id, region and name.
+ * @param {Object} player - Player object including region id, realm id and player id.
  * @returns {Object} Player ladders object.
  */
 const getPlayerLadders = async (mode, player) => {
@@ -122,7 +122,7 @@ const getPlayerLadders = async (mode, player) => {
 /**
  * Fetches StarCraft 2 player match history.
  * @function
- * @param {Object} player - Player object including server, id, region and name.
+ * @param {Object} player - Player object including region id, realm id and player id.
  * @returns {Object} Player matches object.
  */
 const getPlayerMatches = player => getSc2PlayerData('matches', player);
@@ -268,7 +268,7 @@ const prepareSingleLadderSummary = (playerData) => {
  * @param {string} mode - Player matchmaking mode (e.g. 1v1).
  * @param {string} filter - How much data should be returned ('ALL' - all, 'TOP' - top ladder,
  * 'SUM' - summary).
- * @param {Object} player - Player object including server, id, region and name.
+ * @param {Object} player - Player object including region id, realm id and player id.
  * @returns {Promise} Promise object representing player data including MMR.
  */
 const getPlayerMMR = async (mode, filter, player) => {
@@ -294,7 +294,7 @@ const getPlayerMMR = async (mode, filter, player) => {
  * Returns the summary of player ladders.
  * @function
  * @param {string} mode - Player matchmaking mode (e.g. 1v1).
- * @param {Object} player - Player object including server, id, region and name.
+ * @param {Object} player - Player object including region id, realm id and player id.
  * @returns {Promise} Promise object representing player data including MMR.
  */
 const getPlayerAllLaddersSummary = async (player) => { // eslint-disable-line arrow-body-style

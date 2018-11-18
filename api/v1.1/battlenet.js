@@ -9,6 +9,7 @@ const fetch = require('node-fetch');
 const diskdb = require('diskdb');
 
 const bnetConfig = require('../../config/v1.1/api/battlenet');
+const { determineRegionNameById } = require('../../helpers/v1.1/battlenet');
 
 const db = diskdb.connect('./db', ['accessToken']);
 
@@ -45,9 +46,10 @@ const updateCachedAccessToken = (accessToken) => {
  * @returns {Promise} Promise object representing access token object fetched from Battle.net API.
  */
 const getAccessTokenObjectFromBattleNet = async (regionId) => {
+  const regionName = determineRegionNameById(regionId);
   const clientId = bnetConfig.api.key;
   const clientSecret = bnetConfig.api.secret;
-  const accessTokenRequestServer = bnetConfig.getAccessTokenUri[regionId];
+  const accessTokenRequestServer = bnetConfig.getAccessTokenUri[regionName];
   const accessTokenApiPath = `/oauth/token?grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`;
   const accessTokenRequestUri = `${accessTokenRequestServer}${accessTokenApiPath}`;
 
@@ -59,12 +61,13 @@ const getAccessTokenObjectFromBattleNet = async (regionId) => {
   }
 };
 
-const getAccessTokenObject = async (server) => {
+const getAccessTokenObject = async (regionId) => {
+  const regionName = determineRegionNameById(regionId);
   const cachedAccessToken = getAccessTokenObjectFromLocalDb();
 
   if (cachedAccessToken === undefined) {
     try {
-      const accessToken = await getAccessTokenObjectFromBattleNet(server);
+      const accessToken = await getAccessTokenObjectFromBattleNet(regionName);
       return updateCachedAccessToken(accessToken);
     } catch (error) {
       return error;
@@ -97,16 +100,17 @@ const getDataWithAccessToken = async (accessToken, requestPath) => {
  * @returns {Promise} Promise object representing data fetched from Battle.net API.
  */
 const queryWithAccessToken = async (regionId, requestPath) => {
+  const regionName = determineRegionNameById(regionId);
   try {
-    const accessTokenObject = await getAccessTokenObject(regionId);
+    const accessTokenObject = await getAccessTokenObject(regionName);
     const accessToken = accessTokenObject.access_token;
-    const authenticatedRequestUri = bnetConfig.api.url[regionId];
+    const authenticatedRequestUri = bnetConfig.api.url[regionName];
     const authenticatedRequestPath = `${authenticatedRequestUri}${requestPath}`;
 
     const data = await getDataWithAccessToken(accessToken, authenticatedRequestPath);
 
     if (data.code === 403) {
-      const newAccessTokenObject = await getAccessTokenObjectFromBattleNet(regionId);
+      const newAccessTokenObject = await getAccessTokenObjectFromBattleNet(regionName);
       const updatedCachedAccessToken = updateCachedAccessToken(newAccessTokenObject);
       const newAccessToken = updatedCachedAccessToken.access_token;
       const newData = await getDataWithAccessToken(newAccessToken, authenticatedRequestPath);
