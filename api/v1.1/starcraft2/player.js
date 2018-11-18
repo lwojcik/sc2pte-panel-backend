@@ -6,11 +6,10 @@
  * @since   2018-08-10
  */
 
-const bnetConfig = require('../../../config/v1.1/api/battlenet');
 const sc2Config = require('../../../config/v1.1/api/starcraft2');
 const bnetApi = require('../../../api/v1.1/battlenet');
 const ladderApi = require('./ladder');
-const { determineRegionNameById } = require('../../../helpers/v1.1/battlenet');
+const { determineRankIdByName } = require('../../../helpers/v1.1/battlenet');
 
 /**
  * General method for fetching StarCraft II player data available with Battle.net API key.
@@ -27,12 +26,13 @@ const getSc2PlayerData = async (resource, player) => {
       playerId,
     } = player;
 
-    const serverUri = bnetConfig.api.url[regionId];
+    // const regionName = determineRegionNameById(regionId);
+    // const serverUri = bnetConfig.api.url[regionName];
     const requestedResource = (resource === 'profile') ? '' : resource;
     const requestPath = `/sc2/profile/${regionId}/${realmId}/${playerId}/${requestedResource}`;
-    const requestUri = `${serverUri}${requestPath}`;
+    // const requestUri = `${serverUri}${requestPath}`;
 
-    const playerData = await bnetApi.queryWithAccessToken(regionId, requestUri);
+    const playerData = await bnetApi.queryWithAccessToken(regionId, requestPath);
 
     if (playerData.status === 'nok') {
       return {
@@ -58,15 +58,12 @@ const getPlayerProfile = player => getSc2PlayerData('profile', player);
 /**
  * Filters ladder data based on matchmaking mode.
  * @function
- * @param {string} mode - Player matchmaking mode (e.g. 1v1).
+ * @param {string} mode - Player matchmaking mode (1v1, archon, 2v2, 3v3 or 4v4).
  * @param {Object} ladderData - Ladder data object returned by Blizzard API.
  * @returns {Object} Ladders filtered by provided mode.
  */
 const filterLaddersByMode = async (ladderData, mode) => {
   const laddersToBeReturned = mode.toUpperCase();
-  const selectedModeIndex = sc2Config.matchMaking.modes.indexOf(laddersToBeReturned);
-  const selectedQueue = sc2Config.matchMaking.queues[selectedModeIndex];
-  const ladders = ladderData.currentSeason;
 
   if (!sc2Config.matchMaking.modes.includes(laddersToBeReturned)) {
     return {
@@ -78,16 +75,17 @@ const filterLaddersByMode = async (ladderData, mode) => {
     const filteredLadders = [];
 
     if (ladderData.error) return ladderData;
-
-    ladders.forEach((ladderObject) => {
-      const ladder = ladderObject.ladder[0];
-      if (selectedQueue === 'ALL') {
-        filteredLadders.push(ladder);
-      } else if (ladder && ladder.matchMakingQueue === selectedQueue) {
-        filteredLadders.push(ladder);
+    ladderData.forEach((ladderObject) => {
+      if (laddersToBeReturned === 'ALL') {
+        filteredLadders.push(ladderObject);
+      } else if (
+        ladderObject
+        && ladderObject.team
+        && ladderObject.team.localizedGameMode
+        && ladderObject.team.localizedGameMode.toUpperCase() === laddersToBeReturned) {
+        filteredLadders.push(ladderObject);
       }
     });
-
     return filteredLadders.filter(Boolean);
   } catch (error) {
     return error;
@@ -145,16 +143,15 @@ const extractLadderIds = ladderData => ladderData.map(ladder => ladder.ladderId)
  * @param {Number} ladderId - ID of the ladder to fetch.
  * @returns {Object} Ladder data object.
  */
-const getLadderObjectById = async (regionId, ladderId) => {
-  const regionName = determineRegionNameById(regionId);
+const getLadderObjectById = async (player, ladderId) => {
   try {
-    const authenticatedLadderData = await ladderApi.getAuthenticatedLadderData(
-      regionName,
+    const authenticatedLadderData = await ladderApi.getLadderData(
+      player,
       ladderId,
     );
     return {
       ladderId,
-      leagueInfo: authenticatedLadderData.league.league_key,
+      league: authenticatedLadderData.league,
       data: authenticatedLadderData,
     };
   } catch (error) {
@@ -165,14 +162,15 @@ const getLadderObjectById = async (regionId, ladderId) => {
 /**
  * Extracts array of ladder objects based on provided array of ladder ids.
  * @function
- * @param {String} server - Battle.net server to fetch the data from.
+ * @param {String} regionId - Battle.net server to fetch the data from.
  * @param {string} ladderIds - array of ladder IDs.
  * @returns {Promise} Promise object representing ladder objects.
  */
-const extractLadderObjectsByIds = (regionId, ladderIds) => {
-  const regionName = determineRegionNameById(regionId);
-
-  const ladderObjects = ladderIds.map(ladderId => getLadderObjectById(regionName, ladderId));
+const extractLadderObjectsByIds = (player, ladderIds) => {
+  const ladderObjects = ladderIds.map(ladderId => getLadderObjectById(
+    player,
+    ladderId,
+  ));
 
   return Promise.all(ladderObjects)
     .then(results => results)
@@ -190,23 +188,21 @@ const extractPlayerObjectsFromLadders = (ladderObjects, playerId) => {
   const extractedPlayerObjects = [];
 
   ladderObjects.forEach((ladderObject) => {
-    const ladderData = ladderObject.data.team;
-
+    const ladderData = ladderObject.data.ladderTeams;
     ladderData.forEach((playerDataObject) => {
-      const memberList = playerDataObject.member;
+      const memberList = playerDataObject.teamMembers;
 
       memberList.forEach((member) => {
-        if (member.character_link.id === Number(playerId)) {
+        if (Number(member.id) === Number(playerId)) {
           extractedPlayerObjects.push({
             ladderId: ladderObject.ladderId,
-            leagueInfo: ladderObject.leagueInfo,
+            league: ladderObject.league,
             data: playerDataObject,
           });
         }
       });
     });
   });
-
   return extractedPlayerObjects;
 };
 
@@ -250,25 +246,26 @@ const prepareSingleLadderSummary = (playerData) => {
     topMMR: 0,
     wins: 0,
     losses: 0,
-    ties: 0,
+    // ties: 0,
   };
 
   // ugh
   playerData.forEach((ladderObject) => {
     ladderSummaryObject.totalLadders += 1;
-    ladderSummaryObject.topRankId = ladderObject.leagueInfo.league_id
+    ladderSummaryObject.topRankId = determineRankIdByName(ladderObject.league)
       > ladderSummaryObject.topRankId
-      ? ladderObject.leagueInfo.league_id
+      ? determineRankIdByName(ladderObject.league)
       : ladderSummaryObject.topRankId;
+
     ladderSummaryObject.topRank = sc2Config.matchMaking.ranks[ladderSummaryObject.topRankId];
-    ladderSummaryObject.topMMR = ladderObject.data.rating > ladderSummaryObject.topMMR
-      ? ladderObject.data.rating
+    ladderSummaryObject.topMMR = ladderObject.data.mmr > ladderSummaryObject.topMMR
+      ? ladderObject.data.mmr
       : ladderSummaryObject.topMMR;
     ladderSummaryObject.wins += ladderObject.data.wins;
-    ladderSummaryObject.losses += ladderObject.data.losses;
-    ladderSummaryObject.ties += ladderObject.data.ties;
-  });
 
+    ladderSummaryObject.losses += ladderObject.data.losses;
+    // ladderSummaryObject.ties += ladderObject.data.ties;
+  });
   return ladderSummaryObject;
 };
 
@@ -279,18 +276,23 @@ const prepareSingleLadderSummary = (playerData) => {
  * @param {string} filter - How much data should be returned ('ALL' - all, 'TOP' - top ladder,
  * 'SUM' - summary).
  * @param {Object} player - Player object including region id, realm id and player id.
- * @returns {Promise} Promise object representing player data including MMR.
+ * @returns {Object} Player ladder data including MMR.
  */
 const getPlayerMMR = async (mode, filter, player) => {
   try {
-    const { regionId, playerId } = player;
-    const regionName = determineRegionNameById(regionId);
-    const playerLadders = await getSc2PlayerData('ladders', player);
-    const filteredPlayerLadders = await filterLaddersByMode(playerLadders, mode);
+    const { playerId } = player;
+    const playerLadders = await getSc2PlayerData('ladder/summary', player);
+    const extractedPlayerLadderObjects = await playerLadders.showCaseEntries;
+    const filteredPlayerLadders = await filterLaddersByMode(extractedPlayerLadderObjects, mode);
+
     const filteredLadderIds = await extractLadderIds(filteredPlayerLadders);
     const uniqueFilteredLadderIds = await dedupeLadderIds(filteredLadderIds);
-    const extractedLadderObjects = await extractLadderObjectsByIds(regionName, uniqueFilteredLadderIds);
-    const extractedPlayerData = await extractPlayerObjectsFromLadders(extractedLadderObjects, playerId);
+    const extractedLadderObjects = await extractLadderObjectsByIds(player, uniqueFilteredLadderIds);
+    const extractedPlayerData = await extractPlayerObjectsFromLadders(
+      extractedLadderObjects,
+      playerId,
+    );
+
     const data = (filter.toUpperCase() === 'SUM')
       ? await prepareSingleLadderSummary(extractedPlayerData)
       : await filterPlayerObjectsByFilterType(extractedPlayerData, filter);

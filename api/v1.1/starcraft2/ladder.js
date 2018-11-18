@@ -14,22 +14,30 @@ const { determineRegionNameById } = require('../../../helpers/v1.1/battlenet');
  * Fetches StarCraft 2 ladder data available with Battle.net API key. No MMR info is returned here.
  * @function
  * @param {string} server - Server name abbreviation.
+ * @param {string} player - Player object including region id, realm id and player id.
  * @param {number} ladderId - Ladder identifier.
  * @returns {Promise} Promise object representing ladder data.
  */
-const getLadderData = async (regionId, ladderId) => {
+const getLadderData = async (player, ladderId) => {
+  const { regionId, realmId, playerId } = player;
   const regionName = determineRegionNameById(regionId);
+
   if (!bnetConfig.servers.includes(regionName)) {
     return {
       error: `${regionId} is not a valid region id`,
     };
   }
 
-  const requestServer = bnetConfig.api.url[regionName];
-  const requestUri = `${requestServer}/sc2/ladder/${ladderId}`;
+  const requestUri = `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/${ladderId}`;
 
-  const ladderData = await bnetApi.queryWithAccessToken(regionId, requestUri);
-  return ladderData;
+  try {
+    const ladderData = await bnetApi.queryWithAccessToken(regionId, requestUri);
+    return ladderData;
+  } catch (error) {
+    return {
+      error: `Error requesting data from ladder ${ladderId} in region ${regionId}`,
+    };
+  }
 };
 
 module.exports = {

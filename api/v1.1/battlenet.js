@@ -31,7 +31,6 @@ const getAccessTokenObjectFromLocalDb = () => {
 const updateCachedAccessToken = (accessToken) => {
   try {
     const data = db.loadCollections(['accessToken']);
-    data.accessToken.remove({ token_type: 'bearer' }, true);
     data.accessToken.update({}, accessToken, { upsert: true });
     return accessToken;
   } catch (error) {

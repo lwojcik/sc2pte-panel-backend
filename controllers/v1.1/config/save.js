@@ -4,7 +4,6 @@ const SC2PlayerApi = require('../../../api/v1.1/starcraft2/player');
 const { validateToken } = require('../../../helpers/shared/jwt');
 
 const checkIfConfigIsComplete = (configObject) => {
-  console.log(configObject); // eslint-disable-line
   const {
     regionId,
     realmId,

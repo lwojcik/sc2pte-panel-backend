@@ -6,7 +6,7 @@
  */
 
 const router = require('express').Router();
-const cache = require('../../config/shared/cache'); // eslint-disable-line
+const cache = require('../../config/shared/cache');
 const apicache = require('apicache').options({ debug: cache.debug }).middleware; // eslint-disable-line
 
 const getViewerData = require('../../controllers/v1.1/viewer/get');

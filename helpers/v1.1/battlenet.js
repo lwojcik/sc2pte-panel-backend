@@ -1,3 +1,5 @@
+const sc2Config = require('../../config/v1.1/api/starcraft2');
+
 const determineRegionIdByRegionName = (regionName) => {
   switch (regionName) {
     case 'us':
@@ -28,7 +30,10 @@ const determineRegionNameById = (regionId) => {
   }
 };
 
+const determineRankIdByName = rankName => sc2Config.matchMaking.ranks.indexOf(rankName.toUpperCase());
+
 module.exports = {
   determineRegionIdByRegionName,
   determineRegionNameById,
+  determineRankIdByName,
 };
