@@ -1,6 +1,6 @@
 {
   "name": "sc2profile-twitch-extension-api",
-  "version": "0.0.1",
+  "version": "v1.1.0",
   "description": "API for StarCraft II Profile Twitch Extension",
   "main": "index.js",
   "scripts": {
