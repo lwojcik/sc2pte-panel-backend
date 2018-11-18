@@ -6,10 +6,10 @@
  */
 
 const router = require('express').Router();
-const cache = require('../../config/shared/cache'); // eslint-disable-line
+const cache = require('../../config/shared/cache');
 const apicache = require('apicache').options({ debug: cache.debug }).middleware; // eslint-disable-line
 
-const getViewerData = require('../../controllers/v1/viewer/get');
+const getViewerData = require('../../controllers/v1.1/viewer/get');
 
 const onlyStatus200 = (req, res) => res.statusCode === 200;
 const cacheSuccessesOnly = apicache(cache.request, onlyStatus200);

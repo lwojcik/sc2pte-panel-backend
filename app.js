@@ -17,10 +17,10 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 
-const config = require('./config/app');
-const db = require('./config/database');
-const ssl = require('./config/ssl');
-const logging = require('./config/logging');
+const config = require('./config/shared/app');
+const db = require('./config/shared/database');
+const ssl = require('./config/shared/ssl');
+const logging = require('./config/shared/logging');
 
 const app = express();
 
@@ -68,7 +68,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,channelId,server,playerid,region,name,token');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,channelId,server,playerId,region,regionId,realmId,name,token');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
@@ -102,7 +102,7 @@ const createServer = (protocol, appToServe, callback) => {
 };
 
 /** App server creation */
-module.exports = mongoose.connect(db.connectionString)
+module.exports = mongoose.connect(db.connectionString, { useNewUrlParser: true })
   .then(() => {
     createServer(config.protocol, app, () => {
       console.log(`${config.protocol} server started at port ${config.port}`); // eslint-disable-line no-console

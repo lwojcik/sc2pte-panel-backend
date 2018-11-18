@@ -9,8 +9,8 @@ const router = require('express').Router();
 const cache = require('../../config/shared/cache'); // eslint-disable-line
 const apicache = require('apicache').options({ debug: cache.debug }).middleware; // eslint-disable-line
 
-const { getConfig } = require('../../controllers/v1/config/get');
-const saveConfig = require('../../controllers/v1/config/save');
+const { getConfig } = require('../../controllers/v1.1/config/get');
+const saveConfig = require('../../controllers/v1.1/config/save');
 
 const onlyStatus200 = (req, res) => res.statusCode === 200;
 const cacheSuccessesOnly = apicache(cache.request, onlyStatus200);
@@ -29,21 +29,18 @@ router.get('/get/:channelId', cacheSuccessesOnly, async (req, res) => {
 router.post('/save/:channelId', async (req, res) => {
   try {
     const { channelId } = req.params;
-
     const {
-      server,
+      regionid,
+      realmid,
       playerid,
-      region,
-      name,
       token,
     } = req.headers;
 
     const configObject = {
       channelId,
-      server,
-      playerid,
-      region,
-      name,
+      regionId: regionid,
+      realmId: realmid,
+      playerId: playerid,
       token,
     };
 
