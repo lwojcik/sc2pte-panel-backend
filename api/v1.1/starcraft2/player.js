@@ -26,18 +26,13 @@ const getSc2PlayerData = async (resource, player) => {
       playerId,
     } = player;
 
-    // const regionName = determineRegionNameById(regionId);
-    // const serverUri = bnetConfig.api.url[regionName];
     const requestedResource = (resource === 'profile') ? '' : resource;
-    const requestPath = `/sc2/profile/${regionId}/${realmId}/${playerId}/${requestedResource}`;
-    // const requestUri = `${serverUri}${requestPath}`;
+    const requestPath = `/sc2/profile/${regionId}/${realmId}/${playerId}${requestedResource}`;
 
     const playerData = await bnetApi.queryWithAccessToken(regionId, requestPath);
-
     if (playerData.status === 'nok') {
       return {
         error: 'battlenet_api_error',
-        details: playerData,
       };
     }
 
@@ -112,7 +107,7 @@ const selectTopLadder = (ladderObjects) => {
  */
 const getPlayerLadders = async (mode, player) => {
   try {
-    const ladders = await getSc2PlayerData('ladder/summary', player);
+    const ladders = await getSc2PlayerData('/ladder/summary', player);
     const filteredLadders = await filterLaddersByMode(ladders, mode);
     return filteredLadders;
   } catch (error) {
@@ -281,7 +276,7 @@ const prepareSingleLadderSummary = (playerData) => {
 const getPlayerMMR = async (mode, filter, player) => {
   try {
     const { playerId } = player;
-    const playerLadders = await getSc2PlayerData('ladder/summary', player);
+    const playerLadders = await getSc2PlayerData('/ladder/summary', player);
     const extractedPlayerLadderObjects = await playerLadders.showCaseEntries;
     const filteredPlayerLadders = await filterLaddersByMode(extractedPlayerLadderObjects, mode);
 

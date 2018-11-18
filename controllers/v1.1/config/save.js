@@ -103,7 +103,6 @@ const saveConfig = async (configObject) => {
       message: 'Bad request',
     };
   } catch (error) {
-    console.log(error); // eslint-disable-line
     return {
       status: 500,
       message: 'Error while saving config',

@@ -1,4 +1,6 @@
 const sc2playerApi = require('../../../../api/v1.1/starcraft2/player');
+const { determineRegionNameById } = require('../../../../helpers/v1.1/battlenet');
+const { determineHighestRank } = require('../../../../helpers/v1.1/starcraft2/ladder');
 
 const formatHeaderData = data => ({
   player: {
@@ -8,26 +10,30 @@ const formatHeaderData = data => ({
       name: data.clanName || '',
       tag: data.clanTag || '',
     },
-    rank: data.career.highest1v1Rank || '',
-    portrait: {
-      x: typeof data.portrait !== 'undefined' ? data.portrait.x : '',
-      y: typeof data.portrait !== 'undefined' ? data.portrait.y : '',
-      w: typeof data.portrait !== 'undefined' ? data.portrait.w : '',
-      h: typeof data.portrait !== 'undefined' ? data.portrait.h : '',
-      offset: typeof data.portrait !== 'undefined' ? data.portrait.offset : '',
-      url: typeof data.portrait !== 'undefined' ? data.portrait.url : '',
-    },
+    rank: determineHighestRank(
+      data.current1v1LeagueName,
+      data.currentBestTeamLeagueName,
+    ),
+    portrait: data.portrait || '',
   },
 });
 
-const getHeaderData = async player => sc2playerApi.getPlayerProfile(player)
-  .then((data) => {
-    const playerServer = player.server;
-    const playerData = data;
-    playerData.server = playerServer;
-    return formatHeaderData(data);
-  })
-  .catch(error => error);
+const getHeaderData = async (player) => {
+  try {
+    const playerProfileData = await sc2playerApi.getPlayerProfile(player);
+    const playerServer = determineRegionNameById(player.regionId);
+    const playerData = await {
+      ...playerProfileData.summary,
+      ...playerProfileData.career,
+      server: playerServer,
+    };
+    return formatHeaderData(playerData);
+  } catch (error) {
+    return {
+      player: 'undefined',
+    };
+  }
+};
 
 module.exports = {
   getHeaderData,
