@@ -10,7 +10,7 @@ const diskdb = require('diskdb');
 
 const bnetConfig = require('../../config/v1/api/battlenet');
 
-const db = diskdb.connect('./db', ['accessToken']);
+const db = diskdb.connect('./db', ['accessTokenLegacy']);
 
 /**
  * General method for fetching data from selected Battle.net endpoint.
@@ -35,7 +35,7 @@ const query = async (requestUri) => {
  */
 const getAccessTokenObjectFromLocalDb = () => {
   try {
-    const data = db.loadCollections(['accessToken']);
+    const data = db.loadCollections(['accessTokenLegacy']);
     return data.accessToken.findOne();
   } catch (error) {
     return error;
@@ -45,7 +45,7 @@ const getAccessTokenObjectFromLocalDb = () => {
 
 const updateCachedAccessToken = (accessToken) => {
   try {
-    const data = db.loadCollections(['accessToken']);
+    const data = db.loadCollections(['accessTokenLegacy']);
     data.accessToken.remove({ token_type: 'bearer' }, true);
     data.accessToken.update({}, accessToken, { upsert: true });
     return accessToken;
