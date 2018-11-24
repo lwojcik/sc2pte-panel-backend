@@ -28,7 +28,6 @@ const getSc2PlayerData = async (resource, player) => {
 
     const requestedResource = (resource === 'profile') ? '' : resource;
     const requestPath = `/sc2/profile/${regionId}/${realmId}/${playerId}${requestedResource}`;
-
     const playerData = await bnetApi.queryWithAccessToken(regionId, requestPath);
     if (playerData.status === 'nok') {
       return {
@@ -305,6 +304,7 @@ const getPlayerMMR = async (mode, filter, player) => {
  * @returns {Promise} Promise object representing player data including MMR.
  */
 const getPlayerAllLaddersSummary = async (player) => { // eslint-disable-line arrow-body-style
+  // TODO: optimize this garbage so that it doesn't request the same data 5 times
   return {
     '1v1': await getPlayerMMR('1v1', 'SUM', player),
     archon: await getPlayerMMR('archon', 'SUM', player),

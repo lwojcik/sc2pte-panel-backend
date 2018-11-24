@@ -22,17 +22,23 @@ const db = diskdb.connect('./db', ['accessToken']);
 const getAccessTokenObjectFromLocalDb = () => {
   try {
     const data = db.loadCollections(['accessToken']);
-    return data.accessToken.findOne();
+    const accessToken = data.accessToken.findOne();
+    return accessToken;
   } catch (error) {
     return error;
   }
 };
 
-const updateCachedAccessToken = (accessToken) => {
+const updateCachedAccessToken = (newAccessToken) => {
   try {
-    const data = db.loadCollections(['accessToken']);
-    data.accessToken.update({}, accessToken, { upsert: true });
-    return accessToken;
+    if (newAccessToken.access_token && newAccessToken.token_type === 'bearer') {
+      const data = db.loadCollections(['accessToken']);
+      const accessTokenQuery = { token_type: 'bearer' };
+      data.accessToken.remove(accessTokenQuery, true);
+      data.accessToken.update(accessTokenQuery, newAccessToken, { upsert: true });
+      return newAccessToken;
+    }
+    return newAccessToken;
   } catch (error) {
     return error;
   }
@@ -51,10 +57,9 @@ const getAccessTokenObjectFromBattleNet = async (regionId) => {
   const accessTokenRequestServer = bnetConfig.getAccessTokenUri[regionName];
   const accessTokenApiPath = `/oauth/token?grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`;
   const accessTokenRequestUri = `${accessTokenRequestServer}${accessTokenApiPath}`;
-
   try {
     const data = await fetch(accessTokenRequestUri);
-    return data.json();
+    return data;
   } catch (error) {
     return error;
   }
@@ -63,18 +68,22 @@ const getAccessTokenObjectFromBattleNet = async (regionId) => {
 const getAccessTokenObject = async (regionId) => {
   const regionName = determineRegionNameById(regionId);
   const cachedAccessToken = getAccessTokenObjectFromLocalDb();
-
-  if (cachedAccessToken === undefined) {
-    try {
-      const accessToken = await getAccessTokenObjectFromBattleNet(regionName);
-      return updateCachedAccessToken(accessToken);
-    } catch (error) {
-      return error;
-    }
+  if (typeof cachedAccessToken !== 'undefined' && cachedAccessToken.access_token) {
+    return cachedAccessToken;
   }
 
-  return cachedAccessToken;
+
+  try {
+    const accessToken = await getAccessTokenObjectFromBattleNet(regionName);
+    const accessTokenObject = await accessToken.json();
+    const updatedAccessToken = await updateCachedAccessToken(accessTokenObject);
+    const updateCachedAccessTokenObject = updatedAccessToken.json();
+    return updateCachedAccessTokenObject;
+  } catch (error) {
+    return error;
+  }
 };
+
 /**
  * Fetches data from Battle.net API using provided access token.
  * @function
@@ -85,7 +94,7 @@ const getAccessTokenObject = async (regionId) => {
 const getDataWithAccessToken = async (accessToken, requestPath) => {
   try {
     const data = await fetch(`${requestPath}?access_token=${accessToken}`);
-    return data.json();
+    return data;
   } catch (error) {
     return error;
   }
@@ -98,25 +107,25 @@ const getDataWithAccessToken = async (accessToken, requestPath) => {
  * @param {string} requestPath - Path to request from.
  * @returns {Promise} Promise object representing data fetched from Battle.net API.
  */
-const queryWithAccessToken = async (regionId, requestPath) => {
+const queryWithAccessToken = async (regionId, requestPath, newAccessToken = '') => {
   const regionName = determineRegionNameById(regionId);
   try {
-    const accessTokenObject = await getAccessTokenObject(regionName);
+    const accessTokenObject = newAccessToken || await getAccessTokenObject(regionName);
     const accessToken = accessTokenObject.access_token;
     const authenticatedRequestUri = bnetConfig.api.url[regionName];
     const authenticatedRequestPath = `${authenticatedRequestUri}${requestPath}`;
-
     const data = await getDataWithAccessToken(accessToken, authenticatedRequestPath);
 
-    if (data.code === 403) {
+    if (data.status === 401) {
       const newAccessTokenObject = await getAccessTokenObjectFromBattleNet(regionName);
-      const updatedCachedAccessToken = updateCachedAccessToken(newAccessTokenObject);
-      const newAccessToken = updatedCachedAccessToken.access_token;
-      const newData = await getDataWithAccessToken(newAccessToken, authenticatedRequestPath);
+      const updatedCachedAccessToken = await updateCachedAccessToken(newAccessTokenObject);
+      const newAndUpdatedAccessTokenObject = await updatedCachedAccessToken.json();
+      const newAndUpdatedAccessToken = await newAndUpdatedAccessTokenObject.access_token;
+      const newData = await queryWithAccessToken(regionId, requestPath, newAndUpdatedAccessToken);
       return newData;
     }
 
-    return data;
+    return data.json();
   } catch (error) {
     return error;
   }

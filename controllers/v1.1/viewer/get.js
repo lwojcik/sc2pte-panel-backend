@@ -10,7 +10,6 @@ const getSC2Data = async (playerConfig) => {
     const ladderData = await getLadderData(playerConfig);
 
     const sc2data = Promise.all([headerData, ladderData]);
-
     return sc2data;
   } catch (err) {
     return {
@@ -36,8 +35,8 @@ const getViewerData = async (channelId, token) => {
           };
 
           const viewerData = await getSC2Data(playerConfig);
-          const playerData = viewerData[0];
-          const ladderData = viewerData[1];
+          const playerData = await viewerData[0];
+          const ladderData = await viewerData[1];
 
           return {
             status: 200,
