@@ -3,8 +3,10 @@ const { getChannelConfigFromDb } = require('../config/get');
 
 const { getHeaderData } = require('../../../helpers/v1.1/starcraft2/header/index');
 const { getLadderData } = require('../../../helpers/v1.1/starcraft2/ladder/index');
+const logging = require('../../../config/shared/logging');
 
 const getSC2Data = async (playerConfig) => {
+  // logging.info(`getSC2Data(${playerConfig})`);
   try {
     const headerData = await getHeaderData(playerConfig);
     const ladderData = await getLadderData(playerConfig);
@@ -20,12 +22,18 @@ const getSC2Data = async (playerConfig) => {
 };
 
 const getViewerData = async (channelId, token) => {
+  // logging.info('getViewerData()');
   try {
     if (channelId && token) {
       const isTokenValid = validateToken(channelId, token, 'viewer') || validateToken(channelId, token, 'broadcaster');
 
+      // logging.info(`isTokenValid: ${isTokenValid}`);
+
       if (isTokenValid) {
         const channelConfig = await getChannelConfigFromDb(channelId);
+
+        // logging.info('channelConfig:');
+        // logging.info(channelConfig);
 
         if (channelConfig) {
           const playerConfig = {

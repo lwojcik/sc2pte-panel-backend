@@ -32,11 +32,11 @@ app.use(morgan('combined', { stream: logging.stream }));
 
 /** Database events */
 mongoose.connection.once('open', () => {
-  logging.info('MongoDB event open');
-  logging.info('MongoDB connected');
+  // logging.info('MongoDB event open');
+  // logging.info('MongoDB connected');
 
   mongoose.connection.on('connected', () => {
-    logging.info('MongoDB event connected');
+    // logging.info('MongoDB event connected');
   });
 
   mongoose.connection.on('disconnected', () => {
@@ -44,7 +44,7 @@ mongoose.connection.once('open', () => {
   });
 
   mongoose.connection.on('reconnected', () => {
-    logging.info('MongoDB event reconnected');
+    // logging.info('MongoDB event reconnected');
   });
 
   mongoose.connection.on('error', (err) => {

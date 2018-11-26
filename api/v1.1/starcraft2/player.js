@@ -6,6 +6,8 @@
  * @since   2018-08-10
  */
 
+const logging = require('../../../config/shared/logging');
+
 const sc2Config = require('../../../config/v1.1/api/starcraft2');
 const bnetApi = require('../../../api/v1.1/battlenet');
 const ladderApi = require('./ladder');
@@ -19,6 +21,7 @@ const { determineRankIdByName } = require('../../../helpers/v1.1/battlenet');
  * @returns {Object} Player data object.
  */
 const getSc2PlayerData = async (resource, player) => {
+  // logging.info(`getSc2PlayerData(${JSON.stringify(resource)}, ${JSON.stringify(player)})`);
   try {
     const {
       regionId,
@@ -28,7 +31,8 @@ const getSc2PlayerData = async (resource, player) => {
 
     const requestedResource = (resource === 'profile') ? '' : resource;
     const requestPath = `/sc2/profile/${regionId}/${realmId}/${playerId}${requestedResource}`;
-    const playerData = await bnetApi.queryWithAccessToken(regionId, requestPath);
+    const accessKey = bnetApi.getAccessTokenObjectFromLocalDb();
+    const playerData = await bnetApi.queryWithAccessToken(regionId, requestPath, accessKey);
     if (playerData.status === 'nok') {
       return {
         error: 'battlenet_api_error',
@@ -305,6 +309,7 @@ const getPlayerMMR = async (mode, filter, player) => {
  */
 const getPlayerAllLaddersSummary = async (player) => { // eslint-disable-line arrow-body-style
   // TODO: optimize this garbage so that it doesn't request the same data 5 times
+  // logging.info(`getPlayerAllLaddersSummary(${player})`);
   return {
     '1v1': await getPlayerMMR('1v1', 'SUM', player),
     archon: await getPlayerMMR('archon', 'SUM', player),

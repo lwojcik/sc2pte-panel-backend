@@ -16,7 +16,7 @@ const options = {
 
 const logger = createLogger({
   transports: [
-    new transports.Console(options.console),
+    new transports.Console(options),
   ],
   exitOnError: false, // do not exit on handled exceptions
 });

@@ -8,6 +8,7 @@
 const router = require('express').Router();
 const cache = require('../../config/shared/cache');
 const apicache = require('apicache').options({ debug: cache.debug }).middleware; // eslint-disable-line
+const logging = require('../../config/shared/logging');
 
 const getViewerData = require('../../controllers/v1.1/viewer/get');
 
@@ -15,9 +16,11 @@ const onlyStatus200 = (req, res) => res.statusCode === 200;
 const cacheSuccessesOnly = apicache(cache.request, onlyStatus200);
 
 router.get('/get/:channelId', cacheSuccessesOnly, async (req, res) => {
+  // logging.info(`Route: /get/${req.params.channelId}`);
   try {
     const { channelId } = req.params;
     const { token } = req.headers;
+    // logging.info(`channelId: ${channelId}`);
     const response = await getViewerData(channelId, token);
     return res.status(response.status).json(response);
   } catch (error) {
