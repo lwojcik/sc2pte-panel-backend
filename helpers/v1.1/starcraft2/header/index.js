@@ -1,7 +1,7 @@
 const sc2playerApi = require('../../../../api/v1.1/starcraft2/player');
 const { determineRegionNameById } = require('../../../../helpers/v1.1/battlenet');
 const { determineHighestRank } = require('../../../../helpers/v1.1/starcraft2/ladder');
-const logging = require('../../../../config/shared/logging');
+// const logging = require('../../../../config/shared/logging');
 
 const formatHeaderData = data => ({
   player: {
@@ -21,7 +21,7 @@ const formatHeaderData = data => ({
 
 const getHeaderData = async (player) => {
   // logging.info(`getHeaderData(${JSON.stringify(player)})`);
-
+  console.log(player);
   try {
     const playerProfileData = await sc2playerApi.getPlayerProfile(player);
     const playerServer = determineRegionNameById(player.regionId);

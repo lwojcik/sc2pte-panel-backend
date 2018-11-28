@@ -3,7 +3,7 @@ const { getChannelConfigFromDb } = require('../config/get');
 
 const { getHeaderData } = require('../../../helpers/v1.1/starcraft2/header/index');
 const { getLadderData } = require('../../../helpers/v1.1/starcraft2/ladder/index');
-const logging = require('../../../config/shared/logging');
+// const logging = require('../../../config/shared/logging');
 
 const getSC2Data = async (playerConfig) => {
   // logging.info(`getSC2Data(${playerConfig})`);

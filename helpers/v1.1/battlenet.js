@@ -16,7 +16,8 @@ const determineRegionIdByRegionName = (regionName) => {
 };
 
 const determineRegionNameById = (regionId) => {
-  switch (regionId) {
+  const regionIdAsString = regionId.toString();
+  switch (regionIdAsString) {
     case '1':
       return 'us';
     case '2':

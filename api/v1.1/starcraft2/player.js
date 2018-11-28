@@ -6,7 +6,7 @@
  * @since   2018-08-10
  */
 
-const logging = require('../../../config/shared/logging');
+// const logging = require('../../../config/shared/logging');
 
 const sc2Config = require('../../../config/v1.1/api/starcraft2');
 const bnetApi = require('../../../api/v1.1/battlenet');
