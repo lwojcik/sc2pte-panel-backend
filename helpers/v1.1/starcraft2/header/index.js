@@ -21,7 +21,6 @@ const formatHeaderData = data => ({
 
 const getHeaderData = async (player) => {
   // logging.info(`getHeaderData(${JSON.stringify(player)})`);
-  console.log(player);
   try {
     const playerProfileData = await sc2playerApi.getPlayerProfile(player);
     const playerServer = determineRegionNameById(player.regionId);
