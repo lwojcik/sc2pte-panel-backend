@@ -80,9 +80,8 @@ const filterLaddersByMode = async (ladderData, mode) => {
         filteredLadders.push(ladderObject);
       } else if (
         ladderObject &&
-        ladderObject.team &&
-        ladderObject.team.localizedGameMode &&
-        ladderObject.team.localizedGameMode.toUpperCase() === laddersToBeReturned) {
+        ladderObject.localizedGameMode &&
+        ladderObject.localizedGameMode.toUpperCase().split(' ')[0] === laddersToBeReturned) {
         filteredLadders.push(ladderObject);
       }
     });
@@ -284,7 +283,7 @@ const getPlayerMMR = async (mode, filter, player) => {
       playerId,
     } = player;
     const playerLadders = await getSc2PlayerData('/ladder/summary', player);
-    const extractedPlayerLadderObjects = await playerLadders.showCaseEntries;
+    const extractedPlayerLadderObjects = await playerLadders.allLadderMemberships;
     const filteredPlayerLadders = await filterLaddersByMode(extractedPlayerLadderObjects, mode);
 
     const filteredLadderIds = await extractLadderIds(filteredPlayerLadders);
