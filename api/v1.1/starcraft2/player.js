@@ -11,7 +11,9 @@
 const sc2Config = require('../../../config/v1.1/api/starcraft2');
 const bnetApi = require('../../../api/v1.1/battlenet');
 const ladderApi = require('./ladder');
-const { determineRankIdByName } = require('../../../helpers/v1.1/battlenet');
+const {
+  determineRankIdByName
+} = require('../../../helpers/v1.1/battlenet');
 
 /**
  * General method for fetching StarCraft II player data available with Battle.net API key.
@@ -77,10 +79,10 @@ const filterLaddersByMode = async (ladderData, mode) => {
       if (laddersToBeReturned === 'ALL') {
         filteredLadders.push(ladderObject);
       } else if (
-        ladderObject
-        && ladderObject.team
-        && ladderObject.team.localizedGameMode
-        && ladderObject.team.localizedGameMode.toUpperCase() === laddersToBeReturned) {
+        ladderObject &&
+        ladderObject.team &&
+        ladderObject.team.localizedGameMode &&
+        ladderObject.team.localizedGameMode.toUpperCase() === laddersToBeReturned) {
         filteredLadders.push(ladderObject);
       }
     });
@@ -250,15 +252,15 @@ const prepareSingleLadderSummary = (playerData) => {
   // ugh
   playerData.forEach((ladderObject) => {
     ladderSummaryObject.totalLadders += 1;
-    ladderSummaryObject.topRankId = determineRankIdByName(ladderObject.league)
-      > ladderSummaryObject.topRankId
-      ? determineRankIdByName(ladderObject.league)
-      : ladderSummaryObject.topRankId;
+    ladderSummaryObject.topRankId = determineRankIdByName(ladderObject.league) >
+      ladderSummaryObject.topRankId ?
+      determineRankIdByName(ladderObject.league) :
+      ladderSummaryObject.topRankId;
 
     ladderSummaryObject.topRank = sc2Config.matchMaking.ranks[ladderSummaryObject.topRankId];
-    ladderSummaryObject.topMMR = ladderObject.data.mmr > ladderSummaryObject.topMMR
-      ? ladderObject.data.mmr
-      : ladderSummaryObject.topMMR;
+    ladderSummaryObject.topMMR = ladderObject.data.mmr > ladderSummaryObject.topMMR ?
+      ladderObject.data.mmr :
+      ladderSummaryObject.topMMR;
     ladderSummaryObject.wins += ladderObject.data.wins;
 
     ladderSummaryObject.losses += ladderObject.data.losses;
@@ -278,9 +280,11 @@ const prepareSingleLadderSummary = (playerData) => {
  */
 const getPlayerMMR = async (mode, filter, player) => {
   try {
-    const { playerId } = player;
+    const {
+      playerId,
+    } = player;
     const playerLadders = await getSc2PlayerData('/ladder/summary', player);
-    const extractedPlayerLadderObjects = await playerLadders.showCaseEntries;
+    const extractedPlayerLadderObjects = await playerLadders.allLadderMemberships;
     const filteredPlayerLadders = await filterLaddersByMode(extractedPlayerLadderObjects, mode);
 
     const filteredLadderIds = await extractLadderIds(filteredPlayerLadders);
@@ -291,9 +295,9 @@ const getPlayerMMR = async (mode, filter, player) => {
       playerId,
     );
 
-    const data = (filter.toUpperCase() === 'SUM')
-      ? await prepareSingleLadderSummary(extractedPlayerData)
-      : await filterPlayerObjectsByFilterType(extractedPlayerData, filter);
+    const data = (filter.toUpperCase() === 'SUM') ?
+      await prepareSingleLadderSummary(extractedPlayerData) :
+      await filterPlayerObjectsByFilterType(extractedPlayerData, filter);
     return data;
   } catch (error) {
     return error;

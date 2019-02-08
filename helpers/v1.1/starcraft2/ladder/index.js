@@ -1,7 +1,7 @@
 const sc2playerApi = require('../../../../api/v1.1/starcraft2/player');
 const sc2Config = require('../../../../config/v1.1/api/starcraft2');
 
-const logging = require('../../../../config/shared/logging');
+// const logging = require('../../../../config/shared/logging');
 
 const determineHighestRank = (soloRank, teamRank) => {
   const soloRankId = sc2Config.matchMaking.ranks.indexOf(soloRank);
