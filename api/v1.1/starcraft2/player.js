@@ -12,7 +12,7 @@ const sc2Config = require('../../../config/v1.1/api/starcraft2');
 const bnetApi = require('../../../api/v1.1/battlenet');
 const ladderApi = require('./ladder');
 const {
-  determineRankIdByName
+  determineRankIdByName,
 } = require('../../../helpers/v1.1/battlenet');
 
 /**
@@ -284,7 +284,7 @@ const getPlayerMMR = async (mode, filter, player) => {
       playerId,
     } = player;
     const playerLadders = await getSc2PlayerData('/ladder/summary', player);
-    const extractedPlayerLadderObjects = await playerLadders.allLadderMemberships;
+    const extractedPlayerLadderObjects = await playerLadders.showCaseEntries;
     const filteredPlayerLadders = await filterLaddersByMode(extractedPlayerLadderObjects, mode);
 
     const filteredLadderIds = await extractLadderIds(filteredPlayerLadders);
