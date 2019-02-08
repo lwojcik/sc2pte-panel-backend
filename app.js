@@ -68,7 +68,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,channelId,server,playerId,region,regionId,realmId,name,token');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,channelId,regionId,realmId,playerId,token');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
