@@ -1,47 +1,37 @@
 {
-  "name": "sc2profile-twitch-extension-api",
-  "version": "1.1.0",
-  "description": "API for StarCraft II Profile Twitch Extension",
+  "name": "sc2pte-backend",
+  "version": "1.2.0",
+  "description": "StarCraft II Profile Twitch Extension (SC2PTE) - backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/lukemsc/sc2profile-twitch-extension-api.git"
+    "url": "git+https://github.com/lukemnet/sc2pte-backend.git"
   },
   "keywords": [
     "starcraft2",
     "sc2",
     "twitch",
+    "twitchtv",
     "extension",
-    "api"
+    "api",
+    "ebs",
+    "backend"
   ],
   "author": "Łukasz Wójcik",
   "license": "MIT",
-  "homepage": "https://github.com/lukemsc/sc2profile-twitch-extension-api",
+  "bugs": {
+    "url": "https://github.com/lukemnet/sc2pte-backend/issues"
+  },
+  "homepage": "https://github.com/lukemnet/sc2pte-backend#readme",
   "dependencies": {
-    "apicache": "1.2.3",
-    "body-parser": "1.18.3",
-    "compression": "1.7.3",
-    "diskdb": "0.1.17",
-    "dotenv": "6.1.0",
     "express": "4.16.4",
-    "helmet": "3.15.0",
-    "jsonwebtoken": "8.4.0",
-    "mongoose": "5.3.12",
-    "morgan": "1.9.1",
-    "node-fetch": "2.3.0",
-    "winston": "3.1.0",
-    "winston-daily-rotate-file": "3.5.1"
+    "typescript": "3.3.3333"
   },
   "devDependencies": {
-    "chai": "4.2.0",
-    "eslint": "5.9.0",
-    "eslint-config-airbnb-base": "13.1.0",
-    "eslint-plugin-import": "2.14.0",
-    "eslint-plugin-node": "8.0.0",
-    "eslint-plugin-promise": "4.0.1",
-    "mocha": "5.2.0"
+    "@types/express": "4.16.1"
   }
 }
