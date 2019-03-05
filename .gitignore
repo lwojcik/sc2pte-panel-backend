@@ -55,3 +55,8 @@ src/*.js
 
 # generated docs
 docs/
+
+# node dev config
+.node-dev.json
+
+.vscode/*
