@@ -4,11 +4,11 @@ import fp from "fastify-plugin";
 
 export default fp(async (server, {/*opts*/}, next) => {
   server.route({
-    url: "/status",
+    url: "/config",
     logLevel: "warn",
     method: ["GET", "HEAD"],
     handler: async ({}, reply) => {
-      return reply.send({ date: new Date(), status: "ok" });
+      return reply.send({ date: new Date(), status: "/config" });
     }
   });
   next();

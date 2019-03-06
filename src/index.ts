@@ -1,26 +1,34 @@
+require('dotenv').config();
 import fastify from "fastify";
+const fastifyBlipp = require("fastify-blipp"); // no type definitions here :-(
 import { Server, IncomingMessage, ServerResponse } from "http";
-// import * as config from "config";
+
+import appConfig from './config/shared/app';
+import dbConfig from './config/shared/database';
+
 import statusRoutes from "./modules/routes/status";
-import vehiclesRoutes from "./modules/routes/vehicles";
-import errorThrowerRoutes from "./modules/routes/error-thrower";
-// import db from "./modules/db";
+import viewerRoutes from "./modules/routes/viewer";
+import configRoutes from "./modules/routes/config";
+
+import db from "./modules/db";
 
 const server: fastify.FastifyInstance<
   Server,
   IncomingMessage,
   ServerResponse
-> = fastify({logger:true});
+> = fastify({
+  logger:true
+});
 
-server.register(require("fastify-blipp"));
-// server.register(db, config.get('db'));
-server.register(vehiclesRoutes);
+server.register(fastifyBlipp);
+server.register(db, dbConfig.connectionString);
 server.register(statusRoutes);
-server.register(errorThrowerRoutes);
+server.register(configRoutes);
+server.register(viewerRoutes);
 
 const start = async () => {
   try {
-    await server.listen(8884, "0.0.0.0");
+    await server.listen(appConfig.port);
     server.blipp();
   } catch (err) {
     console.log(err);
