@@ -4,13 +4,13 @@ const fastifyBlipp = require("fastify-blipp"); // no type definitions here :-(
 import { Server, IncomingMessage, ServerResponse } from "http";
 
 import appConfig from './config/shared/app';
-import dbConfig from './config/shared/database';
+// import dbConfig from './config/shared/database';
 
 import statusRoutes from "./modules/routes/status";
 import viewerRoutes from "./modules/routes/viewer";
 import configRoutes from "./modules/routes/config";
 
-import db from "./modules/db";
+// import db from "./modules/db";
 
 const server: fastify.FastifyInstance<
   Server,
@@ -21,7 +21,7 @@ const server: fastify.FastifyInstance<
 });
 
 server.register(fastifyBlipp);
-server.register(db, dbConfig.connectionString);
+// server.register(db, dbConfig.connectionString);
 server.register(statusRoutes);
 server.register(configRoutes);
 server.register(viewerRoutes);
