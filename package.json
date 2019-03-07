@@ -39,6 +39,7 @@
     "fastify-auth": "0.4.0",
     "fastify-blipp": "1.2.1",
     "fastify-boom": "0.1.0",
+    "fastify-caching": "5.0.0",
     "fastify-compress": "0.8.1",
     "fastify-cors": "2.1.2",
     "fastify-env": "0.6.2",
