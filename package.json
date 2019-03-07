@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/lukemnet/sc2pte-backend#readme",
   "dependencies": {
+    "dotenv": "6.2.0",
     "fastify": "2.0.1",
     "fastify-auth": "0.4.0",
     "fastify-blipp": "1.2.1",
@@ -42,17 +43,17 @@
     "fastify-caching": "5.0.0",
     "fastify-compress": "0.8.1",
     "fastify-cors": "2.1.2",
-    "fastify-env": "0.6.2",
-    "fastify-fast-helmet": "0.3.0",
-    "fastify-graceful-shutdown": "2.0.0",
     "fastify-healthcheck": "2.0.0",
+    "fastify-helmet": "3.0.0",
     "fastify-jwt": "0.9.3",
-    "fastify-mongodb": "1.0.1",
     "fastify-plugin": "1.5.0",
-    "fastify-rate-limit": "2.1.0"
+    "fastify-rate-limit": "2.1.0",
+    "mongoose": "5.4.17"
   },
   "devDependencies": {
+    "@types/fastify-rate-limit": "2.0.0",
     "@types/jest": "24.0.9",
+    "@types/mongoose": "5.3.21",
     "@types/node": "11.10.4",
     "fastify-sensible": "^2.0.1",
     "jest": "24.1.0",

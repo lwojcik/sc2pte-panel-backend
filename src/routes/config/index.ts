@@ -6,7 +6,7 @@ export default fp(async (server, {/*opts*/}, next) => {
   server.route({
     url: "/config",
     logLevel: "warn",
-    method: ["GET", "HEAD"],
+    method: ["GET"],
     handler: async ({}, reply) => {
       return reply.send({ date: new Date(), status: "/config" });
     }

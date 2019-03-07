@@ -1,16 +1,23 @@
 require('dotenv').config();
 import fastify from "fastify";
-const fastifyBlipp = require("fastify-blipp"); // no type definitions here :-(
 import { Server, IncomingMessage, ServerResponse } from "http";
-
+import cors from 'fastify-cors';
+import rateLimit from 'fastify-rate-limit';
 import appConfig from './config/shared/app';
-// import dbConfig from './config/shared/database';
+import dbConfig from './config/shared/database';
+// import twitchConfig from './config/shared/api/twitch';
+import viewerRoutes from "./routes/viewer";
+import configRoutes from "./routes/config";
+import db from "./modules/db";
 
-import statusRoutes from "./modules/routes/status";
-import viewerRoutes from "./modules/routes/viewer";
-import configRoutes from "./modules/routes/config";
+/* Imports without type definitions */
 
-// import db from "./modules/db";
+const blipp = require("fastify-blipp");
+const healthcheck = require('fastify-healthcheck');
+const compression = require('fastify-compress');
+const helmet = require('fastify-helmet');
+
+/* Server instance */
 
 const server: fastify.FastifyInstance<
   Server,
@@ -20,11 +27,36 @@ const server: fastify.FastifyInstance<
   logger:true
 });
 
-server.register(fastifyBlipp);
-// server.register(db, dbConfig.connectionString);
-server.register(statusRoutes);
+/* Plugins */
+
+server.register(compression);
+server.register(blipp);
+server.register(cors, {
+  origin: '*',
+  methods: [ 'GET', 'POST' ],
+  credentials: true,
+  allowedHeaders: [
+    'X-Requested-With',
+    'content-type',
+    'channelId',
+    'regionId',
+    'realmId',
+    'playerId',
+    'selectedView',
+    'token'
+  ],
+});
+server.register(helmet);
+server.register(db, { uri: dbConfig.connectionString });
+server.register(healthcheck, { healthcheckUrl: '/status' });
+server.register(rateLimit, { max: 100 /* per minute */ });
+
+/* Routes */
+
 server.register(configRoutes);
 server.register(viewerRoutes);
+
+/* Server invocation */
 
 const start = async () => {
   try {
@@ -37,11 +69,15 @@ const start = async () => {
   }
 };
 
+/* Exception handling */
+
 process.on("uncaughtException", error => {
   console.error(error);
 });
 process.on("unhandledRejection", error => {
   console.error(error);
 });
+
+/* Here we go */
 
 start();
