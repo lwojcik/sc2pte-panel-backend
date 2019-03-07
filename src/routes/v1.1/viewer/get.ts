@@ -2,13 +2,13 @@ import fastify from 'fastify';
 import { Server, IncomingMessage, ServerResponse } from "http";
 import fp from "fastify-plugin";
 
-export default fp(async (server, {/*opts*/}, next) => {
+export default fp(async (server, {}, next) => {
   server.route({
-    url: "/config",
+    url: "/v1.1/viewer",
     logLevel: "warn",
-    method: ["GET"],
+    method: "GET",
     handler: async ({}, reply) => {
-      return reply.send({ date: new Date(), status: "/config" });
+      return reply.send({ date: new Date(), status: "/v1.1/viewer" });
     }
   });
   next();

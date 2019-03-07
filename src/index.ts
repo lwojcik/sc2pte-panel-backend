@@ -3,12 +3,17 @@ import fastify from "fastify";
 import { Server, IncomingMessage, ServerResponse } from "http";
 import cors from 'fastify-cors';
 import rateLimit from 'fastify-rate-limit';
+
 import appConfig from './config/shared/app';
 import dbConfig from './config/shared/database';
-// import twitchConfig from './config/shared/api/twitch';
-import viewerRoutes from "./routes/viewer";
-import configRoutes from "./routes/config";
+import twitchConfig from './config/shared/api/twitch';
+
+import getViewerRoutes from "./routes/v1.1/viewer/get";
+import saveConfigRoutes from "./routes/v1.1/config/save";
+import getConfigRoutes from "./routes/v1.1/config/get";
+
 import db from "./modules/db";
+
 
 /* Imports without type definitions */
 
@@ -16,6 +21,9 @@ const blipp = require("fastify-blipp");
 const healthcheck = require('fastify-healthcheck');
 const compression = require('fastify-compress');
 const helmet = require('fastify-helmet');
+const sensible = require('fastify-sensible');
+const auth = require('fastify-auth');
+const jwt = require('fastify-jwt');
 
 /* Server instance */
 
@@ -24,7 +32,7 @@ const server: fastify.FastifyInstance<
   IncomingMessage,
   ServerResponse
 > = fastify({
-  logger:true
+  logger: true
 });
 
 /* Plugins */
@@ -43,18 +51,24 @@ server.register(cors, {
     'realmId',
     'playerId',
     'selectedView',
-    'token'
+    'token',
   ],
 });
 server.register(helmet);
 server.register(db, { uri: dbConfig.connectionString });
 server.register(healthcheck, { healthcheckUrl: '/status' });
 server.register(rateLimit, { max: 100 /* per minute */ });
+server.register(sensible);
+server.register(auth);
+server.register(jwt, {
+  secret: twitchConfig.sharedSecret,
+});
 
 /* Routes */
 
-server.register(configRoutes);
-server.register(viewerRoutes);
+server.register(getViewerRoutes);
+server.register(getConfigRoutes);
+server.register(saveConfigRoutes);
 
 /* Server invocation */
 
@@ -78,6 +92,6 @@ process.on("unhandledRejection", error => {
   console.error(error);
 });
 
-/* Here we go */
+/* Here we go! */
 
 start();
