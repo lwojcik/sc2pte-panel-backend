@@ -6,7 +6,7 @@ import rateLimit from 'fastify-rate-limit';
 
 import appConfig from './config/shared/app';
 import dbConfig from './config/shared/database';
-import twitchConfig from './config/shared/api/twitch';
+// import twitchConfig from './config/shared/api/twitch';
 
 import getViewerRoutes from "./routes/v1.1/viewer/get";
 import saveConfigRoutes from "./routes/v1.1/config/save";
