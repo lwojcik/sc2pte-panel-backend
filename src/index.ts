@@ -23,7 +23,6 @@ const compression = require('fastify-compress');
 const helmet = require('fastify-helmet');
 const sensible = require('fastify-sensible');
 const auth = require('fastify-auth');
-const jwt = require('fastify-jwt');
 
 /* Server instance */
 
@@ -60,9 +59,6 @@ server.register(healthcheck, { healthcheckUrl: '/status' });
 server.register(rateLimit, { max: 100 /* per minute */ });
 server.register(sensible);
 server.register(auth);
-server.register(jwt, {
-  secret: twitchConfig.sharedSecret,
-});
 
 /* Routes */
 

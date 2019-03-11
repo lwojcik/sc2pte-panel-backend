@@ -11,9 +11,6 @@ declare module "fastify" {
   > {
     blipp(): void;
     readonly db: Db;
-    jwtVerify(): void;
     auth(authFns:Function[]): fastify.FastifyMiddleware<HTTPServer, HttpRequest, HttpResponse>[];
-    verifyJWTandLevel(request:IncomingMessage, reply:ServerResponse, done: Function): void | Function;
-    verifyUserAndPassword(request:IncomingMessage, reply:ServerResponse, done: Function): void | Function;
   }
 }
