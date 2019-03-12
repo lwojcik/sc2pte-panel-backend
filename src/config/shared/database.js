@@ -7,12 +7,8 @@
 
 const { env } = process;
 
-interface DbConfig {
-  connectionString: string;
-}
-
-const dbConfig = {} as DbConfig;
+const dbConfig = {};
 
 dbConfig.connectionString = env.API_MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017/sc2profile-twitch-extension';
 
-export default dbConfig;
+module.exports = dbConfig;

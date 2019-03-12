@@ -5,22 +5,9 @@
  * @since   2018-11-17
  */
 
-interface BnetConfig {
-  servers: string[];
-  api: {
-    url: {
-      us: string;
-      eu: string;
-      kr: string;
-      tw: string;
-      cn: string;
-    };
-    key: string;
-    secret: string;
-  }
-}
+const { env } = process;
 
-const bnetConfig = {} as BnetConfig;
+const bnetConfig = {};
 
 /** Battle.net API server identifiers */
 bnetConfig.servers = ['eu', 'kr', 'us'];
@@ -64,4 +51,4 @@ bnetConfig.getAccessTokenUri.us = 'https://us.battle.net';
 /** Battle.net API URL for getting access token from China */
 bnetConfig.getAccessTokenUri.cn = 'https://www.battlenet.com.cn';
 
-export default bnetConfig;
+module.exports = bnetConfig;

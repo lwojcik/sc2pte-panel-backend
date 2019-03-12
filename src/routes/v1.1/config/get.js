@@ -1,8 +1,6 @@
-import fastify from 'fastify';
-import { Server, IncomingMessage, ServerResponse } from "http";
-import fp from "fastify-plugin";
+const fp = require("fastify-plugin");
 
-export default fp(async (server, {/*opts*/}, next) => {
+module.exports = fp(async (server, opts, next) => {
   // const opts = {
   //   schema: {
   //     response: {
@@ -22,7 +20,7 @@ export default fp(async (server, {/*opts*/}, next) => {
   //   }
   // }
 
-  server.get('/v1.1/config/get/:channelId', ({/*request*/}, reply) => {
+  server.get('/v1.1/config/get/:channelId', (request, reply) => {
     // const { channelId } = request.params;
     reply.send({
       status: 404,
@@ -31,4 +29,4 @@ export default fp(async (server, {/*opts*/}, next) => {
   });
 
   next();
-}) as fastify.Plugin<Server, IncomingMessage, ServerResponse, {}>;
+});

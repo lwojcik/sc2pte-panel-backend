@@ -1,14 +1,6 @@
-import { Document, Schema, Model, model } from "mongoose";
+const { Schema, model } = require('mongoose');
 
-export interface ChannelConfigDocument extends Document {
-  year: number;
-  name: string;
-  createdDate: Date;
-}
-
-export interface ChannelConfigModel extends ChannelConfigDocument {}
-
-export const ChannelConfigSchema: Schema = new Schema(
+const ChannelConfigSchema = new Schema(
   {
     channelId: {
       type: Number,
@@ -33,16 +25,18 @@ export const ChannelConfigSchema: Schema = new Schema(
       type: String,
       enum: ['summary', 'detailed'],
       required: [true, 'selectedView required'],
-    }
+    },
   },
-  { collection: "channelConfigs" }
+  { collection: 'channelConfigs' },
 );
 
-ChannelConfigSchema.pre<ChannelConfigDocument>("save", async function() {
+ChannelConfigSchema.pre('save', async () => {
   this.createdDate = new Date();
 });
 
-export const ChannelConfig: Model<ChannelConfigModel> = model<ChannelConfigModel>(
-  "ChannelConfig",
-  ChannelConfigSchema
+const ChannelConfig = model(
+  'ChannelConfig',
+  ChannelConfigSchema,
 );
+
+module.exports = ChannelConfig;
