@@ -4,7 +4,7 @@
   "description": "StarCraft II Profile Twitch Extension (SC2PTE) - backend",
   "main": "src/index.js",
   "scripts": {
-    "proxy": "local-ssl-proxy"
+    "dev": "nodemon start | pino-pretty"
   },
   "repository": {
     "type": "git",
@@ -27,17 +27,21 @@
   },
   "homepage": "https://github.com/lukemnet/sc2pte-backend#readme",
   "dependencies": {
+    "atob": "2.1.2",
+    "btoa": "1.2.1",
     "dotenv": "6.2.0",
     "fastify": "2.0.1",
     "fastify-auth": "0.4.0",
     "fastify-blipp": "1.2.1",
     "fastify-boom": "0.1.0",
     "fastify-caching": "5.0.0",
+    "fastify-chalk": "0.1.2",
     "fastify-compress": "0.8.1",
     "fastify-cors": "2.1.2",
     "fastify-healthcheck": "2.0.0",
     "fastify-helmet": "3.0.0",
     "fastify-jwt": "0.9.3",
+    "fastify-log": "1.0.3",
     "fastify-plugin": "1.5.0",
     "fastify-rate-limit": "2.1.0",
     "fastify-sensible": "2.0.1",
@@ -48,6 +52,8 @@
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-node": "8.0.1",
-    "eslint-plugin-promise": "4.0.1"
+    "eslint-plugin-promise": "4.0.1",
+    "nodemon": "1.18.10",
+    "pino-pretty": "2.5.0"
   }
 }

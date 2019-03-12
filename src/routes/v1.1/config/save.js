@@ -29,45 +29,55 @@ module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/config/save/:channelId',
     method: 'POST',
-    preHandler: (request, reply, done) => {
-      server.log.info('prehandler!');
-      // const { channelId } = request.params;
-      // const { token } = request.headers;
-      done();
-      // try {
-      //   const secret = twitchConfig.sharedSecret;
-      //   const payload = jsonwebtoken.verify(token, secret);
-      //   console.log(payload);
-      //   done();
-      // } catch (error) {
-      //   reply.send({
-      //     status: 400,
-      //     message: 'Bad request',
-      //   });
-      // }
+    // preHandler: (request, reply, done) => {
+    //   try {
+    //     server.info('prehandler');
+    //     const { token } = request.headers;
+    //     console.log(token); // eslint-disable-line
+    //     const decodedToken = server.jwt.verify(token);
+    //     console.log(decodedToken); // eslint-disable-line
+    //     done();
+    //   } catch (error) {
+    //     server.log.error(error);
+    //     reply.badRequest();
+    //   }
+    //   // const { channelId } = request.params;
+    //   // const { token } = request.headers;
 
-      // console.log(request.headers.token);
-      // console.log(twitchConfig.sharedSecret);
-      // const { channelId } = request.params;
-      // const { token } = request.headers;
-      // const payload = <TwitchPayload>jsonwebtoken.verify(token, twitchConfig.sharedSecret);
-      // const isTokenValid = jwtTools.validateToken(token, channelId, "broadcaster");
-      // const sufficientPermissions =
-      // jwtTools.validateTokenPermissions(payload, channelId, "broadcaster");
+    //   // try {
+    //   //   const secret = twitchConfig.sharedSecret;
+    //   //   const payload = jsonwebtoken.verify(token, secret);
+    //   //   console.log(payload);
+    //   //   done();
+    //   // } catch (error) {
+    //   //   reply.send({
+    //   //     status: 400,
+    //   //     message: 'Bad request',
+    //   //   });
+    //   // }
 
-      // if (isTokenValid && sufficientPermissions) {
-      //   console.log('all good');
-      //   done();
-      // } else {
-      //   reply.send({
-      //     status: 400,
-      //     message: 'Bad request'
-      //   });
-      // }
-    },
+    //   // console.log(request.headers.token);
+    //   // console.log(twitchConfig.sharedSecret);
+    //   // const { channelId } = request.params;
+    //   // const { token } = request.headers;
+    //   // const payload = <TwitchPayload>jsonwebtoken.verify(token, twitchConfig.sharedSecret);
+    //   // const isTokenValid = jwtTools.validateToken(token, channelId, "broadcaster");
+    //   // const sufficientPermissions =
+    //   // jwtTools.validateTokenPermissions(payload, channelId, "broadcaster");
+
+    //   // if (isTokenValid && sufficientPermissions) {
+    //   //   console.log('all good');
+    //   //   done();
+    //   // } else {
+    //   //   reply.send({
+    //   //     status: 400,
+    //   //     message: 'Bad request'
+    //   //   });
+    //   // }
+    // },
     handler: async (request, reply) => {
       // save config
-      server.log.info('handler!');
+      server.info('handler!');
       // const { channelId } = request.params;
       // const {
       //   regionid,
