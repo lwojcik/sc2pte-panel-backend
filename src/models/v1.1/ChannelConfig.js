@@ -1,42 +1,52 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const ChannelConfigSchema = new Schema(
-  {
-    channelId: {
-      type: Number,
-      required: [true, 'channelId required'],
-      unique: true,
-    },
-    regionId: {
-      type: Number,
-      enum: [1, 2, 3, 5],
-      required: [true, 'regionId required'],
-    },
-    realmId: {
-      type: Number,
-      enum: [1, 2],
-      required: [true, 'realmId required'],
-    },
-    playerId: {
-      type: Number,
-      required: [true, 'playerId required'],
-    },
-    selectedView: {
-      type: String,
-      enum: ['summary', 'detailed'],
-      required: [true, 'selectedView required'],
-    },
+const { Schema, model } = mongoose;
+
+const ChannelConfigSchema = new Schema({
+  channelId: {
+    type: Number,
+    required: [true, 'channelId required'],
+    unique: true,
+    index: true,
   },
-  { collection: 'channelConfigs' },
-);
-
-ChannelConfigSchema.pre('save', async () => {
-  this.createdDate = new Date();
+  regionId: {
+    type: Number,
+    enum: [1, 2, 3, 5],
+    required: [true, 'regionId required'],
+  },
+  realmId: {
+    type: Number,
+    enum: [1, 2],
+    required: [true, 'realmId required'],
+  },
+  playerId: {
+    type: Number,
+    required: [true, 'playerId required'],
+  },
+  selectedView: {
+    type: String,
+    trim: true,
+    enum: ['summary', 'detailed'],
+    required: [true, 'selectedView required'],
+  },
+  createdAt: {
+    type: Date,
+  },
+  updatedAt: {
+    type: Date,
+  },
+},
+{
+  timestamps: true,
 });
 
-const ChannelConfig = model(
-  'ChannelConfig',
-  ChannelConfigSchema,
-);
+ChannelConfigSchema.pre('save', (next) => {
+  const now = new Date();
+  this.updatedAt = now;
+  if (!this.created_at) {
+    this.createdAt = now;
+  }
+  next();
+});
 
-module.exports = ChannelConfig;
+module.exports = model('ChannelConfig', ChannelConfigSchema);

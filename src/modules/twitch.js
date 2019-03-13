@@ -5,14 +5,7 @@
  * @since   2019-03-12
  */
 
-interface ConfigObject {
-  regionId: number | string,
-  realmId: number | string,
-  playerId: number | string,
-  selectedView: string | string,
-}
-
-const checkIfConfigIsComplete = (configObject:ConfigObject) => {
+const checkIfConfigIsComplete = (configObject) => {
   const {
     regionId,
     realmId,
@@ -76,17 +69,17 @@ const saveConfigObjectInDatabase = configObject => new Promise((resolve, reject)
 
 const saveConfig = async (configObject) => {
   try {
-      const savedConfig = await saveConfigObjectInDatabase(configObject);
-      if (savedConfig._id) { // eslint-disable-line no-underscore-dangle
-        return {
-          status: 201,
-          message: 'Player config updated successfully',
-        };
-      }
+    const savedConfig = await saveConfigObjectInDatabase(configObject);
+    if (savedConfig._id) { // eslint-disable-line no-underscore-dangle
       return {
-        status: 500,
-        message: 'Error while saving config. Config or token invalid.',
+        status: 201,
+        message: 'Player config updated successfully',
       };
+    }
+    return {
+      status: 500,
+      message: 'Error while saving config. Config or token invalid.',
+    };
   } catch (error) {
     return {
       status: 500,

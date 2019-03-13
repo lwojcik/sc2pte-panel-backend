@@ -12,6 +12,6 @@ const twitchConfig = {};
 /** Twitch Extension Client ID */
 twitchConfig.clientId = env.API_TWITCH_EXTENSION_CLIENT_ID;
 /** Twitch Extension shared secret key */
-twitchConfig.sharedSecret = Buffer.from(env.API_TWITCH_EXTENSION_SHARED_SECRET, 'base64');
+twitchConfig.sharedSecret = env.API_TWITCH_EXTENSION_SHARED_SECRET;
 
 module.exports = twitchConfig;

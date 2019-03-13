@@ -42,7 +42,8 @@
     "fastify-plugin": "1.5.0",
     "fastify-rate-limit": "2.1.0",
     "fastify-sensible": "2.0.1",
-    "mongoose": "5.4.17"
+    "jsonwebtoken": "8.5.0",
+    "mongoose": "5.4.19"
   },
   "devDependencies": {
     "eslint": "5.15.1",
