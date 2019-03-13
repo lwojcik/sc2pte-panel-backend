@@ -48,7 +48,7 @@ module.exports = fp(async (server, opts, next) => {
         });
       } catch (error) {
         server.log.error(error);
-        return reply.send(500);
+        return reply.badRequest('Bad request');
       }
     },
   });
