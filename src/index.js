@@ -1,6 +1,4 @@
 require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
 const fastify = require('fastify');
 const cors = require('fastify-cors');
 const rateLimit = require('fastify-rate-limit');
@@ -10,6 +8,8 @@ const compression = require('fastify-compress');
 const helmet = require('fastify-helmet');
 const sensible = require('fastify-sensible');
 const auth = require('fastify-auth');
+const noIcon = require('fastify-no-icon');
+const tlsKeygen = require('fastify-tls-keygen');
 
 const twitchExt = require('./plugins/twitchExt');
 
@@ -29,10 +29,7 @@ const { env } = process;
 
 const serverOptions = {
   logger: env.NODE_ENV === 'development',
-  https: env.API_HOST_PROTOCOL === 'https' ? {
-    key: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'server.key')),
-    cert: fs.readFileSync(path.join(__dirname, '..', 'ssl', 'server.crt')),
-  } : false,
+  https: env.API_HOST_PROTOCOL === 'https',
 };
 
 const server = fastify(serverOptions);
@@ -65,6 +62,11 @@ server.register(auth);
 server.register(twitchExt, {
   secret: twitchConfig.sharedSecret,
 });
+server.register(noIcon);
+
+if (env.API_HOST_PROTOCOL === 'https') {
+  server.register(tlsKeygen);
+}
 
 /* Routes */
 
