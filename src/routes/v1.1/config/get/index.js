@@ -34,7 +34,7 @@ module.exports = fp(async (server, opts, next) => {
             realmId,
             playerId,
             selectedView } = channelConfig._doc; // eslint-disable-line
-          
+
           return reply.code(200).send({
             status: 200,
             message: 'Config found',
