@@ -56,5 +56,4 @@ const schema = {
   response: responseJsonSchema,
 };
 
-
 module.exports = schema;
