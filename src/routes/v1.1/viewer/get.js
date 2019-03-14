@@ -23,6 +23,7 @@ module.exports = fp(async (server, opts, next) => {
         const channelConfigObject = await server.db.models.ChannelConfig.findOne({ channelId });
         const sampleView = {
           status: 200,
+          selectedView: 'summary',
           player: {
             server: 'us',
             name: 'TOGrizzly',
@@ -86,7 +87,7 @@ module.exports = fp(async (server, opts, next) => {
           return reply.code(200).send({
             status: 200,
             message: 'Config found',
-            ...sampleView, // eslint-disable-line
+            ...sampleView,
           });
         }
 
