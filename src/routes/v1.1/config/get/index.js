@@ -29,14 +29,20 @@ module.exports = fp(async (server, opts, next) => {
         const channelConfig = await server.db.models.ChannelConfig.findOne({ channelId });
 
         if (channelConfig) {
+          const {
+            regionId,
+            realmId,
+            playerId,
+            selectedView } = channelConfig._doc; // eslint-disable-line
+          
           return reply.code(200).send({
             status: 200,
             message: 'Config found',
             channelId,
-            regionId: channelConfig._doc.regionId, // eslint-disable-line
-            realmId: channelConfig._doc.realmId, // eslint-disable-line
-            playerId: channelConfig._doc.playerId, // eslint-disable-line
-            selectedView: channelConfig._doc.selectedView, // eslint-disable-line
+            regionId,
+            realmId,
+            playerId,
+            selectedView,
           });
         }
 
