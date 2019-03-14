@@ -1,4 +1,5 @@
 const fp = require('fastify-plugin');
+// const Starcaft2API = require('starcraft2-api');
 
 module.exports = fp(async (server, opts, next) => {
   server.route({
@@ -23,6 +24,8 @@ module.exports = fp(async (server, opts, next) => {
         const channelConfig = await server.db.models.ChannelConfig.findOne({ channelId });
 
         if (channelConfig) {
+          // const { regionId, realmId, profileId } = channelConfig;
+          // const profile = sc2api.queryProfile(regionI)
           return reply.code(200).send({
             status: 200,
             message: 'Config found',

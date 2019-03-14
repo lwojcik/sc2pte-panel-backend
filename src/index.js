@@ -12,9 +12,9 @@ const tlsKeygen = require('fastify-tls-keygen');
 
 const twitchExt = require('./plugins/twitchExt');
 
-const appConfig = require('./config/shared/app');
-const dbConfig = require('./config/shared/database');
-const twitchConfig = require('./config/shared/api/twitch');
+const appConfig = require('./config/app');
+const dbConfig = require('./config/database');
+const twitchConfig = require('./config/twitch');
 
 const getViewerRoutes = require('./routes/v1.1/viewer/get');
 const saveConfigRoutes = require('./routes/v1.1/config/save');
@@ -64,6 +64,7 @@ server.register(rateLimit, {
 });
 server.register(sensible);
 server.register(twitchExt, {
+  disable: env.NODE_ENV === 'development',
   secret: twitchConfig.sharedSecret,
 });
 server.register(noIcon);
@@ -85,7 +86,7 @@ const start = async () => {
     await server.listen(appConfig.port);
     server.blipp();
   } catch (err) {
-    server.error(err);
+    server.log.error(err);
     process.exit(1);
   }
 };
