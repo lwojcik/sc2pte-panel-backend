@@ -1,9 +1,12 @@
 const fp = require('fastify-plugin');
 
+const schema = require('./schema');
+
 module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/config/get/:channelId',
     method: 'GET',
+    schema,
     preHandler: (request, reply, done) => {
       const { channelId } = request.params;
       const { token } = request.headers;
@@ -13,7 +16,10 @@ module.exports = fp(async (server, opts, next) => {
         done();
       } else {
         server.log.error('invalid request');
-        reply.badRequest();
+        reply.code(400).send({
+          status: 400,
+          message: 'Bad request',
+        });
       }
     },
     handler: async (request, reply) => {
@@ -26,7 +32,11 @@ module.exports = fp(async (server, opts, next) => {
           return reply.code(200).send({
             status: 200,
             message: 'Config found',
-            ...channelConfig._doc, // eslint-disable-line
+            channelId,
+            regionId: channelConfig._doc.regionId, // eslint-disable-line
+            realmId: channelConfig._doc.realmId, // eslint-disable-line
+            playerId: channelConfig._doc.playerId, // eslint-disable-line
+            selectedView: channelConfig._doc.selectedView, // eslint-disable-line
           });
         }
 
@@ -36,7 +46,10 @@ module.exports = fp(async (server, opts, next) => {
         });
       } catch (error) {
         server.log.error(error);
-        return reply.badRequest('Bad request');
+        return reply.code(400).send({
+          status: 400,
+          message: 'Bad request',
+        });
       }
     },
   });

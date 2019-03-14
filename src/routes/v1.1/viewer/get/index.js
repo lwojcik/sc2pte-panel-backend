@@ -1,9 +1,12 @@
 const fp = require('fastify-plugin');
 
+const schema = require('./schema');
+
 module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/viewer/get/:channelId',
     method: 'GET',
+    schema,
     preHandler: (request, reply, done) => {
       const { channelId } = request.params;
       const { token } = request.headers;
@@ -39,7 +42,7 @@ module.exports = fp(async (server, opts, next) => {
               totalLadders: 1,
               topRankId: 4,
               topRank: 'DIAMOND',
-              topTier: 1,
+              topPosition: 1,
               topMMR: 3744,
               wins: 131,
               losses: 124,
@@ -48,7 +51,7 @@ module.exports = fp(async (server, opts, next) => {
               totalLadders: 0,
               topRankId: -1,
               topRank: '',
-              topTier: 1,
+              topPosition: 1,
               topMMR: 0,
               wins: 0,
               losses: 0,
@@ -57,7 +60,7 @@ module.exports = fp(async (server, opts, next) => {
               totalLadders: 2,
               topRankId: 4,
               topRank: 'DIAMOND',
-              topTier: 1,
+              topPosition: 1,
               topMMR: 3073,
               wins: 7,
               losses: 18,
@@ -66,7 +69,7 @@ module.exports = fp(async (server, opts, next) => {
               totalLadders: 1,
               topRankId: 1,
               topRank: 'SILVER',
-              topTier: 1,
+              topPosition: 1,
               topMMR: 2876,
               wins: 6,
               losses: 3,
@@ -75,7 +78,7 @@ module.exports = fp(async (server, opts, next) => {
               totalLadders: 0,
               topRankId: -1,
               topRank: '',
-              topTier: 1,
+              topPosition: 1,
               topMMR: 0,
               wins: 0,
               losses: 0,
@@ -97,7 +100,10 @@ module.exports = fp(async (server, opts, next) => {
         });
       } catch (error) {
         server.log.error(error);
-        return reply.badRequest('Bad request');
+        return reply.code(400).send({
+          status: 400,
+          message: 'Bad request',
+        });
       }
     },
   });

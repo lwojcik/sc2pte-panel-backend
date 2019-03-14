@@ -47,7 +47,7 @@ server.register(cors, {
     'channelId',
     'regionId',
     'realmId',
-    'playerId',
+    'profileId',
     'selectedView',
     'token',
   ],
@@ -64,7 +64,7 @@ server.register(rateLimit, {
 });
 server.register(sensible);
 server.register(twitchExt, {
-  disable: env.NODE_ENV === 'development',
+  development: env.NODE_ENV === 'development',
   secret: twitchConfig.sharedSecret,
 });
 server.register(noIcon);

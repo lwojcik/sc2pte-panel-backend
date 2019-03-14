@@ -1,9 +1,12 @@
 const fp = require('fastify-plugin');
 
+const schema = require('./schema');
+
 module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/config/save/:channelId',
     method: 'POST',
+    schema,
     preHandler: (request, reply, done) => {
       const { channelId } = request.params;
       const { token } = request.headers;
@@ -13,7 +16,10 @@ module.exports = fp(async (server, opts, next) => {
         done();
       } else {
         server.log.error('invalid request');
-        reply.badRequest();
+        reply.code(400).send({
+          status: 400,
+          message: 'Bad request',
+        });
       }
     },
     handler: async (request, reply) => {
@@ -30,7 +36,6 @@ module.exports = fp(async (server, opts, next) => {
         await server.db.models.ChannelConfig.findOneAndUpdate(
           { channelId },
           {
-            channelId,
             regionId: regionid,
             realmId: realmid,
             playerId: playerid,
@@ -48,7 +53,10 @@ module.exports = fp(async (server, opts, next) => {
         });
       } catch (error) {
         server.log.error(error);
-        return reply.badRequest('Bad request');
+        return reply.code(400).send({
+          status: 400,
+          message: 'Bad request',
+        });
       }
     },
   });
