@@ -7,7 +7,6 @@ const healthcheck = require('fastify-healthcheck');
 const compression = require('fastify-compress');
 const helmet = require('fastify-helmet');
 const sensible = require('fastify-sensible');
-const auth = require('fastify-auth');
 const noIcon = require('fastify-no-icon');
 const tlsKeygen = require('fastify-tls-keygen');
 
@@ -56,9 +55,14 @@ server.register(cors, {
 server.register(helmet);
 server.register(db, { uri: dbConfig.connectionString });
 server.register(healthcheck, { healthcheckUrl: '/status' });
-server.register(rateLimit, { max: 100, timeWindow: '1 minute' });
+server.register(rateLimit, {
+  max: 100,
+  timeWindow: '1 minute',
+  cache: 5000,
+  whitelist: ['127.0.0.1'],
+  skipOnError: true,
+});
 server.register(sensible);
-server.register(auth);
 server.register(twitchExt, {
   secret: twitchConfig.sharedSecret,
 });
