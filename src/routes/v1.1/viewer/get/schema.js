@@ -14,6 +14,19 @@ const headersJsonSchema = {
   required: ['token'],
 };
 
+const ladderJsonSchema = {
+  type: 'object',
+  properties: {
+    totalLadders: { type: 'number' },
+    topRankId: { type: 'number' },
+    topRank: { type: 'string' },
+    topPosition: { type: 'number' },
+    topMMR: { type: 'number' },
+    wins: { type: 'number' },
+    losses: { type: 'number' },
+  },
+};
+
 const responseJsonSchema = {
   200: {
     type: 'object',
@@ -40,66 +53,11 @@ const responseJsonSchema = {
       ladders: {
         type: 'object',
         properties: {
-          '1v1': {
-            type: 'object',
-            properties: {
-              totalLadders: { type: 'number' },
-              topRankId: { type: 'number' },
-              topRank: { type: 'string' },
-              topPosition: { type: 'number' },
-              topMMR: { type: 'number' },
-              wins: { type: 'number' },
-              losses: { type: 'number' },
-            },
-          },
-          archon: {
-            type: 'object',
-            properties: {
-              totalLadders: { type: 'number' },
-              topRankId: { type: 'number' },
-              topRank: { type: 'string' },
-              topPosition: { type: 'number' },
-              topMMR: { type: 'number' },
-              wins: { type: 'number' },
-              losses: { type: 'number' },
-            },
-          },
-          '2v2': {
-            type: 'object',
-            properties: {
-              totalLadders: { type: 'number' },
-              topRankId: { type: 'number' },
-              topRank: { type: 'string' },
-              topPosition: { type: 'number' },
-              topMMR: { type: 'number' },
-              wins: { type: 'number' },
-              losses: { type: 'number' },
-            },
-          },
-          '3v3': {
-            type: 'object',
-            properties: {
-              totalLadders: { type: 'number' },
-              topRankId: { type: 'number' },
-              topRank: { type: 'string' },
-              topPosition: { type: 'number' },
-              topMMR: { type: 'number' },
-              wins: { type: 'number' },
-              losses: { type: 'number' },
-            },
-          },
-          '4v4': {
-            type: 'object',
-            properties: {
-              totalLadders: { type: 'number' },
-              topRankId: { type: 'number' },
-              topRank: { type: 'string' },
-              topPosition: { type: 'number' },
-              topMMR: { type: 'number' },
-              wins: { type: 'number' },
-              losses: { type: 'number' },
-            },
-          },
+          '1v1': ladderJsonSchema,
+          archon: ladderJsonSchema,
+          '2v2': ladderJsonSchema,
+          '3v3': ladderJsonSchema,
+          '4v4': ladderJsonSchema,
         },
       },
     },
