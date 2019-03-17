@@ -16,7 +16,10 @@ module.exports = fp(async (server, opts, next) => {
         done();
       } else {
         server.log.error('invalid request');
-        reply.badRequest();
+        reply.code(400).send({
+          status: 400,
+          message: 'Bad request',
+        });
       }
     },
     handler: async (request, reply) => {
@@ -24,73 +27,15 @@ module.exports = fp(async (server, opts, next) => {
         const { channelId } = request.params;
 
         const channelConfigObject = await server.db.models.ChannelConfig.findOne({ channelId });
-        const sampleView = {
-          status: 200,
-          selectedView: 'summary',
-          player: {
-            server: 'us',
-            name: 'TOGrizzly',
-            clan: {
-              name: 'Blue Shell',
-              tag: 'BluS',
-            },
-            rank: 'DIAMOND',
-            portrait: 'https://static.starcraft2.com/starport/eadc1041-1c53-4c27-bf45-303ac5c6e33f/portraits/8-26.jpg',
-          },
-          ladders: {
-            '1v1': {
-              totalLadders: 1,
-              topRankId: 4,
-              topRank: 'DIAMOND',
-              topPosition: 1,
-              topMMR: 3744,
-              wins: 131,
-              losses: 124,
-            },
-            archon: {
-              totalLadders: 0,
-              topRankId: -1,
-              topRank: '',
-              topPosition: 1,
-              topMMR: 0,
-              wins: 0,
-              losses: 0,
-            },
-            '2v2': {
-              totalLadders: 2,
-              topRankId: 4,
-              topRank: 'DIAMOND',
-              topPosition: 1,
-              topMMR: 3073,
-              wins: 7,
-              losses: 18,
-            },
-            '3v3': {
-              totalLadders: 1,
-              topRankId: 1,
-              topRank: 'SILVER',
-              topPosition: 1,
-              topMMR: 2876,
-              wins: 6,
-              losses: 3,
-            },
-            '4v4': {
-              totalLadders: 0,
-              topRankId: -1,
-              topRank: '',
-              topPosition: 1,
-              topMMR: 0,
-              wins: 0,
-              losses: 0,
-            },
-          },
-        };
 
-        if (channelConfigObject._doc) { // eslint-disable-line
+        if (channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
+          const channelConfig = channelConfigObject._doc; // eslint-disable-line
+          const viewerData = await server.sc2pte.getViewerData(channelConfig);
+          console.log(viewerData);
           return reply.code(200).send({
             status: 200,
             message: 'Config found',
-            ...sampleView,
+            ...viewerData,
           });
         }
 

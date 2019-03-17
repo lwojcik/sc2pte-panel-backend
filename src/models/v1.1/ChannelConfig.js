@@ -29,6 +29,12 @@ const ChannelConfigSchema = new Schema({
     enum: ['summary', 'detailed'],
     required: [true, 'selectedView required'],
   },
+  language: {
+    type: String,
+    trim: true,
+    enum: ['en', 'es', 'pl', 'ru', 'kr', 'fr', 'it'],
+    required: [true, 'language required'],
+  },
   createdAt: {
     type: Date,
   },

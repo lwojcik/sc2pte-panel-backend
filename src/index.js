@@ -20,7 +20,9 @@ const getViewerRoutes = require('./routes/v1.1/viewer/get');
 const saveConfigRoutes = require('./routes/v1.1/config/save');
 const getConfigRoutes = require('./routes/v1.1/config/get');
 
-const db = require('./modules/db');
+const db = require('./plugins/db');
+
+const sc2pte = require('./plugins/sc2pte');
 
 const { env } = process;
 
@@ -68,6 +70,7 @@ server.register(twitchExt, {
   secret: twitchConfig.sharedSecret,
 });
 server.register(noIcon);
+server.register(sc2pte);
 
 if (env.API_HOST_PROTOCOL === 'https') {
   server.register(tlsKeygen);

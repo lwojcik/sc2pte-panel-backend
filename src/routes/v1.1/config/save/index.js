@@ -31,6 +31,7 @@ module.exports = fp(async (server, opts, next) => {
           realmid,
           playerid,
           selectedview,
+          language,
         } = request.headers;
 
         await server.db.models.ChannelConfig.findOneAndUpdate(
@@ -40,6 +41,7 @@ module.exports = fp(async (server, opts, next) => {
             realmId: realmid,
             playerId: playerid,
             selectedView: selectedview || 'summary',
+            language: language || 'en',
           },
           {
             upsert: true,
