@@ -49,7 +49,7 @@ server.register(cors, {
     'channelId',
     'regionId',
     'realmId',
-    'profileId',
+    'playerId',
     'selectedView',
     'token',
   ],

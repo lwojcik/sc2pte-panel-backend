@@ -1,6 +1,6 @@
 const fp = require('fastify-plugin');
 const { StarCraft2API } = require('starcraft2-api');
-const { BlizzUtils } = require('blizzapi');
+const { BlizzAPI, BlizzUtils } = require('blizzapi');
 const sc2utils = require('../utils/starcraft2');
 const bnetConfig = require('../config/battlenet');
 
@@ -25,7 +25,6 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
           portrait: playerProfile.summary.portrait,
         },
       };
-      console.log(headerObject);
       return headerObject;
     } catch (error) {
       return {
@@ -43,19 +42,28 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
     }
   }
 
-  // async function getLadders(configObject) {
-  //   return configObject;
-  // }
+  async function getLaddersData(configObject) {
+    const { regionId, realmId, playerId } = configObject;
+    const blizzAPI = new BlizzAPI(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
+    const playerLadderIds = await blizzAPI.querySearch(
+      `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/summary`,
+      'allLadderMemberships.ladderId',
+    );
+    console.log(playerLaddersObject);
+    console.log(playerLaddersObject.length);
+    return playerLaddersObject;
+  }
 
   async function getViewerData(configObject) { // eslint-disable-line consistent-return
     console.log(configObject); // eslint-disable-line
     try {
       const header = await getHeader(configObject);
-      // const ladders = await getLadders(configObject);
+      const ladders = await getLaddersData(configObject);
       const response = {
         status: 200,
         selectedView: 'summary',
         ...header,
+        laddero: ladders,
         ladders: {
           '1v1': {
             totalLadders: 1,

@@ -31,7 +31,6 @@ module.exports = fp(async (server, opts, next) => {
         if (channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
           const channelConfig = channelConfigObject._doc; // eslint-disable-line
           const viewerData = await server.sc2pte.getViewerData(channelConfig);
-          console.log(viewerData);
           return reply.code(200).send({
             status: 200,
             message: 'Config found',

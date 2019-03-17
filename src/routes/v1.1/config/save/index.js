@@ -48,7 +48,6 @@ module.exports = fp(async (server, opts, next) => {
             runValidators: true,
           },
         );
-
         return reply.code(201).send({
           status: 201,
           message: 'Player config updated successfully',
