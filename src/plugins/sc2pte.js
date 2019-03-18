@@ -10,7 +10,7 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
   }
 
   function SC2API(regionId) {
-    return new StarCraft2API(regionId, bnetConfig.apiKey, bnetConfig.apiSecret)
+    return new StarCraft2API(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
   }
 
   async function getHeader(configObject) {
