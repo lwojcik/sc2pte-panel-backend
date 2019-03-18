@@ -31,11 +31,21 @@ module.exports = fp(async (server, opts, next) => {
         if (channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
           const channelConfig = channelConfigObject._doc; // eslint-disable-line
           const viewerData = await server.sc2pte.getViewerData(channelConfig);
-          return reply.code(200).send({
+          const responseObject = {
             status: 200,
-            message: 'Config found',
+            message: 'Config found yo',
             ...viewerData,
-          });
+          };
+
+          try {
+            return server.cache.set(channelId, responseObject, 10000, (err) => { // eslint-disable-line
+              if (err) reply.send(err);
+              console.log(responseObject);
+              reply.code(responseObject.status).send(responseObject);
+            });
+          } catch (error) {
+            return reply.send(error);
+          }
         }
 
         return reply.code(404).send({

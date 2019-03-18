@@ -9,12 +9,17 @@ const helmet = require('fastify-helmet');
 const sensible = require('fastify-sensible');
 const noIcon = require('fastify-no-icon');
 const tlsKeygen = require('fastify-tls-keygen');
+const fastifyCaching = require('fastify-caching');
+const fastifyRedis = require('fastify-redis');
+const Redis = require('ioredis');
+const AbstractCache = require('abstract-cache');
 
 const twitchExt = require('./plugins/twitchExt');
 
 const appConfig = require('./config/app');
 const dbConfig = require('./config/database');
 const twitchConfig = require('./config/twitch');
+// const redisConfig = require('./config/redis');
 
 const getViewerRoutes = require('./routes/v1.1/viewer/get');
 const saveConfigRoutes = require('./routes/v1.1/config/save');
@@ -34,6 +39,27 @@ const serverOptions = {
 };
 
 const server = fastify(serverOptions);
+
+/* Caching */
+
+const redisClient = new Redis(6379);
+
+const abcache = new AbstractCache({
+  useAwait: false,
+  driver: {
+    name: 'abstract-cache-redis',
+    options: {
+      client: redisClient,
+    },
+  },
+});
+
+server.register(fastifyRedis, { client: redisClient });
+server.register(fastifyCaching, {
+  cache: abcache,
+  expiresIn: 300,
+  cacheSegment: 'sc2pte',
+});
 
 /* Plugins */
 
@@ -61,7 +87,8 @@ server.register(rateLimit, {
   max: 100,
   timeWindow: '1 minute',
   cache: 5000,
-  whitelist: ['127.0.0.1'],
+  redis: redisClient,
+  // whitelist: ['127.0.0.1'],
   skipOnError: true,
 });
 server.register(sensible);
