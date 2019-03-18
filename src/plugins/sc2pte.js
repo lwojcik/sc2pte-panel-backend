@@ -5,11 +5,18 @@ const sc2utils = require('../utils/starcraft2');
 const bnetConfig = require('../config/battlenet');
 
 function sc2pte(fastify, options, next) { // eslint-disable-line consistent-return
+  function blizzAPI(regionId) {
+    return new BlizzAPI(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
+  }
+
+  function SC2API(regionId) {
+    return new StarCraft2API(regionId, bnetConfig.apiKey, bnetConfig.apiSecret)
+  }
+
   async function getHeader(configObject) {
     try {
       const { regionId, realmId, playerId } = configObject;
-      const SC2API = new StarCraft2API(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
-      const playerProfile = await SC2API.queryProfile(regionId, realmId, playerId);
+      const playerProfile = await SC2API(regionId).queryProfile(regionId, realmId, playerId);
       const headerObject = {
         player: {
           server: BlizzUtils.getRegionNameById(regionId)[0],
@@ -41,78 +48,125 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
       };
     }
   }
+  async function getPlayerDataFromLadder(configObject, ladderObject) {
+    const { regionId, realmId, playerId } = configObject;
+    const playerLadderData = await blizzAPI(regionId).querySearch(
+      `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/${ladderObject.ladderId}`,
+      `ladderTeams[${ladderObject.rank - 1}]`,
+    );
+    return {
+      mode: ladderObject.localizedGameMode.split(' ')[0],
+      rank: ladderObject.localizedGameMode.split(' ')[1],
+      ladderPosition: ladderObject.rank,
+      ...playerLadderData,
+    };
+  }
+
+  async function getPlayerLadders(configObject) {
+    const { regionId, realmId, playerId } = configObject;
+    const playerLadders = await blizzAPI(regionId).querySearch(
+      `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/summary`,
+      'allLadderMemberships',
+    );
+    const playerLadderData = await Promise.all(
+      playerLadders.map(
+        playerLadder => getPlayerDataFromLadder(
+          configObject,
+          playerLadder,
+        ),
+      ),
+    );
+    return playerLadderData;
+  }
 
   async function getLaddersData(configObject) {
-    const { regionId, realmId, playerId } = configObject;
-    const blizzAPI = new BlizzAPI(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
-    const playerLadderIds = await blizzAPI.querySearch(
-      `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/summary`,
-      'allLadderMemberships.ladderId',
-    );
-    console.log(playerLaddersObject);
-    console.log(playerLaddersObject.length);
-    return playerLaddersObject;
+    const playerLadders = await getPlayerLadders(configObject); // eslint-disable-line
+    let ladderObject = { // eslint-disable-line
+      '1v1': {
+        totalLadders: 0,
+        topRankId: -1,
+        topRank: '',
+        topRankTier: -1,
+        topMMR: 0,
+        wins: 0,
+        losses: 0,
+      },
+      archon: {
+        totalLadders: 0,
+        topRankId: -1,
+        topRank: '',
+        topRankTier: -1,
+        topMMR: 0,
+        wins: 0,
+        losses: 0,
+      },
+      '2v2': {
+        totalLadders: 0,
+        topRankId: -1,
+        topRank: '',
+        topRankTier: -1,
+        topMMR: 0,
+        wins: 0,
+        losses: 0,
+      },
+      '3v3': {
+        totalLadders: 0,
+        topRankId: -1,
+        topRank: '',
+        topRankTier: -1,
+        topMMR: 0,
+        wins: 0,
+        losses: 0,
+      },
+      '4v4': {
+        totalLadders: 0,
+        topRankId: -1,
+        topRank: '',
+        topRankTier: -1,
+        topMMR: 0,
+        wins: 0,
+        losses: 0,
+      },
+    };
+
+    playerLadders.map((ladder) => { // eslint-disable-line array-callback-return
+      ladderObject[ladder.mode].totalLadders += 1;
+
+      ladderObject[ladder.mode].topRankId = sc2utils.determineRankIdByName(ladder.rank)
+      > ladderObject[ladder.mode].topRankId
+        ? sc2utils.determineRankIdByName(ladder.rank)
+        : ladderObject[ladder.mode].topRankId;
+
+      ladderObject[ladder.mode].topRank = sc2utils.determineRankNameById(
+        ladderObject[ladder.mode].topRankId,
+      );
+
+      ladderObject[ladder.mode].topRankTier = sc2utils.determineRankIdByName(ladder.rank)
+      > ladderObject[ladder.mode].topRankId
+        ? ladderObject[ladder.mode].topRankTier
+        : ladder.ladderPosition;
+
+      ladderObject[ladder.mode].topMMR = ladderObject[ladder.mode].topMMR > ladder.mmr
+        ? ladderObject[ladder.mode].topMMR
+        : ladder.mmr;
+
+      ladderObject[ladder.mode].wins += ladder.wins;
+
+      ladderObject[ladder.mode].losses += ladder.losses;
+    });
+    return ladderObject;
   }
 
   async function getViewerData(configObject) { // eslint-disable-line consistent-return
-    console.log(configObject); // eslint-disable-line
     try {
       const header = await getHeader(configObject);
       const ladders = await getLaddersData(configObject);
-      const response = {
+      return {
         status: 200,
         selectedView: 'summary',
         ...header,
-        laddero: ladders,
-        ladders: {
-          '1v1': {
-            totalLadders: 1,
-            topRankId: 4,
-            topRank: 'DIAMOND',
-            topPosition: 1,
-            topMMR: 3744,
-            wins: 131,
-            losses: 124,
-          },
-          archon: {
-            totalLadders: 0,
-            topRankId: -1,
-            topRank: '',
-            topPosition: 1,
-            topMMR: 0,
-            wins: 0,
-            losses: 0,
-          },
-          '2v2': {
-            totalLadders: 2,
-            topRankId: 4,
-            topRank: 'DIAMOND',
-            topPosition: 1,
-            topMMR: 3073,
-            wins: 7,
-            losses: 18,
-          },
-          '3v3': {
-            totalLadders: 1,
-            topRankId: 1,
-            topRank: 'SILVER',
-            topPosition: 1,
-            topMMR: 2876,
-            wins: 6,
-            losses: 3,
-          },
-          '4v4': {
-            totalLadders: 0,
-            topRankId: -1,
-            topRank: '',
-            topPosition: 1,
-            topMMR: 0,
-            wins: 0,
-            losses: 0,
-          },
-        },
+        ladders,
       };
-      return response;
     } catch (error) {
       fastify.log.error(error);
       next(new Error(error));

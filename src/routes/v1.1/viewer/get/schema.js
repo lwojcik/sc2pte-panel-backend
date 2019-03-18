@@ -20,7 +20,7 @@ const ladderJsonSchema = {
     totalLadders: { type: 'number' },
     topRankId: { type: 'number' },
     topRank: { type: 'string' },
-    topPosition: { type: 'number' },
+    topRankTier: { type: 'number' },
     topMMR: { type: 'number' },
     wins: { type: 'number' },
     losses: { type: 'number' },
