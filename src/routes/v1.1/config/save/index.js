@@ -2,6 +2,8 @@ const fp = require('fastify-plugin');
 
 const schema = require('./schema');
 
+const redisConfig = require('../../../../config/redis');
+
 module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/config/save/:channelId',
@@ -9,10 +11,17 @@ module.exports = fp(async (server, opts, next) => {
     schema,
     preHandler: (request, reply, done) => {
       const { channelId } = request.params;
+      const redisViewKey = `${redisConfig.viewKey}-${channelId}`;
+
       const { token } = request.headers;
       const validRequest = server.twitchExt.validatePermission(token, channelId, 'broadcaster');
 
       if (validRequest) {
+        const isItCached = server.cache.has(redisViewKey);
+        if (isItCached) {
+          server.log.info('invalidating cached view object...');
+          server.cache.delete(redisViewKey);
+        }
         done();
       } else {
         server.log.error('invalid request');

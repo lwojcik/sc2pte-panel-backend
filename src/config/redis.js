@@ -13,5 +13,6 @@ redisConfig.host = env.API_REDIS_HOST || '127.0.0.1';
 redisConfig.port = env.API_REDIS_HOST || '6379';
 redisConfig.db = env.API_REDIS_DB || '4';
 redisConfig.replyCachePeriod = 1000 * 60 * 5;
+redisConfig.viewKey = 'view';
 
 module.exports = redisConfig;

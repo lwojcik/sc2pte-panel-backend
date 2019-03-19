@@ -27,7 +27,7 @@ module.exports = fp(async (server, opts, next) => {
     handler: async (request, reply) => {
       try {
         const { channelId } = request.params;
-        const redisKey = `view-${channelId}`;
+        const redisKey = `${redisConfig.viewKey}-${channelId}`;
         const isItCached = await server.cache.has(redisKey);
         if (isItCached) {
           server.log.info('sending cached response...');
