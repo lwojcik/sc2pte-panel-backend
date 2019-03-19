@@ -19,7 +19,7 @@ const twitchExt = require('./plugins/twitchExt');
 const appConfig = require('./config/app');
 const dbConfig = require('./config/database');
 const twitchConfig = require('./config/twitch');
-// const redisConfig = require('./config/redis');
+const redisConfig = require('./config/redis');
 
 const getViewerRoutes = require('./routes/v1.1/viewer/get');
 const saveConfigRoutes = require('./routes/v1.1/config/save');
@@ -42,14 +42,15 @@ const server = fastify(serverOptions);
 
 /* Caching */
 
-const redisClient = new Redis(6379);
+const redisClient = new Redis(redisConfig.connectionString);
 
 const abcache = new AbstractCache({
-  useAwait: false,
+  useAwait: true,
   driver: {
     name: 'abstract-cache-redis',
     options: {
       client: redisClient,
+      cacheSegment: 'sc2pte-cache',
     },
   },
 });
@@ -57,7 +58,7 @@ const abcache = new AbstractCache({
 server.register(fastifyRedis, { client: redisClient });
 server.register(fastifyCaching, {
   cache: abcache,
-  expiresIn: 300,
+  expiresIn: 5 * 60, // seconds
   cacheSegment: 'sc2pte',
 });
 
@@ -86,9 +87,8 @@ server.register(healthcheck, { healthcheckUrl: '/status' });
 server.register(rateLimit, {
   max: 100,
   timeWindow: '1 minute',
-  cache: 5000,
   redis: redisClient,
-  // whitelist: ['127.0.0.1'],
+  whitelist: ['127.0.0.1'],
   skipOnError: true,
 });
 server.register(sensible);

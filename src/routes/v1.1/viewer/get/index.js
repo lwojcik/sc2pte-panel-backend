@@ -2,6 +2,8 @@ const fp = require('fastify-plugin');
 
 const schema = require('./schema');
 
+const redisConfig = require('../../../../config/redis');
+
 module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/viewer/get/:channelId',
@@ -25,7 +27,14 @@ module.exports = fp(async (server, opts, next) => {
     handler: async (request, reply) => {
       try {
         const { channelId } = request.params;
-
+        const redisKey = `view-${channelId}`;
+        const isItCached = await server.cache.has(redisKey);
+        if (isItCached) {
+          server.log.info('sending cached response...');
+          const cachedReply = await server.cache.get(redisKey);
+          return reply.code(200).send(cachedReply.item);
+        }
+        server.log.info('generating and caching response...');
         const channelConfigObject = await server.db.models.ChannelConfig.findOne({ channelId });
 
         if (channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
@@ -33,21 +42,13 @@ module.exports = fp(async (server, opts, next) => {
           const viewerData = await server.sc2pte.getViewerData(channelConfig);
           const responseObject = {
             status: 200,
-            message: 'Config found yo',
+            message: 'Config found',
             ...viewerData,
           };
 
-          try {
-            return server.cache.set(channelId, responseObject, 10000, (err) => { // eslint-disable-line
-              if (err) reply.send(err);
-              console.log(responseObject);
-              reply.code(responseObject.status).send(responseObject);
-            });
-          } catch (error) {
-            return reply.send(error);
-          }
+          await server.cache.set(redisKey, responseObject, redisConfig.replyCachePeriod);
+          return reply.code(200).send(responseObject);
         }
-
         return reply.code(404).send({
           status: 404,
           message: 'Account not found',
