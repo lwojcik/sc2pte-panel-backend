@@ -31,7 +31,7 @@
     "abstract-cache-redis": "1.0.2",
     "blizzapi": "0.0.8",
     "dotenv": "7.0.0",
-    "fastify": "2.0.1",
+    "fastify": "2.1.0",
     "fastify-blipp": "1.2.1",
     "fastify-caching": "5.0.0",
     "fastify-compress": "0.8.1",
@@ -51,7 +51,7 @@
     "starcraft2-api": "0.0.3"
   },
   "devDependencies": {
-    "eslint": "5.15.1",
+    "eslint": "5.15.3",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-node": "8.0.1",
