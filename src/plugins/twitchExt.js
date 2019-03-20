@@ -37,7 +37,10 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
   function verifyIfTokenExpired(payload) {
     if (development) return true;
     const timeNowInEpochSeconds = Math.round(new Date().getTime() / 1000);
-    return payload.exp >= timeNowInEpochSeconds;
+    if (payload.exp) {
+      return payload.exp >= timeNowInEpochSeconds;
+    }
+    return true; // quick fix to shut up logs
   }
 
   function verifyRole(payload, role) {
