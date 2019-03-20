@@ -46,7 +46,10 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
 
   function verifyRole(payload, role) {
     if (development) return true;
-    return payload.role === role;
+    if (payload && payload.role) {
+      return payload.role === role;
+    }
+    return false;
   }
 
   function verifyChannelIdAndRole(payload, channelId, role) {
