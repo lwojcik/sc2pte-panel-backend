@@ -34,13 +34,14 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
     return payload.channel_id === channelId;
   }
 
-  function verifyIfTokenExpired(payload) {
+  function verifyIfTokenIsNotExpired(payload) {
     if (development) return true;
     const timeNowInEpochSeconds = Math.round(new Date().getTime() / 1000);
+
     if (payload.exp) {
-      return payload.exp >= timeNowInEpochSeconds;
+      return timeNowInEpochSeconds <= payload.exp;
     }
-    return true; // quick fix to shut up logs
+    return true;
   }
 
   function verifyRole(payload, role) {
@@ -78,7 +79,7 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
       verifiedRole = verifyRole(roles);
     }
 
-    return verifyIfTokenExpired(payload)
+    return verifyIfTokenIsNotExpired(payload)
       && verifyChannelId(payload, channelId)
       && verifiedRole;
   }
@@ -86,7 +87,7 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
   fastify.decorate('twitchExt', {
     decodeToken,
     verifyToken,
-    verifyIfTokenExpired,
+    verifyIfTokenIsNotExpired,
     verifyBroadcaster,
     verifyChannelId,
     verifyRole,
