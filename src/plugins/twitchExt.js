@@ -38,10 +38,10 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
     if (development) return true;
     const timeNowInEpochSeconds = Math.round(new Date().getTime() / 1000);
 
-    if (payload.exp) {
+    if (payload && payload.exp) {
       return timeNowInEpochSeconds <= payload.exp;
     }
-    return true;
+    return false;
   }
 
   function verifyRole(payload, role) {
