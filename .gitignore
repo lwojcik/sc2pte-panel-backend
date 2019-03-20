@@ -40,6 +40,7 @@ jspm_packages
 ssl/
 *.crt
 *.key
+*.pem
 
 # Environment variables
 .env
@@ -47,5 +48,13 @@ ssl/
 # Local database 
 db/
 
-# Test data folder
-__TESTDATA__
+# Build
+dist/
+
+# generated docs
+docs/
+
+# node dev config
+.node-dev.json
+
+.vscode/*
