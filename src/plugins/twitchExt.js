@@ -31,7 +31,10 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
 
   function verifyChannelId(payload, channelId) {
     if (development) return true;
-    return payload.channel_id === channelId;
+    if (payload && payload.channel_id) {
+      return payload.channel_id === channelId;
+    }
+    return false;
   }
 
   function verifyIfTokenIsNotExpired(payload) {
