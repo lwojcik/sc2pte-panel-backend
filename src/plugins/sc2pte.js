@@ -22,8 +22,8 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
           server: BlizzUtils.getRegionNameById(regionId)[0],
           name: playerProfile.summary.displayName,
           clan: {
-            name: playerProfile.summary.clanName,
-            tag: playerProfile.summary.clanTag,
+            name: playerProfile.summary.clanName || '',
+            tag: playerProfile.summary.clanTag || '',
           },
           rank: sc2utils.determineHighestRank(
             playerProfile.career.current1v1LeagueName,
