@@ -47,7 +47,6 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
   }
 
   function verifyRole(payload, role) {
-    fastify.log.info(`verifying role: ${role}`);
     if (development) return true;
     if (payload && payload.role) {
       return payload.role === role;
