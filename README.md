@@ -1,8 +1,8 @@
 # sc2profile-twitch-extension-api
-[![Travis Build Status](https://travis-ci.org/lukemnet/sc2profile-twitch-extension-api.svg?branch=master)](https://travis-ci.org/lukemnet/sc2profile-twitch-extension-api)
-[![Greenkeeper badge](https://badges.greenkeeper.io/lukemnet/sc2profile-twitch-extension-api.svg)](https://greenkeeper.io/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/244da6a68a36011146cb/maintainability)](https://codeclimate.com/github/lukemnet/sc2profile-twitch-extension-api/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/244da6a68a36011146cb/test_coverage)](https://codeclimate.com/github/lukemnet/sc2profile-twitch-extension-api/test_coverage)
+[![Travis Build Status](https://travis-ci.org/lukemnet/sc2pte-backend.svg?branch=master)](https://travis-ci.org/lukemnet/sc2profile-twitch-extension-api)
+[![Greenkeeper badge](https://badges.greenkeeper.io/lukemnet/sc2pte-backend.svg)](https://greenkeeper.io/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/244da6a68a36011146cb/maintainability)](https://codeclimate.com/github/lukemnet/sc2pte-backend/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/244da6a68a36011146cb/test_coverage)](https://codeclimate.com/github/lukemnet/sc2pte-backend/test_coverage)
 
 This is an official repository of the backend service (EBS) for [StarCraft II Profile Twitch Extension](https://sc2pte.lukem.net/).
 
