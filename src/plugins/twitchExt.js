@@ -40,7 +40,6 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
   function verifyIfTokenIsNotExpired(payload) {
     if (development) return true;
     const timeNowInEpochSeconds = Math.round(new Date().getTime() / 1000);
-
     if (payload && payload.exp) {
       return timeNowInEpochSeconds <= payload.exp;
     }
@@ -48,6 +47,7 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
   }
 
   function verifyRole(payload, role) {
+    fastify.log.info(`verifying role: ${role}`);
     if (development) return true;
     if (payload && payload.role) {
       return payload.role === role;
@@ -80,9 +80,9 @@ function fastifyTwitchExt(fastify, options, next) { // eslint-disable-line consi
     let verifiedRole;
 
     if (Array.isArray(roles)) {
-      verifiedRole = roles.some(role => verifyRole(role));
+      verifiedRole = roles.some(role => verifyRole(payload, role));
     } else {
-      verifiedRole = verifyRole(roles);
+      verifiedRole = verifyRole(payload, roles);
     }
 
     return verifyIfTokenIsNotExpired(payload)

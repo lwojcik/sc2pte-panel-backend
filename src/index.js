@@ -93,7 +93,7 @@ server.register(rateLimit, {
 });
 server.register(sensible);
 server.register(twitchExt, {
-  development: env.NODE_ENV === 'development',
+  enabled: env.NODE_ENV === 'production',
   secret: twitchConfig.sharedSecret,
 });
 server.register(noIcon);
