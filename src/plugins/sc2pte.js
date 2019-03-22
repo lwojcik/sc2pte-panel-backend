@@ -50,13 +50,12 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
   }
   async function getPlayerDataFromLadder(configObject, ladderObject) {
     const { regionId, realmId, playerId } = configObject;
-    const playerLadderData = await blizzAPI(regionId).querySearch(
-      `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/${ladderObject.ladderId}`,
-      `ladderTeams[${ladderObject.rank - 1}]`,
-    );
+    const playerLadder = await blizzAPI(regionId).query(`/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/${ladderObject.ladderId}`);
+    const playerLadderLeague = playerLadder.league;
+    const playerLadderData = playerLadder.ladderTeams[ladderObject.rank - 1];
     return {
       mode: ladderObject.localizedGameMode.split(' ')[0],
-      rank: ladderObject.localizedGameMode.split(' ')[1],
+      rank: playerLadderLeague,
       ladderPosition: ladderObject.rank,
       ...playerLadderData,
     };
@@ -130,29 +129,30 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
     };
 
     playerLadders.map((ladder) => { // eslint-disable-line array-callback-return
-      ladderObject[ladder.mode].totalLadders += 1;
+      const ladderMode = ladder.mode === 'Archon' ? 'archon' : ladder.mode;
+      ladderObject[ladderMode].totalLadders += 1;
 
-      ladderObject[ladder.mode].topRankId = sc2utils.determineRankIdByName(ladder.rank)
-      > ladderObject[ladder.mode].topRankId
+      ladderObject[ladderMode].topRankId = sc2utils.determineRankIdByName(ladder.rank)
+      > ladderObject[ladderMode].topRankId
         ? sc2utils.determineRankIdByName(ladder.rank)
-        : ladderObject[ladder.mode].topRankId;
+        : ladderObject[ladderMode].topRankId;
 
-      ladderObject[ladder.mode].topRank = sc2utils.determineRankNameById(
-        ladderObject[ladder.mode].topRankId,
+      ladderObject[ladderMode].topRank = sc2utils.determineRankNameById(
+        ladderObject[ladderMode].topRankId,
       );
 
-      ladderObject[ladder.mode].topRankTier = sc2utils.determineRankIdByName(ladder.rank)
-      > ladderObject[ladder.mode].topRankId
-        ? ladderObject[ladder.mode].topRankTier
+      ladderObject[ladderMode].topRankTier = sc2utils.determineRankIdByName(ladder.rank)
+      > ladderObject[ladderMode].topRankId
+        ? ladderObject[ladderMode].topRankTier
         : ladder.ladderPosition;
 
-      ladderObject[ladder.mode].topMMR = ladderObject[ladder.mode].topMMR > ladder.mmr
-        ? ladderObject[ladder.mode].topMMR
+      ladderObject[ladderMode].topMMR = ladderObject[ladderMode].topMMR > ladder.mmr
+        ? ladderObject[ladderMode].topMMR
         : ladder.mmr;
 
-      ladderObject[ladder.mode].wins += ladder.wins;
+      ladderObject[ladderMode].wins += ladder.wins;
 
-      ladderObject[ladder.mode].losses += ladder.losses;
+      ladderObject[ladderMode].losses += ladder.losses;
     });
     return ladderObject;
   }
