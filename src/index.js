@@ -13,8 +13,7 @@ const fastifyCaching = require('fastify-caching');
 const fastifyRedis = require('fastify-redis');
 const Redis = require('ioredis');
 const AbstractCache = require('abstract-cache');
-
-const twitchExt = require('./plugins/twitchExt');
+const twitchEbs = require('fastify-twitch-ebs-tools');
 
 const appConfig = require('./config/app');
 const dbConfig = require('./config/database');
@@ -92,7 +91,7 @@ server.register(rateLimit, {
   skipOnError: true,
 });
 server.register(sensible);
-server.register(twitchExt, {
+server.register(twitchEbs, {
   enabled: env.NODE_ENV === 'production',
   secret: twitchConfig.sharedSecret,
 });

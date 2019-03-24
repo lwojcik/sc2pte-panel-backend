@@ -10,7 +10,7 @@ module.exports = fp(async (server, opts, next) => {
     preHandler: (request, reply, done) => {
       const { channelId } = request.params;
       const { token } = request.headers;
-      const validRequest = server.twitchExt.validatePermission(token, channelId, 'broadcaster');
+      const validRequest = server.twitchEbs.validatePermission(token, channelId, 'broadcaster');
 
       if (validRequest) {
         done();

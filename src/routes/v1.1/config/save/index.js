@@ -14,7 +14,7 @@ module.exports = fp(async (server, opts, next) => {
       const redisViewKey = `${redisConfig.viewKey}-${channelId}`;
 
       const { token } = request.headers;
-      const validRequest = server.twitchExt.validatePermission(token, channelId, 'broadcaster');
+      const validRequest = server.twitchEbs.validatePermission(token, channelId, 'broadcaster');
 
       if (validRequest) {
         const isItCached = server.cache.has(redisViewKey);
