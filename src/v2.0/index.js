@@ -58,7 +58,7 @@ const server = fastify(serverOptions);
 // server.register(fastifyCaching, {
 //   cache: abcache,
 //   expiresIn: 5 * 60, // seconds
-//   cacheSegment: 'sc2pte',
+//   cacheSegment: env.API_REDIS_CACHE_SEGMENT,
 // });
 
 // /* Plugins */
