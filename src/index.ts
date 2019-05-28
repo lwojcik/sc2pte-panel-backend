@@ -40,13 +40,11 @@ interface FastifyPluginObject {
 
 type FastifyPlugins = (FastifyPlugin | FastifyPluginObject)[];
 
-const { env } = process;
-
 /* Server instance */
 
 const server = fastify({
-  logger: env.NODE_ENV === 'development',
-  https: env.API_HOST_PROTOCOL === 'https',
+  logger: process.env.NODE_ENV === 'development',
+  https: process.env.API_HOST_PROTOCOL === 'https',
 } as ServerOptions);
 
 /* Server plugins */
@@ -78,7 +76,7 @@ const plugins = [
   },
 
   /* Generate TLS certificate if served via HTTPS */
-  (env.API_HOST_PROTOCOL === 'https' ? tlsKeygen : null),
+  (process.env.API_HOST_PROTOCOL === 'https' ? tlsKeygen : null),
 
   /* Deal with annoying /favicon.ico requests */
   noIcon,
