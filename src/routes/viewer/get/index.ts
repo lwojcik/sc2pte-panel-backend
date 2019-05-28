@@ -1,6 +1,32 @@
 import fp from 'fastify-plugin';
+import { FastifyRequest, FastifyReply } from 'fastify';
+import { IncomingMessage, ServerResponse } from 'http';
 
-const routePrefix = process.env.API_ROUTE_PREFIX || '';
+const urlPrefix = `${process.env.API_URL_PREFIX}${process.env.API_URL_PREFIX ? '/' : ''}`;
+const urlPath = 'viewer/:channelId';
+const url = `/${urlPrefix}${urlPath}`;
+
+const method = 'GET';
+
+const send = async (
+  status: number,
+  data: object,
+  reply: FastifyReply<ServerResponse>
+  ) => reply.code(status).send({
+  status,
+  data,
+});
+
+const send200 = (data: object, reply: FastifyReply<ServerResponse>) => {
+  send(200, data, reply);
+}
+
+const handleRoute = (request:FastifyRequest<IncomingMessage>, reply: FastifyReply<ServerResponse>) => {
+  console.log(request);
+  return send200({ lorem: 'ipsum' }, reply);
+}
+
+// const handle400
 
 // const schema = require('./schema');
 
@@ -8,16 +34,10 @@ const routePrefix = process.env.API_ROUTE_PREFIX || '';
 
 export default fp(async (server, {}, next) => {
   server.route({
-    url: `${routePrefix ? `/${routePrefix}` : ''}/viewer/:channelId`,
-    method: 'GET',
+    url,
+    method,
     // schema,
-    handler: async (request, reply) => reply.code(200).send({
-      status: 200,
-      config: {
-        channelId: request.params.channelId,
-        lorem: 'ipsum',
-      },
-    }),
+    handler: handleRoute,
   });
   next();
 });
