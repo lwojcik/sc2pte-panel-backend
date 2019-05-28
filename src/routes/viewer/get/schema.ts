@@ -91,4 +91,4 @@ const schema = {
   response: responseJsonSchema,
 };
 
-module.exports = schema;
+export default schema;

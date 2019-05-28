@@ -1,12 +1,14 @@
-const fp = require('fastify-plugin');
+import fp from 'fastify-plugin';
+
+const routePrefix = process.env.API_ROUTE_PREFIX || '';
 
 // const schema = require('./schema');
 
 // const redisConfig = require('../../../../config/redis');
 
-module.exports = fp(async (server, opts, next) => {
+export default fp(async (server, {}, next) => {
   server.route({
-    url: '/v2/viewer/get/:channelId',
+    url: `/${routePrefix ? `${routePrefix}/` : ''}viewer/get/:channelId`,
     method: 'GET',
     // schema,
     handler: async (request, reply) => reply.code(200).send({
