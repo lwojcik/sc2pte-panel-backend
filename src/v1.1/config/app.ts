@@ -7,9 +7,9 @@
 
 const { env } = process;
 
-const appConfig = {};
+const appConfig = {
+  /** Node.js app port */
+  port: env.API_NODE_PORT || '8881',
+};
 
-/** Node.js app port */
-appConfig.port = env.API_NODE_PORT || '8881';
-
-module.exports = appConfig;
+export default appConfig;
