@@ -1,13 +1,14 @@
 require('dotenv').config();
-import fastify from 'fastify';
+import fastify, { ServerOptions, Plugin } from 'fastify';
+import { Server, IncomingMessage, ServerResponse } from 'http';
 import cors from 'fastify-cors';
 // const rateLimit = require('fastify-rate-limit');
 import blipp from 'fastify-blipp';
 // const healthcheck = require('fastify-healthcheck');
 // const compression = require('fastify-compress');
-// const helmet = require('fastify-helmet');
+import helmet from 'fastify-helmet';
 // const sensible = require('fastify-sensible');
-// const noIcon = require('fastify-no-icon');
+import noIcon from 'fastify-no-icon';
 import tlsKeygen from 'fastify-tls-keygen';
 // const fastifyCaching = require('fastify-caching');
 // const fastifyRedis = require('fastify-redis');
@@ -28,16 +29,66 @@ import getViewerRoutes from './routes/viewer/get';
 
 // const sc2pte = require('./plugins/sc2pte');
 
+/* Fastify plugin types */
+
+type FastifyPlugin = Plugin<Server, IncomingMessage, ServerResponse, any>;
+
+interface FastifyPluginObject {
+  plugin: FastifyPlugin;
+  options: Object;
+}
+
+type FastifyPlugins = (FastifyPlugin | FastifyPluginObject)[];
+
 const { env } = process;
 
-// /* Server instance */
+/* Server instance */
 
-const serverOptions = {
+const server = fastify({
   logger: env.NODE_ENV === 'development',
   https: env.API_HOST_PROTOCOL === 'https',
-};
+} as ServerOptions);
 
-const server = fastify(serverOptions);
+/* Server plugins */
+
+
+
+const plugins = [
+  /* Display the routes table to console at startup */
+  blipp,
+
+  /* CORS options */
+  {
+    plugin: cors,
+    options: {
+      origin: '*',
+      methods: ['GET', 'POST'],
+      credentials: true,
+      allowedHeaders: [
+        'X-Requested-With',
+        'content-type',
+        'channelId',
+        'regionId',
+        'realmId',
+        'playerId',
+        'selectedView',
+        'token',
+      ],
+    }
+  },
+
+  /* Generate TLS certificate if served via HTTPS */
+  (env.API_HOST_PROTOCOL === 'https' ? tlsKeygen : null),
+
+  /* Deal with annoying /favicon.ico requests */
+  noIcon,
+
+  /* Important security headers */
+  helmet,
+
+  /* Routes */
+  getViewerRoutes,
+] as FastifyPlugins;
 
 // /* Caching */
 
@@ -64,22 +115,6 @@ const server = fastify(serverOptions);
 // /* Plugins */
 
 // server.register(compression);
-server.register(blipp);
-server.register(cors, {
-  origin: '*',
-  methods: ['GET', 'POST'],
-  credentials: true,
-  allowedHeaders: [
-    'X-Requested-With',
-    'content-type',
-    'channelId',
-    'regionId',
-    'realmId',
-    'playerId',
-    'selectedView',
-    'token',
-  ],
-});
 // server.register(helmet);
 // server.register(db, { uri: dbConfig.connectionString });
 // server.register(healthcheck, { healthcheckUrl: '/status' });
@@ -98,15 +133,27 @@ server.register(cors, {
 // server.register(noIcon);
 // server.register(sc2pte);
 
-if (env.API_HOST_PROTOCOL === 'https') {
-  server.register(tlsKeygen);
-}
+// if (env.API_HOST_PROTOCOL === 'https') {
+//   server.register(tlsKeygen);
+// }
 
 // /* Routes */
 
-server.register(getViewerRoutes);
+// server.register(getViewerRoutes);
 // server.register(getConfigRoutes);
 // server.register(saveConfigRoutes);
+
+/* Registering server plugins */
+
+const registerPlugins = (plugins: FastifyPlugins) => {
+  plugins.map((plugin) => {
+    if (typeof plugin === 'function') {
+      server.register(plugin);
+    } else if (plugin !== null && 'plugin' in plugin && 'options' in plugin) {
+      server.register(plugin.plugin, plugin.options);
+    }
+  });
+}
 
 /* Server invocation */
 
@@ -123,12 +170,13 @@ const start = async () => {
 /* Exception handling */
 
 process.on('uncaughtException', (error) => {
-  console.error(error); // eslint-disable-line
+  console.error(error);
 });
 process.on('unhandledRejection', (error) => {
-  console.error(error); // eslint-disable-line
+  console.error(error);
 });
 
 /* Here we go! */
 
+registerPlugins(plugins);
 start();

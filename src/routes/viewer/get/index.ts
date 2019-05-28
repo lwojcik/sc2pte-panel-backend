@@ -8,7 +8,7 @@ const routePrefix = process.env.API_ROUTE_PREFIX || '';
 
 export default fp(async (server, {}, next) => {
   server.route({
-    url: `/${routePrefix ? `${routePrefix}/` : ''}viewer/get/:channelId`,
+    url: `${routePrefix ? `/${routePrefix}` : ''}/viewer/:channelId`,
     method: 'GET',
     // schema,
     handler: async (request, reply) => reply.code(200).send({
