@@ -32,10 +32,10 @@ const envSchema = {
 const opts = {
   app: {
     nodeEnv: process.env.NODE_ENV || 'development',
-    port: process.env.SC2PTE_NODE_PORT || '8080',
+    port: process.env.SC2PTE_NODE_PORT || '8081',
   },
   sas: {
-    url: process.env.SC2PTE_SAS_URL || 'http://localhost:8081',
+    url: process.env.SC2PTE_SAS_URL || 'http://localhost:8082',
     statusEndpoint: process.env.SC2PTE_SAS_STATUS_ENDPOINT || 'status',
   },
   redis: {
@@ -44,7 +44,7 @@ const opts = {
     port: process.env.SC2PTE_REDIS_PORT || '6379',
     password: process.env.SC2PTE_REDIS_PASSWORD || '',
     db: process.env.SC2PTE_REDIS_DB || '0',
-    cacheSegment: process.env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte',
+    cacheSegment: process.env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte2',
     ttl: process.env.SC2PTE_REDIS_TTL ||  1000 * 60 * 5, // miliseconds
   }
 }

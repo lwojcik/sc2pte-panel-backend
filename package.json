@@ -2,7 +2,7 @@
   "name": "sc2pte-backend",
   "version": "2.0.0",
   "private": true,
-  "description": "StarCraft II Profile Twitch Extension (SC2PTE) - backend",
+  "description": "StarCraft II Profile Twitch extension - backend service (EBS)",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist/*",
