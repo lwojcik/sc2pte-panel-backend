@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2015",
     "module": "commonjs",
     "rootDir": "src",
     "outDir": "./dist/",
     "sourceMap": false,
-    "lib": ["es2017", "dom"],
+    "lib": ["es2017"],
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
     "declarationMap": false,
@@ -32,6 +32,6 @@
     "dist",
     "**/tests/*.test.ts",
     "tests",
-    "setupJest.ts",
+    "setupJest.ts"
   ]
 }
