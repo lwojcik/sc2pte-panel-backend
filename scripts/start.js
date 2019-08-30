@@ -19,13 +19,13 @@ const envSchema = {
     'SC2PTE_REDIS_PORT',
     'SC2PTE_REDIS_PASSWORD',
     'SC2PTE_REDIS_DB',
+    'SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED',
   ],
   properties: {
     NODE_ENV: {
       type: 'string',
       default: 'development',
     },
-    
   }
 }
 
@@ -46,7 +46,12 @@ const opts = {
     db: process.env.SC2PTE_REDIS_DB || '0',
     cacheSegment: process.env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte2',
     ttl: process.env.SC2PTE_REDIS_TTL ||  1000 * 60 * 5, // miliseconds
-  }
+  },
+  twitch: {
+    clientId: process.env.SC2PTE_TWITCH_EXTENSION_CLIENT_ID || '',
+    secret: process.env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
+    enableOnauthorized: process.env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
+  },
 }
 
 const fastifyInstance = fastify({
@@ -78,6 +83,7 @@ const start = () => fastifyInstance.listen(process.env.SC2PTE_NODE_PORT, (err) =
   if (err) throw err;
   fastifyInstance.blipp();
   fastifyInstance.log.info(`Redis cache enabled: ${!!opts.redis.enable}`);
+  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${!!opts.twitch.enableOnauthorized}`)
 });
 
 start();
