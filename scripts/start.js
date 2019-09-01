@@ -4,6 +4,7 @@ const fastify = require('fastify');
 const fastifyBlipp = require('fastify-blipp');
 const fastifyRedis = require('fastify-redis');
 const fastifyEnv = require('fastify-env');
+const fastifyCors = require('fastify-cors');
 const server = require('../dist/index');
 
 const envSchema = {
@@ -78,6 +79,11 @@ if (process.env.SC2PTE_REDIS_ENABLE === 'true') {
 
 fastifyInstance.register(server, opts);
 fastifyInstance.register(fastifyBlipp);
+
+fastifyInstance.register(fastifyCors, { 
+  origin: [ /localhost/, /127.0.0.1/ ],
+})
+
 
 const start = () => fastifyInstance.listen(process.env.SC2PTE_NODE_PORT, (err) => {
   if (err) throw err;
