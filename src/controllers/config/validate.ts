@@ -16,12 +16,10 @@ const maximumElementCount = (dataArray: PlayerObject[]) => {
 
 const isPlayerObjectValid = (playerObject: PlayerObject) => {
   try {
-    return playerObject.regionId
-    && playerObject.realmId
-    && playerObject.profileId
-    && StarCraft2API.validateRegionId(playerObject.regionId)
-    && StarCraft2API.validateSc2Realm(playerObject.realmId)
-    && StarCraft2API.validateProfileId(playerObject.profileId);
+    const { regionId, realmId, profileId } = playerObject;
+    return StarCraft2API.validateRegionId(regionId)
+    && StarCraft2API.validateSc2Realm(realmId)
+    && StarCraft2API.validateProfileId(profileId);
   } catch (error) {
     return false;
   }
