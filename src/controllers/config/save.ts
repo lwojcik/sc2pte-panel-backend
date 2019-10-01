@@ -1,20 +1,12 @@
-interface ConfigObject {
-  regionId: string;
-  realmId: string;
-  profileId: string;
-}
+import validateConfig from './validate';
+import { ConfigObject } from '../../@types/fastify';
 
-type ConfigObjectArray = ConfigObject[];
+const saveConfigInDb = ({}) => true;
 
-const saveConfig = (channelId: string | number, data: ConfigObjectArray) => {
-  console.log(channelId);
-  console.log(data);
-  console.log('config saved');
-  return {
-      status: 200,
-      message: "postConfig",
-      channelId,
-    }
+const saveConfig = (config: ConfigObject) => {
+  // validate config
+  // then save config
+  return validateConfig(config) && saveConfigInDb(config);
 }
 
 export default saveConfig;

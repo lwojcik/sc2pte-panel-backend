@@ -8,8 +8,8 @@ export default fp((server, {}, next) => {
       const { channelid } = request.headers;
       const data = JSON.parse(request.body);
 
-      const configSaved = await saveConfig(channelid, data);
-      
+      const configSaved = await saveConfig({ channelId: channelid, data });
+
       if (configSaved) {
         reply.code(200).send({
           status: 200,

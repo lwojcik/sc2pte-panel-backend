@@ -24,6 +24,11 @@ export interface LeagueObject {
   leagueId: string;
 }
 
+export interface ConfigObject {
+  channelId: string;
+  data: PlayerObject[];
+}
+
 declare module 'fastify' {
   export interface FastifyInstance<
     HttpServer = http.Server,
