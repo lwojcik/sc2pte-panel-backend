@@ -1,7 +1,7 @@
 import { ConfigObject, PlayerObject } from '../../@types/fastify';
 import StarCraft2API from 'starcraft2-api';
 
-const maxPlayerObjectCount = process.env.SC2PTE_MAXIMUM_PLAYER_OBJECT_COUNT!;
+const maxPlayerObjectCount = parseInt(process.env.SC2PTE_MAXIMUM_PLAYER_OBJECT_COUNT!, 10);
 
 const isChannelIdValid = (channelId: string) =>
   channelId === parseInt(channelId, 10).toString();
@@ -9,8 +9,8 @@ const isChannelIdValid = (channelId: string) =>
 const minimum1Element = (dataArray: PlayerObject[]) =>
   Array.isArray(dataArray) && dataArray.length > 0;
 
-const maximumElementCount = (dataArray: PlayerObject[]) => {
-  const maxCount = parseInt(maxPlayerObjectCount, 10) || 5;
+const maximumElementCount = (dataArray: PlayerObject[], count: number) => {
+  const maxCount = count || 5;
   return Array.isArray(dataArray) && dataArray.length <= maxCount;
 }
 
@@ -30,7 +30,7 @@ playerObjects.map(playerObject => isPlayerObjectValid(playerObject));
 
 const isDataValid = (data: PlayerObject[]) => 
   minimum1Element(data)
-  && maximumElementCount(data)
+  && maximumElementCount(data, maxPlayerObjectCount)
   && allElementsValid(data);
 
 const validateConfig = ({ channelId, data }: ConfigObject) =>
