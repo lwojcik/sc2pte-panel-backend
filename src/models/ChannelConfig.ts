@@ -1,49 +1,43 @@
 // import { createSchema, Type, typedModel } from 'ts-mongoose';
 // TODO: migrate fully to ts-mongoose
+import { createSchema, Type, typedModel } from 'ts-mongoose';
 
-import mongoose, { SchemaDefinition } from 'mongoose';
+// interface ChannelConfig {
+//   channelId: object;
+//   regionId: number;
+//   realmId: number;
+//   profileId: number;
+// }
 
-const { Schema, model } = mongoose;
+// tslint:disable-next-line: variable-name
+const PlayerProfileSchema = createSchema({
+  regionId: {
+    type: Type.string(),
+    required: true,
+  },
+  realmId: {
+    type: Type.string(),
+    required: true,
+  },
+  profileId: {
+    type: Type.string(),
+    required: true,
+  },
+}, {
+  _id: false,
+  timestamps: false,
+});
 
-interface ChannelConfig {
-  channelId: object;
-  regionId: number;
-  realmId: number;
-  profileId: number;
-}
-
-const channelConfigSchema = new Schema({
+// tslint:disable-next-line: variable-name
+const ChannelConfigSchema = createSchema({
   channelId: {
-    type: Number,
+    type: Type.string(),
     required: [true, 'channelId required'],
     unique: true,
     index: true,
   },
-  regionId: {
-    type: Number,
-    enum: [1, 2, 3, 5],
-    required: [true, 'regionId required'],
-  },
-  realmId: {
-    type: Number,
-    enum: [1, 2],
-    required: [true, 'realmId required'],
-  },
-  playerId: {
-    type: Number,
-    required: [true, 'playerId required'],
-  },
-  selectedView: {
-    type: String,
-    trim: true,
-    enum: ['summary', 'detailed'],
-    required: [true, 'selectedView required'],
-  },
-  language: {
-    type: String,
-    trim: true,
-    enum: ['en', 'es', 'pl', 'ru', 'kr', 'fr', 'it'],
-    required: [true, 'language required'],
+  profiles: {
+    type: Type.array().of(PlayerProfileSchema),
   },
   createdAt: {
     type: Date,
@@ -54,15 +48,18 @@ const channelConfigSchema = new Schema({
 },
 {
   timestamps: true,
-}) as SchemaDefinition<ChannelConfig>;
-
-channelConfigSchema.pre('save', (next) => {
-  const now = new Date();
-  this.updatedAt = now;
-  if (!this.created_at) {
-    this.createdAt = now;
-  }
-  next();
 });
 
-export default model('ChannelConfig', ChannelConfigSchema);
+// channelConfigSchema.pre('save', function(next: any): any {
+//   const now = new Date();
+//   (this as any).updatedAt = now;
+//   if (!this.created_at) {
+//     this.createdAt = now;
+//   }
+//   next();
+// };
+
+// tslint:disable-next-line: variable-name
+const ChannelConfig = typedModel('ChannelConfig', ChannelConfigSchema);
+
+export default ChannelConfig;
