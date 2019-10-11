@@ -1,3 +1,4 @@
+// tslint:disable: variable-name
 // import { createSchema, Type, typedModel } from 'ts-mongoose';
 // TODO: migrate fully to ts-mongoose
 import { createSchema, Type, typedModel } from 'ts-mongoose';
@@ -9,7 +10,6 @@ import { createSchema, Type, typedModel } from 'ts-mongoose';
 //   profileId: number;
 // }
 
-// tslint:disable-next-line: variable-name
 const PlayerProfileSchema = createSchema({
   regionId: {
     type: Type.string(),
@@ -28,7 +28,6 @@ const PlayerProfileSchema = createSchema({
   timestamps: false,
 });
 
-// tslint:disable-next-line: variable-name
 const ChannelConfigSchema = createSchema({
   channelId: {
     type: Type.string(),
@@ -39,15 +38,14 @@ const ChannelConfigSchema = createSchema({
   profiles: {
     type: Type.array().of(PlayerProfileSchema),
   },
-  createdAt: {
-    type: Date,
-  },
   updatedAt: {
     type: Date,
   },
 },
 {
-  timestamps: true,
+  timestamps: {
+    createdAt: true,
+  },
 });
 
 // channelConfigSchema.pre('save', function(next: any): any {
@@ -59,7 +57,7 @@ const ChannelConfigSchema = createSchema({
 //   next();
 // };
 
-// tslint:disable-next-line: variable-name
 const ChannelConfig = typedModel('ChannelConfig', ChannelConfigSchema);
 
 export default ChannelConfig;
+// tslint:enable: variable-name
