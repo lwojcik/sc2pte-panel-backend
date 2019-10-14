@@ -1,27 +1,38 @@
 // tslint:disable: variable-name
-// import { createSchema, Type, typedModel } from 'ts-mongoose';
-// TODO: migrate fully to ts-mongoose
+import { Document } from 'mongoose';
 import { createSchema, Type, typedModel } from 'ts-mongoose';
+import StarCraft2API from 'starcraft2-api';
 
-// interface ChannelConfig {
-//   channelId: object;
-//   regionId: number;
-//   realmId: number;
-//   profileId: number;
-// }
+const regionIds = StarCraft2API.getAllRegionIds().map(regionId => regionId.toString());
+const realmIds = StarCraft2API.getAllAvailableSc2Realms().map(realmId => realmId.toString());
+
+interface PlayerProfile {
+  regionId: string;
+  realmId: string;
+  profileId: string;
+}
+
+interface ChannelConfig extends Document {
+  channelId: string;
+  profiles: PlayerProfile[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 const PlayerProfileSchema = createSchema({
   regionId: {
     type: Type.string(),
-    required: true,
+    enum: regionIds,
+    required: [true, 'regionId required'],
   },
   realmId: {
     type: Type.string(),
-    required: true,
+    enum: realmIds,
+    required: [true, 'realmId required'],
   },
   profileId: {
     type: Type.string(),
-    required: true,
+    required: [true, 'profileId required'],
   },
 }, {
   _id: false,
@@ -37,9 +48,16 @@ const ChannelConfigSchema = createSchema({
   },
   profiles: {
     type: Type.array().of(PlayerProfileSchema),
+    default: [],
+    required: [true, 'profiles required'],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
+    default: Date.now,
   },
 },
 {
@@ -48,16 +66,10 @@ const ChannelConfigSchema = createSchema({
   },
 });
 
-// channelConfigSchema.pre('save', function(next: any): any {
-//   const now = new Date();
-//   (this as any).updatedAt = now;
-//   if (!this.created_at) {
-//     this.createdAt = now;
-//   }
-//   next();
-// };
+ChannelConfigSchema.pre<ChannelConfig>('save', function(next): void {
+  this.updatedAt = new Date();
+  next();
+});
 
-const ChannelConfig = typedModel('ChannelConfig', ChannelConfigSchema);
-
-export default ChannelConfig;
+export default typedModel('ChannelConfig', ChannelConfigSchema);
 // tslint:enable: variable-name
