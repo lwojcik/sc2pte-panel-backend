@@ -1,17 +1,27 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import routes from './routes';
+import { default as statusRoutes } from './routes/status/index';
+import { default as configRoutes } from './routes/config';
+import { default as viewerRoutes } from './routes/viewer';
+import cache from './plugins/cache';
+import db from './plugins/db';
+import config from './plugins/config';
 
-// interface ServerOptions extends Sc2ApiOptions {
-//   bas: BasOptions;
-// }
+interface ServerOptions {
+  db: {
+    uri: String;
+  },
+}
 
 const api = fp(
-  (fastify: FastifyInstance, /* opts: any, */ {}, next: Function) => {
-    fastify.register(routes.status);
-    fastify.register(routes.config.get);
-    fastify.register(routes.config.post);
-    fastify.register(routes.viewer.get);
+  (fastify: FastifyInstance, opts: ServerOptions, next: Function) => {
+    fastify.register(cache);
+    fastify.register(db, opts.db);
+    fastify.register(config);
+    fastify.register(statusRoutes);
+    fastify.register(configRoutes.get);
+    fastify.register(configRoutes.post);
+    fastify.register(viewerRoutes.get);
     next();
   },
 );

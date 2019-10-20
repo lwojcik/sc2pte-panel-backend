@@ -3,7 +3,7 @@ import config from './config';
 import viewer from './viewer';
 
 export default {
-  status,
-  config,
-  viewer,
+  statusRoutes: status,
+  configRoutes: config,
+  viewerRoutes: viewer,
 };

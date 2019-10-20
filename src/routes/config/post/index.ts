@@ -1,13 +1,12 @@
 import fp from "fastify-plugin";
 // import schema from "./schema";
-import { saveConfig } from '../../../controllers/config';
 
 export default fp((server, {}, next) => {
   server.post("/config", /* { schema }, */ async (request, reply) => {
     try {
       const channelId = request.headers.channelid;
       const data = JSON.parse(request.body);
-      const configSaved = await saveConfig({ channelId, data });
+      const configSaved = await server.playerConfig.save({ channelId, data });
 
       if (configSaved) {
         reply.code(200).send({
@@ -21,6 +20,7 @@ export default fp((server, {}, next) => {
         });
       }
     } catch (error) {
+      server.log.error(error);
       reply.code(400).send({
         status: 400,
         message: 'Incorrect or malformed request',

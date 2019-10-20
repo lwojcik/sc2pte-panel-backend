@@ -19,6 +19,7 @@ const envSchema = {
     'SC2PTE_REDIS_PORT',
     'SC2PTE_REDIS_PASSWORD',
     'SC2PTE_REDIS_DB',
+    'SC2PTE_MONGODB_CONNECTION_STRING',
     'SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED',
   ],
   properties: {
@@ -29,28 +30,33 @@ const envSchema = {
   }
 }
 
+const { env } = process;
+
 const opts = {
   app: {
-    nodeEnv: process.env.NODE_ENV || 'development',
-    port: process.env.SC2PTE_NODE_PORT || '8081',
+    nodeEnv: env.NODE_ENV || 'development',
+    port: env.SC2PTE_NODE_PORT || '8081',
   },
   sas: {
-    url: process.env.SC2PTE_SAS_URL || 'http://localhost:8082',
-    statusEndpoint: process.env.SC2PTE_SAS_STATUS_ENDPOINT || 'status',
+    url: env.SC2PTE_SAS_URL || 'http://localhost:8082',
+    statusEndpoint: env.SC2PTE_SAS_STATUS_ENDPOINT || 'status',
   },
   redis: {
-    enable: process.env.SC2PTE_REDIS_ENABLE === 'true' || false,
-    host: process.env.SC2PTE_REDIS_HOST || '127.0.0.1',
-    port: process.env.SC2PTE_REDIS_PORT || '6379',
-    password: process.env.SC2PTE_REDIS_PASSWORD || '',
-    db: process.env.SC2PTE_REDIS_DB || '0',
-    cacheSegment: process.env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte2',
-    ttl: process.env.SC2PTE_REDIS_TTL ||  1000 * 60 * 5, // miliseconds
+    enable: env.SC2PTE_REDIS_ENABLE === 'true' || false,
+    host: env.SC2PTE_REDIS_HOST || '127.0.0.1',
+    port: env.SC2PTE_REDIS_PORT || '6379',
+    password: env.SC2PTE_REDIS_PASSWORD || '',
+    db: env.SC2PTE_REDIS_DB || '0',
+    cacheSegment: env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte2',
+    ttl: env.SC2PTE_REDIS_TTL ||  1000 * 60 * 5, // miliseconds
+  },
+  db: {
+    uri: env.SC2PTE_MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017/sc2pte'
   },
   twitch: {
-    clientId: process.env.SC2PTE_TWITCH_EXTENSION_CLIENT_ID || '',
-    secret: process.env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
-    enableOnauthorized: process.env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
+    clientId: env.SC2PTE_TWITCH_EXTENSION_CLIENT_ID || '',
+    secret: env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
+    enableOnauthorized: env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
   },
 }
 
@@ -76,14 +82,13 @@ if (process.env.SC2PTE_REDIS_ENABLE === 'true') {
   });
 }
 
-fastifyInstance.register(server, opts);
-
 fastifyInstance.register(fastifyCors, { 
   origin: [ /localhost/, /127.0.0.1/ ],
-})
+});
 
+fastifyInstance.register(server, opts);
 
-const start = () => fastifyInstance.listen(process.env.SC2PTE_NODE_PORT, (err) => {
+const start = () => fastifyInstance.listen(env.SC2PTE_NODE_PORT, (err) => {
   if (err) throw err;
   fastifyInstance.log.info(`Redis cache enabled: ${!!opts.redis.enable}`);
   fastifyInstance.log.info(`Twitch.ext.onauthorized: ${!!opts.twitch.enableOnauthorized}`)

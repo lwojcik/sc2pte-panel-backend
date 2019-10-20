@@ -35,7 +35,6 @@ declare module 'fastify' {
     HttpRequest = http.IncomingMessage,
     HttpResponse = http.ServerResponse
   > {
-    blipp(): void;
     cache: {
       has: (key) => boolean;
       set: (key, value, cachePeriod) => any;
@@ -46,6 +45,11 @@ declare module 'fastify' {
         stored: number;
         ttl: number;
       }>;
+      purge: any;
+    };
+    db: any;
+    playerConfig: {
+      save: any;
     };
     log(): void;
     close(): Promise<any>;
