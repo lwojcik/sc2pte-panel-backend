@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 import fp from 'fastify-plugin';
 import { ConfigObject } from '../@types/fastify';
-
-// import ChannelConfig from '../models/ChannelConfig'
+import ChannelConfig from '../models/ChannelConfig';
 
 export default fp(async (server, opts, next) => {
   mongoose.connection.once('open', () => {
@@ -37,9 +36,23 @@ export default fp(async (server, opts, next) => {
     },
   );
 
-  const save = (config: ConfigObject) => {
-    console.log(config)
-    return true;
+  const save = async (config: ConfigObject) => {
+    // console.log(config);
+    try {
+      const { channelId, data } = config;
+      console.log(data);
+      await ChannelConfig.findOneAndUpdate(
+        { channelId },
+        { profiles: data },
+        {
+          upsert: true,
+          runValidators: true,
+        },
+      );
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   server.decorate('db', { save });

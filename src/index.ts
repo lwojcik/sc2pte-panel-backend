@@ -5,7 +5,7 @@ import { default as configRoutes } from './routes/config';
 import { default as viewerRoutes } from './routes/viewer';
 import cache from './plugins/cache';
 import db from './plugins/db';
-import config from './plugins/config';
+import playerConfig from './plugins/playerConfig';
 
 interface ServerOptions {
   db: {
@@ -17,7 +17,7 @@ const api = fp(
   (fastify: FastifyInstance, opts: ServerOptions, next: Function) => {
     fastify.register(cache);
     fastify.register(db, opts.db);
-    fastify.register(config);
+    fastify.register(playerConfig);
     fastify.register(statusRoutes);
     fastify.register(configRoutes.get);
     fastify.register(configRoutes.post);

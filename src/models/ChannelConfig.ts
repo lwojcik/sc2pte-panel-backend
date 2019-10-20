@@ -21,18 +21,15 @@ interface ChannelConfig extends Document {
 
 const PlayerProfileSchema = createSchema({
   regionId: {
-    type: Type.string(),
+    type: Type.string({ required: true }),
     enum: regionIds,
-    required: [true, 'regionId required'],
   },
   realmId: {
-    type: Type.string(),
+    type: Type.string({ required: true }),
     enum: realmIds,
-    required: [true, 'realmId required'],
   },
   profileId: {
-    type: Type.string(),
-    required: [true, 'profileId required'],
+    type: Type.string({ required: true }),
   },
 }, {
   _id: false,
@@ -41,15 +38,15 @@ const PlayerProfileSchema = createSchema({
 
 const ChannelConfigSchema = createSchema({
   channelId: {
-    type: Type.string(),
-    required: [true, 'channelId required'],
-    unique: true,
-    index: true,
+    type: Type.string({
+      required: true,
+      unique: true,
+      index: true,
+    }),
   },
   profiles: {
-    type: Type.array().of(PlayerProfileSchema),
+    type: Type.array({ required: true }).of(PlayerProfileSchema),
     default: [],
-    required: [true, 'profiles required'],
   },
   createdAt: {
     type: Date,
