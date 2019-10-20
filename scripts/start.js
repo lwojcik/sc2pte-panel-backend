@@ -1,7 +1,6 @@
 (process.env.NODE_ENV !== 'production') && require('dotenv').config();
 const fastify = require('fastify');
 // const fp = require('fastify-plugin');
-const fastifyBlipp = require('fastify-blipp');
 const fastifyRedis = require('fastify-redis');
 const fastifyEnv = require('fastify-env');
 const fastifyCors = require('fastify-cors');
@@ -78,7 +77,6 @@ if (process.env.SC2PTE_REDIS_ENABLE === 'true') {
 }
 
 fastifyInstance.register(server, opts);
-fastifyInstance.register(fastifyBlipp);
 
 fastifyInstance.register(fastifyCors, { 
   origin: [ /localhost/, /127.0.0.1/ ],
@@ -87,7 +85,6 @@ fastifyInstance.register(fastifyCors, {
 
 const start = () => fastifyInstance.listen(process.env.SC2PTE_NODE_PORT, (err) => {
   if (err) throw err;
-  fastifyInstance.blipp();
   fastifyInstance.log.info(`Redis cache enabled: ${!!opts.redis.enable}`);
   fastifyInstance.log.info(`Twitch.ext.onauthorized: ${!!opts.twitch.enableOnauthorized}`)
 });

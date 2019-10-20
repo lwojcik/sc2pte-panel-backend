@@ -10,12 +10,14 @@ const response = {
     type: "object",
     properties: {
       status: { type: "number" },
+      message: { type: "string" },
     },
   },
   500: {
     type: "object",
     properties: {
       status: { type: "number" },
+      message: { type: "string" },
     },
   },
 };

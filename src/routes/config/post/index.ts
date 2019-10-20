@@ -5,10 +5,9 @@ import { saveConfig } from '../../../controllers/config';
 export default fp((server, {}, next) => {
   server.post("/config", /* { schema }, */ async (request, reply) => {
     try {
-      const { channelid } = request.headers;
+      const channelId = request.headers.channelid;
       const data = JSON.parse(request.body);
-
-      const configSaved = await saveConfig({ channelId: channelid, data });
+      const configSaved = await saveConfig({ channelId, data });
 
       if (configSaved) {
         reply.code(200).send({
@@ -18,7 +17,7 @@ export default fp((server, {}, next) => {
       } else {
         reply.code(400).send({
           status: 400,
-          message: 'Config save failed',
+          message: 'Failed to save config',
         });
       }
     } catch (error) {
