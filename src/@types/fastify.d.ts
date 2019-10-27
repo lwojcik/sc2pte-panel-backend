@@ -66,6 +66,9 @@ declare module 'fastify' {
       expire: (key, value) => Promise<any>;
       ttl: (key) => Promise<number>;
     };
+    twitchEbs: {
+      verifyBroadcaster: (payload: string) => boolean;
+    }
     bas: {
       getAccessToken: (refresh?: Boolean) => Promise<string>;
       refreshAccessToken: () => Promise<string>;

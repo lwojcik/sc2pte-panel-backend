@@ -40,7 +40,6 @@ export default fp(async (server, opts, next) => {
     // console.log(config);
     try {
       const { channelId, data } = config;
-      console.log(data);
       await ChannelConfig.findOneAndUpdate(
         { channelId },
         { profiles: data },
