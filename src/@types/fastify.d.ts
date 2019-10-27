@@ -51,6 +51,7 @@ declare module 'fastify' {
     playerConfig: {
       save: any;
     };
+    authenticateConfig: fastify.FastifyMiddleware,
     log(): void;
     close(): Promise<any>;
     accessToken: {

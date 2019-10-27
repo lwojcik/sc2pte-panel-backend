@@ -13,6 +13,14 @@ const getConfig = (enableRedis: boolean) => {
     bnet: {
       region: 'us',
     },
+    db: {
+      uri: 'http://localhost/db',
+    },
+    twitch: {
+      clientId: 'fake_client_id',
+      secret: 'fake_client_secret',
+      enableOnauthorized: true,
+    },
     redis: {
       enable: enableRedis,
       host: '127.0.0.1',
