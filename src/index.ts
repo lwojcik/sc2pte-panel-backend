@@ -33,6 +33,7 @@ const api = fp(
     fastify.decorate("authenticateConfig", (request: FastifyRequest, reply: FastifyReply<IncomingMessage>, done: nextCallback) => {
       try {
         const { channelid, token } = request.headers;
+        console.log(request.headers);
         const valid = fastify.twitchEbs.validatePermission(
           token,
           channelid,

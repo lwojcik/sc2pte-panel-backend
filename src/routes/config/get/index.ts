@@ -5,7 +5,7 @@ export default fp((server, {}, next) => {
   server.get(
   "/config/:channelId",
   { // schema,
-    preValidation: [server.authenticateConfig],
+    // preValidation: [server.authenticateConfig],
   },
   (request, reply) => {
     const { channelId } = request.params;
