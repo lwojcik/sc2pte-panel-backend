@@ -3,7 +3,14 @@ import fp from 'fastify-plugin';
 import { ConfigObject } from '../@types/fastify';
 import ChannelConfig from '../models/ChannelConfig';
 
-export default fp(async (server, opts, next) => {
+interface DbPluginOptions {
+  uri: string;
+  maxPlayerProfileCount: number;
+}
+
+export default fp(async (server, opts: DbPluginOptions, next) => {
+  const { uri, maxPlayerProfileCount } = opts;
+
   mongoose.connection.once('open', () => {
     server.log.info('MongoDB event open');
 
@@ -25,7 +32,7 @@ export default fp(async (server, opts, next) => {
   });
 
   await mongoose.connect(
-    opts.uri,
+    uri,
     {
       family: 4,
       useNewUrlParser: true,
@@ -37,12 +44,12 @@ export default fp(async (server, opts, next) => {
   );
 
   const save = async (config: ConfigObject) => {
-    // console.log(config);
+    console.log(config);
     try {
       const { channelId, data } = config;
       await ChannelConfig.findOneAndUpdate(
         { channelId },
-        { profiles: data },
+        { profiles: data.slice(0, maxPlayerProfileCount) },
         {
           upsert: true,
           runValidators: true,

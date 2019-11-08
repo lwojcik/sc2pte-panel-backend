@@ -17,23 +17,28 @@ interface ServerOptions {
   twitch: {
     secret: string;
     enableOnauthorized: boolean;
-  }
+  },
+  maxPlayerProfileCount: number;
 }
 
 const api = fp(
   (fastify: FastifyInstance, opts: ServerOptions, next: Function) => {
+    const { maxPlayerProfileCount } = opts;
     fastify.register(cache);
-    fastify.register(db, opts.db);
-    fastify.register(playerConfig);
+    fastify.register(db, {
+      ...opts.db,
+      maxPlayerProfileCount,
+    });
+    fastify.register(playerConfig, { maxPlayerProfileCount });
     fastify.register(statusRoutes);
     fastify.register(twitchEbsTools, {
       secret: opts.twitch.secret,
       disabled: !opts.twitch.enableOnauthorized,
     });
+
     fastify.decorate("authenticateConfig", (request: FastifyRequest, reply: FastifyReply<IncomingMessage>, done: nextCallback) => {
       try {
         const { channelid, token } = request.headers;
-        console.log(request.headers);
         const valid = fastify.twitchEbs.validatePermission(
           token,
           channelid,
@@ -55,6 +60,7 @@ const api = fp(
         });
       }
     });
+
     fastify.register(configRoutes.get);
     fastify.register(configRoutes.post);
     fastify.register(viewerRoutes.get);

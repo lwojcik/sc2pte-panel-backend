@@ -6,6 +6,8 @@ import StarCraft2API from 'starcraft2-api';
 const regionIds = StarCraft2API.getAllRegionIds().map(regionId => regionId.toString());
 const realmIds = StarCraft2API.getAllAvailableSc2Realms().map(realmId => realmId.toString());
 
+// const maxPlayerProfileCount = Number(process.env.SC2PTE_MAXIMUM_PLAYER_OBJECT_COUNT) || 5;
+
 interface PlayerProfile {
   regionId: string;
   realmId: string;
@@ -18,6 +20,8 @@ interface ChannelConfig extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+// const arrayLimit = (val: unknown[]) => val.length <= maxPlayerProfileCount;
 
 const PlayerProfileSchema = createSchema({
   regionId: {
@@ -45,7 +49,10 @@ const ChannelConfigSchema = createSchema({
     }),
   },
   profiles: {
-    type: Type.array({ required: true }).of(PlayerProfileSchema),
+    type: Type.array({
+      required: true,
+      // validate: [arrayLimit, `profile array exceeds the limit of ${maxPlayerProfileCount}`],
+    }).of(PlayerProfileSchema),
     default: [],
   },
   createdAt: {

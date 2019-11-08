@@ -2,8 +2,12 @@ import fp from 'fastify-plugin';
 import { ConfigObject, PlayerObject } from '../@types/fastify';
 import StarCraft2API from 'starcraft2-api';
 
-export default fp(async (server, opts, next) => {
-  const maxCount = opts.maximumPlayerObjectCount || 5;
+interface PlayerConfigPluginOptions {
+  maxPlayerProfileCount: number;
+}
+
+export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
+  const maxCount = opts.maxPlayerProfileCount;
 
   const isChannelIdValid = (channelId: string) =>
     channelId === Number(channelId).toString();
