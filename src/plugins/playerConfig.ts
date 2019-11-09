@@ -53,7 +53,10 @@ export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
     return false;
   }
 
-  server.decorate('playerConfig', { save });
+  const get = (channelId: number) =>
+    server.db.get(channelId);
+
+  server.decorate('playerConfig', { save, get });
 
   next();
 });

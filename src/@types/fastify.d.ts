@@ -50,6 +50,7 @@ declare module 'fastify' {
     db: any;
     playerConfig: {
       save: any;
+      get: any;
     };
     authenticateConfig: fastify.FastifyMiddleware,
     log(): void;
