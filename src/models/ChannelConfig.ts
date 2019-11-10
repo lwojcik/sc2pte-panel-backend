@@ -12,6 +12,7 @@ interface PlayerProfile {
   regionId: string;
   realmId: string;
   profileId: string;
+  locale: string;
 }
 
 interface ChannelConfig extends Document {
@@ -33,6 +34,9 @@ const PlayerProfileSchema = createSchema({
     enum: realmIds,
   },
   profileId: {
+    type: Type.string({ required: true }),
+  },
+  locale: {
     type: Type.string({ required: true }),
   },
 }, {
