@@ -38,14 +38,17 @@ const api = fp(
 
     fastify.decorate("authenticateConfig", (request: FastifyRequest, reply: FastifyReply<IncomingMessage>, done: nextCallback) => {
       try {
+        const channelIdInUrl = request.params.channelId;
         const { channelid, token } = request.headers;
-        const valid = fastify.twitchEbs.validatePermission(
+
+        const channelIdCorrect = channelIdInUrl === channelid;
+        const payloadValid = fastify.twitchEbs.validatePermission(
           token,
           channelid,
           'broadcaster',
         );
 
-        if (valid) {
+        if (channelIdCorrect && payloadValid) {
           done();
         } else {
           reply.code(401).send({

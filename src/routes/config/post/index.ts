@@ -3,14 +3,14 @@ import fp from "fastify-plugin";
 
 export default fp((server, {}, next) => {
   server.post(
-    "/config",
+    "/config/:channelId",
     {
       // schema,
       preValidation: [server.authenticateConfig],
     },
     async (request, reply) => {
       try {
-        const channelId = request.headers.channelid;
+        const channelId = request.params.channelId;
         const data = JSON.parse(request.body);
         const configSaved = await server.playerConfig.save({ channelId, data });
 
