@@ -70,6 +70,7 @@ declare module 'fastify' {
     };
     twitchEbs: {
       verifyBroadcaster: (payload: string) => boolean;
+      validatePermission: (token: string, channelid: string, role: string) => boolean;
     }
     bas: {
       getAccessToken: (refresh?: Boolean) => Promise<string>;
