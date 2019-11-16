@@ -27,7 +27,6 @@ export default fp(async (server, opts: PluginOptions, next) => {
     roles: string | string[]) => {
       try {
         const channelIdInUrl = request.params.channelId;
-        console.log(request.headers);
         const { channelid, token } = request.headers;
         const channelIdCorrect = channelIdInUrl === channelid;
         const payloadValid = server.twitchEbs.validatePermission(
