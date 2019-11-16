@@ -14,17 +14,20 @@ export default fp(async (server, opts: PluginOptions, next) => {
     disabled: !opts.enableOnAuthorized,
   });
 
-  server.decorate(
-    "authenticateConfig",
-    (request: FastifyRequest, reply: FastifyReply<ServerResponse>, done: CallableFunction) => {
+  const validatePermission = (
+    request: FastifyRequest,
+    reply: FastifyReply<ServerResponse>,
+    done: CallableFunction,
+    roles: string | string[]) => {
       try {
         const channelIdInUrl = request.params.channelId;
+        console.log(request.headers);
         const { channelid, token } = request.headers;
         const channelIdCorrect = channelIdInUrl === channelid;
         const payloadValid = server.twitchEbs.validatePermission(
           token,
           channelid,
-          'broadcaster',
+          roles,
         );
 
         if (channelIdCorrect && payloadValid) {
@@ -41,6 +44,17 @@ export default fp(async (server, opts: PluginOptions, next) => {
           message: 'Unauthorized',
         });
       }
-  });
+    }
+
+  server.decorate(
+    "authenticateConfig",
+    (request: FastifyRequest, reply: FastifyReply<ServerResponse>, done: CallableFunction) =>
+      validatePermission(request, reply, done, [ "broadcaster"]));
+
+  server.decorate(
+    "authenticateViewer",
+    (request: FastifyRequest, reply: FastifyReply<ServerResponse>, done: CallableFunction) =>
+      validatePermission(request, reply, done, [ "viewer", "broadcaster"]));
+
   next();
 });

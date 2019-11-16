@@ -53,6 +53,7 @@ declare module 'fastify' {
       get: any;
     };
     authenticateConfig: fastify.FastifyMiddleware,
+    authenticateViewer: fastify.FastifyMiddleware,
     log(): void;
     close(): Promise<any>;
     accessToken: {
@@ -70,7 +71,7 @@ declare module 'fastify' {
     };
     twitchEbs: {
       verifyBroadcaster: (payload: string) => boolean;
-      validatePermission: (token: string, channelid: string, role: string) => boolean;
+      validatePermission: (token: string, channelid: string, role: string | string[]) => boolean;
     }
     bas: {
       getAccessToken: (refresh?: Boolean) => Promise<string>;
