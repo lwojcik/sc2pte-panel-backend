@@ -19,7 +19,7 @@ const getConfig = (enableRedis: boolean) => {
     twitch: {
       clientId: 'fake_client_id',
       secret: 'fake_client_secret',
-      enableOnauthorized: true,
+      enableOnAuthorized: true,
     },
     redis: {
       enable: enableRedis,

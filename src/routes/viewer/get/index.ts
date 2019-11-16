@@ -39,6 +39,15 @@ export default fp((server, {}, next) => {
                 mmr: 3655,
                 divisionRank: 3,
               },
+              {
+                mode: "2v2",
+                rank: "silver",
+                wins: 101,
+                losses: 100,
+                race: "random",
+                mmr: 3655,
+                divisionRank: 3,
+              },
             ],
             stats: {
               totalGames: 100,
