@@ -7,7 +7,7 @@ interface PlayerConfigPluginOptions {
 }
 
 export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
-  const maxCount = opts.maxPlayerProfileCount;
+  const { maxPlayerProfileCount } = opts;
 
   const isChannelIdValid = (channelId: string) =>
     channelId === Number(channelId).toString();
@@ -16,7 +16,7 @@ export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
     Array.isArray(dataArray) && dataArray.length > 0;
   
   const maximumElementCount = (dataArray: PlayerObject[]) =>
-    Array.isArray(dataArray) && dataArray.length <= maxCount;
+    Array.isArray(dataArray) && dataArray.length <= maxPlayerProfileCount;
   
   const isPlayerObjectValid = (playerObject: PlayerObject) => {
     try {

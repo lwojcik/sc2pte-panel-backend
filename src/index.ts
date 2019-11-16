@@ -15,7 +15,7 @@ interface ServerOptions {
   },
   twitch: {
     secret: string;
-    enableOnauthorized: boolean;
+    enableOnAuthorized: boolean;
   },
   maxPlayerProfileCount: number;
 }
@@ -29,8 +29,8 @@ const api = fp(
       maxPlayerProfileCount,
     });
     fastify.register(playerConfig, { maxPlayerProfileCount });
+    fastify.register(twitchConfigValidator, opts.twitch);
     fastify.register(statusRoutes);
-    fastify.register(twitchConfigValidator);
     fastify.register(configRoutes.get);
     fastify.register(configRoutes.post);
     fastify.register(viewerRoutes.get);

@@ -8,8 +8,7 @@ interface PluginOptions {
   enableOnAuthorized: boolean;
 }
 
-export default fp(async (server, opts: PluginOptions) => {
-
+export default fp(async (server, opts: PluginOptions, next) => {
   server.register(twitchEbsTools, {
     secret: opts.secret,
     disabled: !opts.enableOnAuthorized,
@@ -21,7 +20,6 @@ export default fp(async (server, opts: PluginOptions) => {
       try {
         const channelIdInUrl = request.params.channelId;
         const { channelid, token } = request.headers;
-
         const channelIdCorrect = channelIdInUrl === channelid;
         const payloadValid = server.twitchEbs.validatePermission(
           token,
@@ -44,4 +42,5 @@ export default fp(async (server, opts: PluginOptions) => {
         });
       }
   });
+  next();
 });
