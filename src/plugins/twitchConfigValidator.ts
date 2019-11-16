@@ -14,6 +14,12 @@ export default fp(async (server, opts: PluginOptions, next) => {
     disabled: !opts.enableOnAuthorized,
   });
 
+  const handle401 = (reply: FastifyReply<ServerResponse>) =>
+    reply.code(401).send({
+      status: 401,
+      message: 'Unauthorized',
+    });
+
   const validatePermission = (
     request: FastifyRequest,
     reply: FastifyReply<ServerResponse>,
@@ -33,28 +39,26 @@ export default fp(async (server, opts: PluginOptions, next) => {
         if (channelIdCorrect && payloadValid) {
           done();
         } else {
-          reply.code(401).send({
-            status: 401,
-            message: 'Unauthorized',
-          });
+          handle401(reply);
         }
       } catch (error) {
-        reply.code(401).send({
-          status: 401,
-          message: 'Unauthorized',
-        });
+        handle401(reply);
       }
     }
 
   server.decorate(
     "authenticateConfig",
-    (request: FastifyRequest, reply: FastifyReply<ServerResponse>, done: CallableFunction) =>
-      validatePermission(request, reply, done, [ "broadcaster"]));
+    (request: FastifyRequest,
+      reply: FastifyReply<ServerResponse>,
+      done: CallableFunction) =>
+        validatePermission(request, reply, done, [ "broadcaster"]));
 
   server.decorate(
     "authenticateViewer",
-    (request: FastifyRequest, reply: FastifyReply<ServerResponse>, done: CallableFunction) =>
-      validatePermission(request, reply, done, [ "viewer", "broadcaster"]));
+    (request: FastifyRequest,
+      reply: FastifyReply<ServerResponse>,
+      done: CallableFunction) =>
+        validatePermission(request, reply, done, [ "viewer", "broadcaster"]));
 
   next();
 });
