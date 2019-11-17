@@ -12,22 +12,22 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
   const { uri, maxPlayerProfileCount } = opts;
 
   mongoose.connection.once('open', () => {
-    server.log.info('MongoDB event open');
+    server.log.info('MongoDB open');
 
     mongoose.connection.on('connected', () => {
-      server.log.info('MongoDB event connected');
+      server.log.info('MongoDB connected');
     });
 
     mongoose.connection.on('disconnected', () => {
-      server.log.warn('MongoDB event disconnected');
+      server.log.warn('MongoDB disconnected');
     });
 
     mongoose.connection.on('reconnected', () => {
-      server.log.info('MongoDB event reconnected');
+      server.log.info('MongoDB reconnected');
     });
 
     mongoose.connection.on('error', (err) => {
-      server.log.error(`MongoDB event error: ${err}`);
+      server.log.error(`MongoDB error: ${err}`);
     });
   });
 
