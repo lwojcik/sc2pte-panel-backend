@@ -142,7 +142,7 @@ export default fp((server, {}, next) => {
             heading: {
               portrait: {
                 url: "https://static.starcraft2.com/starport/d0e7c831-18ab-4cd6-adc7-9d4a28f49ec7/portraits/2-14.jpg",
-                frame: "grandmaster",
+                frame: "platinum",
               },
               player: {
                 clan: {
