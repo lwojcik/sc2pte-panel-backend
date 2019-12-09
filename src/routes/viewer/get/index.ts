@@ -3,7 +3,7 @@ import fp from "fastify-plugin";
 
 export default fp((server, {}, next) => {
   server.get(
-    "/viewer/:channelId",
+    "/v2/viewer/:channelId",
     {
       preValidation: [server.authenticateViewer],
     },
@@ -333,7 +333,7 @@ export default fp((server, {}, next) => {
                 ],
               },
             },
-          ].slice(0,5),
+          ].slice(0,0),
         },
     });
   });

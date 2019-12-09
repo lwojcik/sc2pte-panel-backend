@@ -3,7 +3,7 @@ import fp from "fastify-plugin";
 
 export default fp((server, {}, next) => {
   server.post(
-    "/config/:channelId",
+    "/v2/config/:channelId",
     {
       // schema,
       preValidation: [server.authenticateConfig],
