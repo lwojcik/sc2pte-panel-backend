@@ -31,7 +31,7 @@
     "abstract-cache-redis": "1.0.2",
     "blizzapi": "0.0.8",
     "dotenv": "7.0.0",
-    "fastify": "2.1.0",
+    "fastify": "2.11.0",
     "fastify-blipp": "1.2.1",
     "fastify-caching": "5.0.0",
     "fastify-compress": "0.8.1",
