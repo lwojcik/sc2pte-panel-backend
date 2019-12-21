@@ -13,5 +13,6 @@ const bnetConfig = {};
 bnetConfig.apiKey = env.API_BATTLENET_KEY;
 /** Battle.net API secret */
 bnetConfig.apiSecret = env.API_BATTLENET_SECRET;
+bnetConfig.apisDisabled = env.API_BATTLENET_APIS_DISABLED === 'true';
 
 module.exports = bnetConfig;
