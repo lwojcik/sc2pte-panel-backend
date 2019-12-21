@@ -25,6 +25,7 @@ const responseJsonSchema = {
       realmId: { type: 'number' },
       playerId: { type: 'number' },
       selectedView: { type: 'string' },
+      apiDisabledJanuary2020: { type: 'boolean' },
     },
   },
   404: {
@@ -32,6 +33,7 @@ const responseJsonSchema = {
     properties: {
       status: { type: 'number' },
       message: { type: 'string' },
+      apiDisabledJanuary2020: { type: 'boolean' },
     },
   },
   400: {

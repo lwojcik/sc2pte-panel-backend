@@ -2,6 +2,8 @@ const fp = require('fastify-plugin');
 
 const schema = require('./schema');
 
+const bnetConfig = require('../../../../config/battlenet');
+
 module.exports = fp(async (server, opts, next) => {
   server.route({
     url: '/v1.1/config/get/:channelId',
@@ -25,6 +27,7 @@ module.exports = fp(async (server, opts, next) => {
     handler: async (request, reply) => {
       try {
         const { channelId } = request.params;
+        const { apiDisabledJanuary2020 } = bnetConfig;
 
         const channelConfig = await server.db.models.ChannelConfig.findOne({ channelId });
 
@@ -43,12 +46,14 @@ module.exports = fp(async (server, opts, next) => {
             realmId,
             playerId,
             selectedView,
+            apiDisabledJanuary2020,
           });
         }
 
         return reply.code(404).send({
           status: 404,
           message: 'Account not found',
+          apiDisabledJanuary2020,
         });
       } catch (error) {
         server.log.error(error);

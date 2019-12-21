@@ -3,6 +3,7 @@ const fp = require('fastify-plugin');
 const schema = require('./schema');
 
 const redisConfig = require('../../../../config/redis');
+// const bnetConfig = require('../../../../config/battlenet');
 
 module.exports = fp(async (server, opts, next) => {
   server.route({
@@ -37,7 +38,7 @@ module.exports = fp(async (server, opts, next) => {
         server.log.info('generating and caching response...');
         const channelConfigObject = await server.db.models.ChannelConfig.findOne({ channelId });
 
-        if (channelConfigObject && channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
+        if (channelConfigObject && channelConfigObject._doc) { // eslint-disable-line
           const channelConfig = channelConfigObject._doc; // eslint-disable-line
           const viewerData = await server.sc2pte.getViewerData(channelConfig);
           const responseObject = {
