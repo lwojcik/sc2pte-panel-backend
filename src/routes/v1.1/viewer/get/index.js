@@ -37,7 +37,7 @@ module.exports = fp(async (server, opts, next) => {
         server.log.info('generating and caching response...');
         const channelConfigObject = await server.db.models.ChannelConfig.findOne({ channelId });
 
-        if (channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
+        if (channelConfigObject && channelConfigObject._doc) { // eslint-disable-line no-underscore-dangle
           const channelConfig = channelConfigObject._doc; // eslint-disable-line
           const viewerData = await server.sc2pte.getViewerData(channelConfig);
           const responseObject = {

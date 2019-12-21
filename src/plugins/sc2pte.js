@@ -1,25 +1,38 @@
 const fp = require('fastify-plugin');
-const { StarCraft2API } = require('starcraft2-api');
-const { BlizzAPI, BlizzUtils } = require('blizzapi');
+const StarCraft2API = require('starcraft2-api');
+const BlizzAPI = require('blizzapi');
 const sc2utils = require('../utils/starcraft2');
 const bnetConfig = require('../config/battlenet');
 
 function sc2pte(fastify, options, next) { // eslint-disable-line consistent-return
   function blizzAPI(regionId) {
-    return new BlizzAPI(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
+    return new BlizzAPI({
+      region: regionId,
+      clientId: bnetConfig.apiKey,
+      clientSecret: bnetConfig.apiSecret,
+    });
   }
 
   function SC2API(regionId) {
-    return new StarCraft2API(regionId, bnetConfig.apiKey, bnetConfig.apiSecret);
+    return new StarCraft2API({
+      region: regionId,
+      clientId: bnetConfig.apiKey,
+      clientSecret: bnetConfig.apiSecret,
+    });
   }
 
   async function getHeader(configObject) {
     try {
       const { regionId, realmId, playerId } = configObject;
-      const playerProfile = await SC2API(regionId).queryProfile(regionId, realmId, playerId);
+      const playerProfile = await SC2API(regionId).queryProfile({
+        regionId,
+        realmId,
+        profileId: playerId,
+      });
+
       const headerObject = {
         player: {
-          server: BlizzUtils.getRegionNameById(regionId)[0],
+          server: BlizzAPI.getRegionNameById(regionId)[0],
           name: playerProfile.summary.displayName,
           clan: {
             name: playerProfile.summary.clanName || '',
@@ -66,10 +79,10 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
 
   async function getPlayerLadders(configObject) {
     const { regionId, realmId, playerId } = configObject;
-    const playerLadders = await blizzAPI(regionId).querySearch(
+    const playerLadderObject = await blizzAPI(regionId).query(
       `/sc2/profile/${regionId}/${realmId}/${playerId}/ladder/summary`,
-      'allLadderMemberships',
     );
+    const playerLadders = playerLadderObject.allLadderMemberships;
     const playerLadderData = await Promise.all(
       playerLadders.map(
         playerLadder => getPlayerDataFromLadder(
@@ -142,12 +155,11 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
           : ladderObject[ladderMode].topRankId;
       }
       if (ladder.ladderPosition) {
-          ladderObject[ladderMode].topRankTier = sc2utils.determineRankIdByName(ladder.rank)
+        ladderObject[ladderMode].topRankTier = sc2utils.determineRankIdByName(ladder.rank)
           > ladderObject[ladderMode].topRankId
-            ? ladderObject[ladderMode].topRankTier
-            : ladder.ladderPosition;
+          ? ladderObject[ladderMode].topRankTier
+          : ladder.ladderPosition;
       }
-  
 
       ladderObject[ladderMode].topRank = sc2utils.determineRankNameById(
         ladderObject[ladderMode].topRankId,
