@@ -7,7 +7,7 @@ const bnetConfig = require('../config/battlenet');
 function sc2pte(fastify, options, next) { // eslint-disable-line consistent-return
   function blizzAPI(regionId) {
     return new BlizzAPI({
-      region: regionId,
+      region: BlizzAPI.getRegionNameById(regionId)[0],
       clientId: bnetConfig.apiKey,
       clientSecret: bnetConfig.apiSecret,
     });
@@ -15,7 +15,7 @@ function sc2pte(fastify, options, next) { // eslint-disable-line consistent-retu
 
   function SC2API(regionId) {
     return new StarCraft2API({
-      region: regionId,
+      region: BlizzAPI.getRegionNameById(regionId)[0],
       clientId: bnetConfig.apiKey,
       clientSecret: bnetConfig.apiSecret,
     });
