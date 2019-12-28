@@ -3,7 +3,7 @@ const fp = require('fastify-plugin');
 const schema = require('./schema');
 
 const redisConfig = require('../../../../config/redis');
-// const bnetConfig = require('../../../../config/battlenet');
+const bnetConfig = require('../../../../config/battlenet');
 
 module.exports = fp(async (server, opts, next) => {
   server.route({
@@ -36,6 +36,13 @@ module.exports = fp(async (server, opts, next) => {
           return reply.code(200).send(cachedReply.item);
         }
         server.log.info('generating and caching response...');
+
+        if (bnetConfig.apiDisabledJanuary2020) {
+          const responseObject = server.snapshot.getViewerData(channelId);
+          await server.cache.set(redisKey, responseObject, redisConfig.replyCachePeriod);
+          return reply.code(200).send(responseObject);
+        }
+
         const channelConfigObject = await server.db.models.ChannelConfig.findOne({ channelId });
 
         if (channelConfigObject && channelConfigObject._doc) { // eslint-disable-line
