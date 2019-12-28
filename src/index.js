@@ -19,14 +19,15 @@ const appConfig = require('./config/app');
 const dbConfig = require('./config/database');
 const twitchConfig = require('./config/twitch');
 const redisConfig = require('./config/redis');
+const bnetConfig = require('./config/battlenet');
 
 const getViewerRoutes = require('./routes/v1.1/viewer/get');
 const saveConfigRoutes = require('./routes/v1.1/config/save');
 const getConfigRoutes = require('./routes/v1.1/config/get');
 
 const db = require('./plugins/db');
-
 const sc2pte = require('./plugins/sc2pte');
+const snapshot = require('./plugins/snapshot');
 
 const { env } = process;
 
@@ -101,6 +102,12 @@ server.register(sc2pte);
 if (env.API_HOST_PROTOCOL === 'https') {
   server.register(tlsKeygen);
 }
+
+/* Data snapshots for dark times in January 2020 when Battle.net API is down */
+
+server.register(snapshot, {
+  dataDir: bnetConfig.snapshotDataDirectory,
+});
 
 /* Routes */
 

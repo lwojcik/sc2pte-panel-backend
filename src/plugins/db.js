@@ -32,6 +32,7 @@ module.exports = fp(async (server, opts, next) => {
       keepAlive: true,
       useFindAndModify: false,
       useCreateIndex: true,
+      useUnifiedTopology: true,
     },
   );
 
