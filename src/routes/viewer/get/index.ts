@@ -14,7 +14,7 @@ const getSampleSnapshot = (rank: string, divisionRank: number) => ([
       'Player name 1',
       'Player name 2',
       'Player name 3',
-    ]
+    ],
   },
 ]);
 
