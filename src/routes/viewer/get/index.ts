@@ -16,6 +16,20 @@ const getSampleSnapshot = (rank: string, divisionRank: number) => ([
       'Player name 3',
     ],
   },
+  {
+    mode: "2v2",
+    rank,
+    wins: 101,
+    losses: 100,
+    race: "random",
+    mmr: 3655,
+    divisionRank,
+    teamMembers: [
+      'Player name 1',
+      'Player name 2',
+      'Player name 3',
+    ],
+  },
 ]);
 
 export default fp((server, {}, next) => {
@@ -26,7 +40,8 @@ export default fp((server, {}, next) => {
     },
     (request, reply) => {
       const { channelId } = request.params;
-      reply.code(200).send({
+      
+      const successFn = () => reply.code(200).send({
         channelId,
         data: {
           profiles: [
@@ -38,51 +53,26 @@ export default fp((server, {}, next) => {
                 },
                 player: {
                   clan: {
-                    name: "",
-                    tag: "",
+                    name: "name",
+                    tag: "nm",
                   },
                   name: "Player name",
                   server: "eu",
                 },
               },
               details: {
+              // snapshot: [],
                 snapshot: [
                   ...getSampleSnapshot('bronze', 1),
-                  ...getSampleSnapshot('bronze', 9),
-                  ...getSampleSnapshot('bronze', 26),
-                  ...getSampleSnapshot('bronze', 51),
-                  ...getSampleSnapshot('silver', 1),
-                  ...getSampleSnapshot('silver', 9),
-                  ...getSampleSnapshot('silver', 26),
-                  ...getSampleSnapshot('silver', 51),
-                  ...getSampleSnapshot('gold', 1),
-                  ...getSampleSnapshot('gold', 9),
-                  ...getSampleSnapshot('gold', 26),
-                  ...getSampleSnapshot('gold', 51),
-                  ...getSampleSnapshot('platinum', 1),
-                  ...getSampleSnapshot('platinum', 9),
-                  ...getSampleSnapshot('platinum', 26),
-                  ...getSampleSnapshot('platinum', 51),
-                  ...getSampleSnapshot('diamond', 1),
-                  ...getSampleSnapshot('diamond', 9),
-                  ...getSampleSnapshot('diamond', 26),
-                  ...getSampleSnapshot('diamond', 51),
-                  ...getSampleSnapshot('master', 1),
-                  ...getSampleSnapshot('master', 9),
-                  ...getSampleSnapshot('master', 26),
-                  ...getSampleSnapshot('master', 51),
-                  ...getSampleSnapshot('grandmaster', 1),
-                  ...getSampleSnapshot('grandmaster', 17),
-                  ...getSampleSnapshot('grandmaster', 51),
-                  ...getSampleSnapshot('grandmaster', 101),
-
                 ],
                 stats: {
-                  totalGames: 100,
-                  bonusPool: 24,
+                  totalCareerGames: 100,
+                  totalGamesThisSeason: 101,
+                  totalRankedGamesThisSeason: 102,
                   highestSoloRank: "silver",
                   highestTeamRank: "",
                 },
+                // history: [],
                 history: [
                   {
                     mapName: "Kairos Junction LE",
@@ -250,8 +240,9 @@ export default fp((server, {}, next) => {
                   },
                 ],
                 stats: {
-                  totalGames: 100,
-                  bonusPool: 24,
+                  totalCareerGames: 100,
+                  totalGamesThisSeason: 101,
+                  totalRankedGamesThisSeason: 102,
                   highestSoloRank: "silver",
                   highestTeamRank: "",
                 },
@@ -314,8 +305,9 @@ export default fp((server, {}, next) => {
                   },
                 ],
                 stats: {
-                  totalGames: 100,
-                  bonusPool: 24,
+                  totalCareerGames: 100,
+                  totalGamesThisSeason: 101,
+                  totalRankedGamesThisSeason: 102,
                   highestSoloRank: "silver",
                   highestTeamRank: "",
                 },
@@ -378,8 +370,9 @@ export default fp((server, {}, next) => {
                   },
                 ],
                 stats: {
-                  totalGames: 100,
-                  bonusPool: 24,
+                  totalCareerGames: 100,
+                  totalGamesThisSeason: 101,
+                  totalRankedGamesThisSeason: 102,
                   highestSoloRank: "silver",
                   highestTeamRank: "",
                 },
@@ -442,8 +435,9 @@ export default fp((server, {}, next) => {
                   },
                 ],
                 stats: {
-                  totalGames: 100,
-                  bonusPool: 24,
+                  totalCareerGames: 100,
+                  totalGamesThisSeason: 101,
+                  totalRankedSeasonGamesPlayed: 102,
                   highestSoloRank: "silver",
                   highestTeamRank: "",
                 },
@@ -562,6 +556,9 @@ export default fp((server, {}, next) => {
           ].slice(0,1),
         },
     });
+    setTimeout(() => {
+      successFn();
+    }, 3000);
   });
   next();
 });
