@@ -17,18 +17,18 @@ interface ServerOptions {
     secret: string;
     enableOnAuthorized: boolean;
   },
-  maxPlayerProfileCount: number;
+  maxProfiles: number;
 }
 
 const api = fp(
   (fastify: FastifyInstance, opts: ServerOptions, next: CallableFunction) => {
-    const { maxPlayerProfileCount } = opts;
+    const { maxProfiles } = opts;
     fastify.register(cache);
     fastify.register(db, {
       ...opts.db,
-      maxPlayerProfileCount,
+      maxProfiles,
     });
-    fastify.register(playerConfig, { maxPlayerProfileCount });
+    fastify.register(playerConfig, { maxProfiles });
     fastify.register(twitchConfigValidator, opts.twitch);
     fastify.register(statusRoutes);
     fastify.register(configRoutes.get);

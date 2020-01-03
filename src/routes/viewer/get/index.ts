@@ -553,7 +553,7 @@ export default fp((server, {}, next) => {
                 ],
               },
             },
-          ].slice(0,1),
+          ].slice(0,3),
         },
     });
     setTimeout(() => {

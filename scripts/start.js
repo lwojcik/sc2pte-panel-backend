@@ -58,7 +58,7 @@ const opts = {
     secret: env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
     enableOnauthorized: env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
   },
-  maxPlayerProfileCount: Number(env.SC2PTE_MAXIMUM_PLAYER_OBJECT_COUNT) || 5,
+  maxProfiles: Number(env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3,
 }
 
 const fastifyInstance = fastify({

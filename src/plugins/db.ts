@@ -5,11 +5,11 @@ import ChannelConfig from '../models/ChannelConfig';
 
 interface DbPluginOptions {
   uri: string;
-  maxPlayerProfileCount: number;
+  maxProfiles: number;
 }
 
 export default fp(async (server, opts: DbPluginOptions, next) => {
-  const { uri, maxPlayerProfileCount } = opts;
+  const { uri, maxProfiles } = opts;
 
   mongoose.connection.once('open', () => {
     server.log.info('MongoDB open');
@@ -48,7 +48,10 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
       const { channelId, data } = config;
       await ChannelConfig.findOneAndUpdate(
         { channelId },
-        { profiles: data.slice(0, maxPlayerProfileCount) },
+        {
+          profiles: data.slice(0, maxProfiles),
+          maxProfiles,
+        },
         {
           upsert: true,
           runValidators: true,
