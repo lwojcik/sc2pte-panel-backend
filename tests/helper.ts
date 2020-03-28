@@ -47,7 +47,7 @@ const getConfig = (enableRedis: boolean) => {
         },
       },
     },
-    maxPlayerProfileCount: 5,
+    maxProfiles: 5,
   }
 }
 

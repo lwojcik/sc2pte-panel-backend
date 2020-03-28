@@ -8,13 +8,13 @@ interface ApiResponse {
 }
 
 export interface PlayerObject {
-  regionId: number;
-  realmId: number;
+  regionId: string;
+  realmId: string;
   profileId: string;
 }
 
 export interface PlayerLadder extends PlayerObject {
-  ladderId: number;
+  ladderId: string;
 }
 
 export interface LeagueObject {

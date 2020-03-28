@@ -63,7 +63,7 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
     }
   }
 
-  const get = async (channelId: number) => {
+  const get = async (channelId: string) => {
     try {
       const data = await ChannelConfig.findOne({ channelId });
       if (data) {

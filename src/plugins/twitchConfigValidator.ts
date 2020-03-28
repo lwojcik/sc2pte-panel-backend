@@ -9,9 +9,10 @@ interface PluginOptions {
 }
 
 export default fp(async (server, opts: PluginOptions, next) => {
+  const disabled = !opts.enableOnAuthorized;
   server.register(twitchEbsTools, {
     secret: opts.secret,
-    disabled: !opts.enableOnAuthorized,
+    disabled,
   });
 
   const handle401 = (reply: FastifyReply<ServerResponse>) =>
@@ -28,7 +29,7 @@ export default fp(async (server, opts: PluginOptions, next) => {
       try {
         const channelIdInUrl = request.params.channelId;
         const { channelid, token } = request.headers;
-        const channelIdCorrect = channelIdInUrl === channelid;
+        const channelIdCorrect = disabled ? true : channelIdInUrl === channelid;
         const payloadValid = server.twitchEbs.validatePermission(
           token,
           channelid,
@@ -50,14 +51,14 @@ export default fp(async (server, opts: PluginOptions, next) => {
     (request: FastifyRequest,
       reply: FastifyReply<ServerResponse>,
       done: CallableFunction) =>
-        validatePermission(request, reply, done, [ "broadcaster"]));
+        validatePermission(request, reply, done, [ "broadcaster" ]));
 
   server.decorate(
     "authenticateViewer",
     (request: FastifyRequest,
       reply: FastifyReply<ServerResponse>,
       done: CallableFunction) =>
-        validatePermission(request, reply, done, [ "viewer", "broadcaster"]));
+        validatePermission(request, reply, done, [ "viewer", "broadcaster" ]));
 
   next();
 });
