@@ -11,13 +11,13 @@ export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
 
   const isChannelIdValid = (channelId: string) =>
     channelId === Number(channelId).toString();
-  
+
   const minimumOneElement = (dataArray: PlayerObject[]) =>
     Array.isArray(dataArray) && dataArray.length > 0;
-  
+
   const maximumElementCount = (dataArray: PlayerObject[]) =>
     Array.isArray(dataArray) && dataArray.length <= maxProfiles;
-  
+
   const isPlayerObjectValid = (playerObject: PlayerObject) => {
     try {
       const { regionId, realmId, profileId } = playerObject;
@@ -28,12 +28,12 @@ export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
     } catch (error) {
       return false;
     }
-  }
-  
-  const allElementsValid = (playerObjects: PlayerObject[]) => 
+  };
+
+  const allElementsValid = (playerObjects: PlayerObject[]) =>
     playerObjects.map(playerObject => isPlayerObjectValid(playerObject));
-  
-  const isDataValid = (data: PlayerObject[]) => 
+
+  const isDataValid = (data: PlayerObject[]) =>
     minimumOneElement(data)
       && maximumElementCount(data)
       && allElementsValid(data);
@@ -51,7 +51,7 @@ export default fp(async (server, opts: PlayerConfigPluginOptions, next) => {
       return true;
     }
     return false;
-  }
+  };
 
   const get = (channelId: number) =>
     server.db.get(channelId);

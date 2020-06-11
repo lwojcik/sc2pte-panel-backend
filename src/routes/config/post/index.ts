@@ -1,9 +1,9 @@
-import fp from "fastify-plugin";
+import fp from 'fastify-plugin';
 // import schema from "./schema";
 
 export default fp((server, {}, next) => {
   server.post(
-    "/v2/config/:channelId",
+    '/v2/config/:channelId',
     {
       // schema,
       preValidation: [server.authenticateConfig],
@@ -13,6 +13,7 @@ export default fp((server, {}, next) => {
         const channelId = request.params.channelId;
         const data = JSON.parse(request.body);
         const configSaved = await server.playerConfig.save({ channelId, data });
+        console.log(data); // eslint-disable-line
 
         if (configSaved) {
           reply.code(200).send({
@@ -32,6 +33,7 @@ export default fp((server, {}, next) => {
           message: 'Incorrect or malformed request',
         });
       }
-  });
+    },
+  );
   next();
 });

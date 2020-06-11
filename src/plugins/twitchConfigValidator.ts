@@ -25,40 +25,46 @@ export default fp(async (server, opts: PluginOptions, next) => {
     request: FastifyRequest,
     reply: FastifyReply<ServerResponse>,
     done: CallableFunction,
-    roles: string | string[]) => {
-      try {
-        const channelIdInUrl = request.params.channelId;
-        const { channelid, token } = request.headers;
-        const channelIdCorrect = disabled ? true : channelIdInUrl === channelid;
-        const payloadValid = server.twitchEbs.validatePermission(
-          token,
-          channelid,
-          roles,
-        );
+    roles: string | string[],
+  ) => {
+    try {
+      const channelIdInUrl = request.params.channelId;
+      const { channelid, token } = request.headers;
+      const channelIdCorrect = disabled ? true : channelIdInUrl === channelid;
+      const payloadValid = server.twitchEbs.validatePermission(
+        token,
+        channelid,
+        roles,
+      );
 
-        if (channelIdCorrect && payloadValid) {
-          done();
-        } else {
-          handle401(reply);
-        }
-      } catch (error) {
+      if (channelIdCorrect && payloadValid) {
+        done();
+      } else {
         handle401(reply);
       }
+    } catch (error) {
+      handle401(reply);
     }
+  };
 
   server.decorate(
-    "authenticateConfig",
-    (request: FastifyRequest,
+    'authenticateConfig',
+    (
+      request: FastifyRequest,
       reply: FastifyReply<ServerResponse>,
       done: CallableFunction) =>
-        validatePermission(request, reply, done, [ "broadcaster" ]));
+        validatePermission(request, reply, done, ['broadcaster']),
+    );
 
   server.decorate(
-    "authenticateViewer",
-    (request: FastifyRequest,
+    'authenticateViewer',
+    (
+      request: FastifyRequest,
       reply: FastifyReply<ServerResponse>,
-      done: CallableFunction) =>
-        validatePermission(request, reply, done, [ "viewer", "broadcaster" ]));
+      done: CallableFunction,
+    ) =>
+        validatePermission(request, reply, done, ['viewer', 'broadcaster']),
+  );
 
   next();
 });

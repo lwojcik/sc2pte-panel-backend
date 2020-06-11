@@ -6,6 +6,9 @@ import StarCraft2API from 'starcraft2-api';
 const regionIds = StarCraft2API.getAllRegionIds().map(regionId => regionId.toString());
 const realmIds = StarCraft2API.getAllAvailableSc2Realms().map(realmId => realmId.toString());
 
+console.log(regionIds); // eslint-disable-line
+console.log(realmIds); // eslint-disable-line
+
 const maxProfiles = Number(process.env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3;
 
 interface PlayerProfile {
@@ -23,60 +26,56 @@ interface ChannelConfig extends Document {
   maxProfiles: string;
 }
 
-// const arrayLimit = (val: unknown[]) => val.length <= maxPlayerProfileCount;
+const arrayLimit = (val: unknown[]) => val.length <= maxProfiles;
 
-const PlayerProfileSchema = createSchema({
-  regionId: {
-    type: Type.string({ required: true }),
-    enum: regionIds,
-  },
-  realmId: {
-    type: Type.string({ required: true }),
-    enum: realmIds,
-  },
-  profileId: {
-    type: Type.string({ required: true }),
-  },
-  locale: {
-    type: Type.string({ required: true }),
-  },
-}, {
-  _id: false,
-  timestamps: false,
-});
-
-const ChannelConfigSchema = createSchema({
-  channelId: Type.string({
-    required: true,
-    unique: true,
-    index: true,
-  }),
-  profiles: {
-    type: Type.array({
+const PlayerProfileSchema = createSchema(
+  {
+    regionId: Type.string({
       required: true,
-      // validate: [arrayLimit, `profile array exceeds the limit of ${maxPlayerProfileCount}`],
-    }).of(PlayerProfileSchema),
-    default: [],
+      enum: regionIds,
+    }),
+    realmId: Type.string({
+      required: true,
+      enum: realmIds,
+    }),
+    profileId: Type.string({ required: true }),
+    locale: Type.string({ required: true }),
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  {
+    id: false,
+    timestamps: false,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  maxProfiles: Type.number({
-    default: maxProfiles,
-  }),
-},
-{
-  timestamps: {
-    createdAt: true,
-  },
-});
+);
 
-ChannelConfigSchema.pre<ChannelConfig>('save', function(next): void {
+const ChannelConfigSchema = createSchema(
+  {
+    channelId: Type.string({
+      required: true,
+      unique: true,
+      index: true,
+    }),
+    profiles: Type.array({
+      required: true,
+      validate: [
+        arrayLimit,
+        `profile array exceeds the limit of ${maxProfiles}`,
+      ],
+    }).of(PlayerProfileSchema),
+    createdAt: Type.date({
+      default: Date.now,
+    }),
+    updatedAt: Type.date({
+      default: Date.now,
+    }),
+  },
+  {
+    timestamps: {
+      createdAt: true,
+    },
+  },
+);
+
+ChannelConfigSchema.pre<ChannelConfig>('save', function (next): void {
   this.updatedAt = new Date();
   next();
 });

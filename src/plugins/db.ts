@@ -44,24 +44,24 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
   );
 
   const save = async ({ channelId, data }: ConfigObject) => {
-    console.log(data.slice(0, maxProfiles));
     try {
       await ChannelConfig.findOneAndUpdate(
         { channelId },
         {
-          profiles: data.slice(0, maxProfiles),
+          profiles: data.slice(0, maxProfiles) as any,
         },
         {
           upsert: true,
-          // runValidators: true,
+          runValidators: true,
         },
       );
       console.log({ channelId, data });
       return true;
     } catch (error) {
+      console.log(error); // eslint-disable-line
       return false;
     }
-  }
+  };
 
   const get = async (channelId: string) => {
     try {
@@ -71,18 +71,18 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
           status: 200,
           channelId: data.channelId,
           profiles: data.profiles,
-        }
+        };
       }
       return {
         status: 404,
         message: 'No config found',
-      }
+      };
     } catch (error) {
       return {
         status: 400,
-      }
+      };
     }
-  }
+  };
 
   server.decorate('db', { save, get });
 
