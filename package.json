@@ -44,7 +44,7 @@
     "fastify-redis": "4.0.1",
     "fastify-twitch-ebs-tools": "1.0.3",
     "mongoose": "5.9.18",
-    "starcraft2-api": "1.3.5"
+    "starcraft2-api": "1.3.6"
   },
   "devDependencies": {
     "@types/jest": "26.0.0",
