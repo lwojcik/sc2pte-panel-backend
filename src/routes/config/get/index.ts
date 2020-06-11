@@ -11,6 +11,7 @@ export default fp((server, {}, next) => {
     const { channelId } = request.params;
     try {
       const data = await server.playerConfig.get(channelId);
+      console.log(data);
       reply.code(data.status).send(data);
     } catch (error) {
       server.log.error(error);

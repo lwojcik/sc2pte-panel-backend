@@ -43,20 +43,20 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
     },
   );
 
-  const save = async (config: ConfigObject) => {
+  const save = async ({ channelId, data }: ConfigObject) => {
+    console.log(data.slice(0, maxProfiles));
     try {
-      const { channelId, data } = config;
       await ChannelConfig.findOneAndUpdate(
         { channelId },
         {
           profiles: data.slice(0, maxProfiles),
-          maxProfiles,
         },
         {
           upsert: true,
-          runValidators: true,
+          // runValidators: true,
         },
       );
+      console.log({ channelId, data });
       return true;
     } catch (error) {
       return false;
