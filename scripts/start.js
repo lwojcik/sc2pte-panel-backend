@@ -38,7 +38,7 @@ const opts = {
     port: env.SC2PTE_NODE_PORT || '8081',
   },
   sas: {
-    url: env.SC2PTE_SAS_URL || 'http://localhost:8082',
+    uri: env.SC2PTE_SAS_URL || 'http://localhost:8082',
     statusEndpoint: env.SC2PTE_SAS_STATUS_ENDPOINT || 'status',
   },
   redis: {
@@ -73,7 +73,7 @@ fastifyInstance.register(fastifyEnv, {
   },
 });
 
-if (process.env.SC2PTE_REDIS_ENABLE === 'true') {
+if (env.SC2PTE_REDIS_ENABLE === 'true') {
   fastifyInstance.register(fastifyRedis, {
     host: opts.redis.host,
     port: opts.redis.port,
@@ -90,9 +90,9 @@ fastifyInstance.register(fastifyCors, {
 fastifyInstance.register(server, opts);
 
 const start = () => fastifyInstance.listen(env.SC2PTE_NODE_PORT, (err) => {
-  if (err) throw err;
-  fastifyInstance.log.info(`Redis cache enabled: ${!!opts.redis.enable}`);
-  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${!!opts.twitch.enableOnauthorized}`)
+  if (err) throw new Error(err);
+  fastifyInstance.log.info(`Redis cache enabled: ${opts.redis.enable}`);
+  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${opts.twitch.enableOnauthorized}`)
 });
 
 start();

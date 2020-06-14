@@ -11,24 +11,24 @@ interface DbPluginOptions {
 export default fp(async (server, opts: DbPluginOptions, next) => {
   const { uri, maxProfiles } = opts;
 
+  mongoose.connection.on('error', (err) => {
+    server.log.error(`MongoDB error: ${err}`);
+  });
+
   mongoose.connection.once('open', () => {
     server.log.info('MongoDB open');
+  });
 
-    mongoose.connection.on('connected', () => {
-      server.log.info('MongoDB connected');
-    });
+  mongoose.connection.on('connected', () => {
+    server.log.info('MongoDB connected');
+  });
 
-    mongoose.connection.on('disconnected', () => {
-      server.log.warn('MongoDB disconnected');
-    });
+  mongoose.connection.on('disconnected', () => {
+    server.log.warn('MongoDB disconnected');
+  });
 
-    mongoose.connection.on('reconnected', () => {
-      server.log.info('MongoDB reconnected');
-    });
-
-    mongoose.connection.on('error', (err) => {
-      server.log.error(`MongoDB error: ${err}`);
-    });
+  mongoose.connection.on('reconnected', () => {
+    server.log.info('MongoDB reconnected');
   });
 
   await mongoose.connect(

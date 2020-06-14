@@ -20,7 +20,11 @@ interface OKReply {
 }
 
 const sas = fp(
-  async (fastify: FastifyInstance, opts: SasOptions, next: Function) => {
+  async (
+    fastify: FastifyInstance,
+    opts: SasOptions,
+    next: Function,
+  ) => {
     let isUp = false;
     const statusUrl = `${opts.url}/${opts.statusEndpoint}`;
 
@@ -32,7 +36,7 @@ const sas = fp(
     const get = (url: string): object =>
       new Promise((resolve, reject) => {
         http
-          .get(url, res => {
+          .get(url, (res) => {
             res.setEncoding('utf8');
             let body = '';
             res.on('data', chunk => (body += chunk));
@@ -61,9 +65,9 @@ const sas = fp(
 
     const foo = () => {
       if (!isUp) return sasDown;
-      return "bar";
-    }
-  
+      return 'bar';
+    };
+
     fastify.decorate('sas', {
       foo,
     });
