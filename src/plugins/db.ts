@@ -55,10 +55,8 @@ export default fp(async (server, opts: DbPluginOptions, next) => {
           runValidators: true,
         },
       );
-      console.log({ channelId, data });
       return true;
     } catch (error) {
-      console.log(error); // eslint-disable-line
       return false;
     }
   };

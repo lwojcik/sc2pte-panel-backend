@@ -6,9 +6,6 @@ import StarCraft2API from 'starcraft2-api';
 const regionIds = StarCraft2API.getAllRegionIds().map(regionId => regionId.toString());
 const realmIds = StarCraft2API.getAllAvailableSc2Realms().map(realmId => realmId.toString());
 
-console.log(regionIds); // eslint-disable-line
-console.log(realmIds); // eslint-disable-line
-
 const maxProfiles = Number(process.env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3;
 
 interface PlayerProfile {

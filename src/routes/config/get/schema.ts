@@ -1,21 +1,21 @@
 const response = {
   200: {
-    type: "object",
+    type: 'object',
     properties: {
-      status: { type: "number" },
-      message: { type: "string" },
+      status: { type: 'number' },
+      message: { type: 'string' },
     },
   },
   400: {
-    type: "object",
+    type: 'object',
     properties: {
-      status: { type: "number" },
+      status: { type: 'number' },
     },
   },
   500: {
-    type: "object",
+    type: 'object',
     properties: {
-      status: { type: "number" },
+      status: { type: 'number' },
     },
   },
 };
