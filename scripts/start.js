@@ -35,10 +35,10 @@ const { env } = process;
 const opts = {
   app: {
     nodeEnv: env.NODE_ENV || 'development',
-    port: env.SC2PTE_NODE_PORT || '8081',
+    port: env.SC2PTE_NODE_PORT || '8080',
   },
   sas: {
-    uri: env.SC2PTE_SAS_URL || 'http://localhost:8082',
+    url: env.SC2PTE_SAS_URL || 'http://localhost:8081',
     statusEndpoint: env.SC2PTE_SAS_STATUS_ENDPOINT || 'status',
   },
   redis: {

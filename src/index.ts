@@ -34,11 +34,7 @@ const api = fp(
       ...opts.db,
       maxProfiles,
     });
-    try {
-      fastify.register(sas, opts.sas);
-    } catch (error) {
-      process.exit();
-    }
+    fastify.register(sas, opts.sas);
     fastify.register(playerConfig, { maxProfiles });
     fastify.register(twitchConfigValidator, opts.twitch);
     fastify.register(statusRoutes);

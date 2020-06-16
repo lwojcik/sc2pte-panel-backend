@@ -7,16 +7,10 @@ export interface SasOptions {
   statusEndpoint: String;
 }
 
-// interface SASReply {
-//   status: number;
-//   data: {
-//     accessToken: string;
-//   };
-// }
-
 interface OKReply {
   status: 200;
   message: 'ok';
+  timestamp: string;
 }
 
 const sas = fp(
@@ -47,7 +41,7 @@ const sas = fp(
 
     const checkIfHostIsUp = async (url: string) => {
       try {
-        const response = (await get(url)) as OKReply;
+        const response = await get(url) as OKReply;
         if (response.status && response.status !== 200) return false;
         return true;
       } catch (error) {
@@ -60,7 +54,7 @@ const sas = fp(
       isUp = isSASup;
       isSASup
         ? fastify.log.info('sc2-api-service status: running')
-        : fastify.log.error('sc2-api-service is down!');
+        : fastify.log.info('sc2-api-service status: down or starting');
     };
 
     const foo = () => {

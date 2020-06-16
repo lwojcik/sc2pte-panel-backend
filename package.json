@@ -8,9 +8,9 @@
     "clean": "rimraf dist/*",
     "build": "npm run lint && npm run test && npm run clean && tsc",
     "lint": "tslint --project tsconfig.json",
-    "runsas": "npm --prefix ../sc2-api-service start",
+    "runsas": "npm --prefix ../sc2-api-service run dev",
     "watch": "tsc-watch --onSuccess \"npm start\"",
-    "dev": "npm run watch | pino-pretty",
+    "dev": "parallel runsas watch | pino-pretty",
     "test": "jest",
     "clearTestCache": "jest --clearCache",
     "start": "node scripts/start.js"
