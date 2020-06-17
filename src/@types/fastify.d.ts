@@ -33,7 +33,7 @@ declare module 'fastify' {
   export interface FastifyInstance<
     HttpServer = http.Server,
     HttpRequest = http.IncomingMessage,
-    HttpResponse = http.ServerResponse
+    HttpResponse = http.ServerResponse,
   > {
     cache: {
       has: (key) => boolean;
@@ -51,6 +51,9 @@ declare module 'fastify' {
     playerConfig: {
       save: any;
       get: any;
+    };
+    viewer: {
+      getData: any;
     };
     authenticateConfig: fastify.FastifyMiddleware,
     authenticateViewer: fastify.FastifyMiddleware,

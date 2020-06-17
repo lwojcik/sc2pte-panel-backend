@@ -8,6 +8,7 @@ import cache from './plugins/cache';
 import db from './plugins/db';
 import sas, { SasOptions } from './plugins/sas';
 import playerConfig from './plugins/playerConfig';
+import viewer from './plugins/viewer';
 import twitchConfigValidator from './plugins/twitchConfigValidator';
 
 interface ServerOptions {
@@ -37,6 +38,7 @@ const api = fp(
     fastify.register(sas, opts.sas);
     fastify.register(playerConfig, { maxProfiles });
     fastify.register(twitchConfigValidator, opts.twitch);
+    fastify.register(viewer);
     fastify.register(statusRoutes);
     fastify.register(configRoutes.get);
     fastify.register(configRoutes.post);
