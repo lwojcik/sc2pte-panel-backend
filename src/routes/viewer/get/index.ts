@@ -12,11 +12,13 @@ export default fp((server, {}, next) => {
         const playerConfig = await server.playerConfig.get(channelId);
         const { profiles } = playerConfig;
         const data = await server.viewer.getData(profiles);
+        console.log(data);
         reply.code(200).send({
           channelId,
           data,
         });
       } catch (error) {
+        console.log(error);
         reply.send({
           status: 400,
           message: 'Data fetch error',

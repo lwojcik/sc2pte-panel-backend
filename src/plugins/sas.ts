@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 import http from 'http';
+import { PlayerObject } from '../@types/fastify';
 
 export interface SasOptions {
   url: String;
@@ -19,13 +20,8 @@ const sas = fp(
     opts: SasOptions,
     next: Function,
   ) => {
-    let isUp = false;
-    const statusUrl = `${opts.url}/${opts.statusEndpoint}`;
-
-    const sasDown = {
-      status: 500,
-      message: 'sc2-api-service is down!',
-    };
+    const { url, statusEndpoint } = opts;
+    const statusUrl = `${url}/${statusEndpoint}`;
 
     const get = (url: string): object =>
       new Promise((resolve, reject) => {
@@ -49,21 +45,24 @@ const sas = fp(
       }
     };
 
+    const getFromApi = (endpoint: string) => get(`${url}${endpoint}`);
+
     const checkOnStartup = async () => {
       const isSASup = await checkIfHostIsUp(statusUrl);
-      isUp = isSASup;
       isSASup
         ? fastify.log.info('sc2-api-service status: running')
         : fastify.log.info('sc2-api-service status: down or starting');
     };
 
-    const foo = () => {
-      if (!isUp) return sasDown;
-      return 'bar';
-    };
+    const getProfile = ({ regionId, realmId, profileId }: PlayerObject) =>
+      getFromApi(`/profile/profile/${regionId}/${realmId}/${profileId}`);
+
+    const getLadderSummary = ({ regionId, realmId, profileId }: PlayerObject) =>
+      getFromApi(`/profile/ladderSummary/${regionId}/${realmId}/${profileId}`);
 
     fastify.decorate('sas', {
-      foo,
+      getProfile,
+      getLadderSummary,
     });
 
     checkOnStartup();

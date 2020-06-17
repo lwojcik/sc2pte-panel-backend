@@ -29,7 +29,7 @@ const api = fp(
     opts: ServerOptions,
     next: CallableFunction,
   ) => {
-    const { maxProfiles } = opts;
+    const { maxProfiles, twitch } = opts;
     fastify.register(cache);
     fastify.register(db, {
       ...opts.db,
@@ -37,7 +37,7 @@ const api = fp(
     });
     fastify.register(sas, opts.sas);
     fastify.register(playerConfig, { maxProfiles });
-    fastify.register(twitchConfigValidator, opts.twitch);
+    fastify.register(twitchConfigValidator, twitch);
     fastify.register(viewer);
     fastify.register(statusRoutes);
     fastify.register(configRoutes.get);

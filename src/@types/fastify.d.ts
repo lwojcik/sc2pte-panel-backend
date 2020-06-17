@@ -8,9 +8,10 @@ interface ApiResponse {
 }
 
 export interface PlayerObject {
-  regionId: string;
-  realmId: string;
-  profileId: string;
+  [key: string]: string | number;
+  regionId: string | number;
+  realmId: string | number;
+  profileId: string | number;
 }
 
 export interface PlayerLadder extends PlayerObject {
@@ -76,14 +77,9 @@ declare module 'fastify' {
       verifyBroadcaster: (payload: string) => boolean;
       validatePermission: (token: string, channelid: string, role: string | string[]) => boolean;
     }
-    bas: {
-      getAccessToken: (refresh?: Boolean) => Promise<string>;
-      refreshAccessToken: () => Promise<string>;
-    };
-    sc2api: {
+    sas: {
       getProfile: (
         object: PlayerObject,
-        refresh?: boolean,
       ) => Promise<ApiResponse>;
       getStaticProfileData: (
         regionId,

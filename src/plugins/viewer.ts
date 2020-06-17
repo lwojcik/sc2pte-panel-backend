@@ -1,21 +1,23 @@
 import fp from 'fastify-plugin';
-import { PlayerObject } from 'starcraft2-api';
+import { PlayerObject } from '../@types/fastify';
 
 export default fp(async (server, {}, next) => {
-  const getHeading = () => ({
-    portrait: {
-      url: 'https://static.starcraft2.com/starport/d0e7c831-18ab-4cd6-adc7-9d4a28f49ec7/portraits/2-14.jpg',
-      frame: 'grandmaster',
-    },
-    player: {
-      clan: {
-        name: 'name',
-        tag: 'nm',
+  const getHeading = () => {
+    return {
+      portrait: {
+        url: 'https://static.starcraft2.com/starport/d0e7c831-18ab-4cd6-adc7-9d4a28f49ec7/portraits/2-14.jpg',
+        frame: 'grandmaster',
       },
-      name: 'Player name',
-      server: 'eu',
-    },
-  });
+      player: {
+        clan: {
+          name: 'name',
+          tag: 'nm',
+        },
+        name: 'Player name',
+        server: 'eu',
+      },
+    };
+  };
 
   // const getLeagueData = () => true;
 
@@ -103,23 +105,43 @@ export default fp(async (server, {}, next) => {
     },
   ]);
 
-  const getProfileData = (profile?: PlayerObject) => {
-    void(profile);
-    return {
-      heading: getHeading(),
-      details: {
-        snapshot: getSnapshot(),
-        stats: getStats(),
-        history: getHistory(),
-      },
-    };
+  const getProfileData = async (profile: PlayerObject) => {
+    try {
+      const data = await server.sas.getProfile(profile);
+      console.log(data);
+      return {
+        heading: getHeading(),
+        details: {
+          snapshot: getSnapshot(),
+          stats: getStats(),
+          history: getHistory(),
+        },
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        heading: {},
+        details: {
+          snapshot: {},
+          stats: {},
+          history: {},
+        },
+      };
+    }
   };
 
-  const getViewerData = (profiles: PlayerObject[]) => {
-    const profileData = profiles.map(profile => getProfileData(profile));
-    return {
-      profiles: profileData,
-    };
+  const getViewerData = async (profiles: PlayerObject[]) => {
+    try {
+      const profileData = await Promise.all(profiles.map(profile => getProfileData(profile)));
+      console.log(JSON.stringify(profileData));
+      return {
+        profiles: profileData,
+      };
+    } catch {
+      return {
+        profiles: [],
+      };
+    }
   };
 
   const getData = async (profiles: PlayerObject[]) => {

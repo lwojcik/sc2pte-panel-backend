@@ -12,6 +12,7 @@ export default fp((server, {}, next) => {
       try {
         const channelId = request.params.channelId;
         const data = JSON.parse(request.body);
+        console.log(data);
         const configSaved = await server.playerConfig.save({ channelId, data });
 
         if (configSaved) {
@@ -26,6 +27,7 @@ export default fp((server, {}, next) => {
           });
         }
       } catch (error) {
+        console.log(error);
         server.log.error(error);
         reply.code(400).send({
           status: 400,
