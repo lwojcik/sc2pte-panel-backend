@@ -1,121 +1,75 @@
 import fp from 'fastify-plugin';
 import { PlayerObject } from '../@types/fastify';
 
+const ranks = [
+  'bronze',
+  'silver',
+  'gold',
+  'platinum',
+  'diamond',
+  'master',
+  'grandmaster',
+] as string[];
+
 export default fp(async (server, {}, next) => {
-  const getHeading = () => {
+  const calculateHighestRank = (soloRank?: string, teamRank?: string) => {
+    const soloRankIndex = soloRank
+      ? ranks.indexOf(soloRank)
+      : -1;
+    const teamRankIndex = teamRank
+      ? ranks.indexOf(teamRank)
+      : -1;
+    // const soloRankIndex = soloRank && ranks.includes(soloRank)
+    //   ? ranks.indexOf(soloRank.toLowerCase())
+    //   : -1;
+    // console.log(soloRankIndex);
+    // const teamRankIndex = teamRank && ranks.includes(teamRank)
+    //   ? ranks.indexOf(teamRank.toLowerCase())
+    //   : -1;
+    // console.log(soloRankIndex);
+
+    return soloRankIndex > teamRankIndex
+      ? soloRank
+        ? soloRank.toLowerCase()
+        : ''
+      : teamRank
+        ? teamRank.toLowerCase()
+        : '';
+  };
+
+  const getHeading = (apiData: any) => {
+    const { data } = apiData;
+    const {
+      summary,
+      career,
+    } = data;
+
     return {
       portrait: {
-        url: 'https://static.starcraft2.com/starport/d0e7c831-18ab-4cd6-adc7-9d4a28f49ec7/portraits/2-14.jpg',
-        frame: 'grandmaster',
+        url: summary.portrait,
+        frame: calculateHighestRank(
+          career.current1v1LeagueName,
+          career.currentBestTeamLeagueName,
+        ),
       },
       player: {
         clan: {
-          name: 'name',
-          tag: 'nm',
+          name: summary.clanName,
+          tag: summary.clanTag,
         },
-        name: 'Player name',
+        name: summary.displayName,
         server: 'eu',
       },
     };
   };
 
-  // const getLeagueData = () => true;
-
-  const getSnapshot = () => ([
-    {
-      mode: '1v1',
-      rank: 1,
-      wins: 101,
-      losses: 100,
-      race: 'random',
-      mmr: 3655,
-      divisionRank: 4,
-      teamMembers: [
-        'Player name 1',
-        'Player name 2',
-        'Player name 3',
-      ],
-    },
-    {
-      mode: '2v2',
-      rank: 2,
-      wins: 101,
-      losses: 100,
-      race: 'random',
-      mmr: 3655,
-      divisionRank: 3,
-      teamMembers: [
-        'Player name 1',
-        'Player name 2',
-        'Player name 3',
-      ],
-    },
-  ]);
-
-  const getStats = () => ({
-    totalCareerGames: 100,
-    totalGamesThisSeason: 101,
-    totalRankedGamesThisSeason: 102,
-    highestSoloRank: 'silver',
-    highestTeamRank: '',
-  });
-
-  const getHistory = () => ([
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'win',
-      date: 1562164424000,
-    },
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'loss',
-      date: 1562164424000,
-    },
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'win',
-      date: 1562164424000,
-    },
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'win',
-      date: 1562164424000,
-    },
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'loss',
-      date: 1562164424000,
-    },
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'win',
-      date: 1562164424000,
-    },
-    {
-      mapName: 'Kairos Junction LE',
-      mode: '1v1',
-      result: 'win',
-      date: 1562164424000,
-    },
-  ]);
-
   const getProfileData = async (profile: PlayerObject) => {
     try {
+      console.log(profile);
       const data = await server.sas.getProfile(profile);
-      console.log(data);
+      const heading = getHeading(data);
       return {
-        heading: getHeading(),
-        details: {
-          snapshot: getSnapshot(),
-          stats: getStats(),
-          history: getHistory(),
-        },
+        heading,
       };
     } catch (error) {
       console.log(error);
@@ -130,31 +84,66 @@ export default fp(async (server, {}, next) => {
     }
   };
 
-  const getViewerData = async (profiles: PlayerObject[]) => {
-    try {
-      const profileData = await Promise.all(profiles.map(profile => getProfileData(profile)));
-      console.log(JSON.stringify(profileData));
-      return {
-        profiles: profileData,
-      };
-    } catch {
-      return {
-        profiles: [],
-      };
-    }
-  };
-
   const getData = async (profiles: PlayerObject[]) => {
     try {
-      const data = await getViewerData(profiles);
-      return data;
-    } catch (error) {
-      return {
-        status: 400,
-        message: 'Error fetching data',
-      };
+      const profileData = await Promise.all(
+        profiles.map(async profile => await getProfileData(profile)),
+      );
+      return profileData;
+    } catch {
+      return [];
     }
+    // const profileData = [] as any[];
+
+    // // profiles.map((profile) => {
+    //   // console.log('lol iterating');
+    //   // const profileDataObject = await getProfileData(profile);
+    //   // profileData.push(profileDataObject);
+    //   // const index = profiles.indexOf(profile);
+    //   // const timeoutInterval = index * 1000;
+
+    // for (const profile of profiles) {
+    //   console.log(profile);
+    //   getProfileData(profile);
+    //   console.log(profile.summary);
+    //   // console.log('yo interuje!!!');
+    //   // console.log(profile);
+    //   // const dataObject = await getProfileData(profile);
+    //   // console.log(dataObject);
+    //   // console.log(profileData);
+    //   // await profileData.push(dataObject);
+    // }
+
+    // return profileData;
   };
+    // return {
+    //   lol: 'lul',
+    // };
+    // const profileData = [];
+    // return await Promise.all(
+    //   profiles.map(profile =>
+    //     new Promise((resolve, {}) => {
+    //       console.log('pushing data...');
+    //       const profileDataObject = getProfileData(profile);
+    //       setTimeout(
+    //         () => {
+    //           profileData.push(profileDataObject);
+    //           resolve();
+    //         },
+    //         profiles.indexOf(profile) * 1000,
+    //       );
+    //     }),
+    //   ),
+    // );
+    // try {
+    //   Promise.all(
+    //   )
+    // } catch (error) {
+    //   console.log(error);
+    //   return {
+    //     profiles: [],
+    //   };
+    // }
 
   server.decorate('viewer', { getData });
 
