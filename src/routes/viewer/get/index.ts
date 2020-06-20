@@ -1,9 +1,11 @@
 import fp from 'fastify-plugin';
+// import schema from './schema';
 
 export default fp((server, {}, next) => {
   server.get(
     '/v2/viewer/:channelId',
     {
+      // schema,
       preValidation: [server.authenticateViewer],
     },
     async (request, reply) => {
