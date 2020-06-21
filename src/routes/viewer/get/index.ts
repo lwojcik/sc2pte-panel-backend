@@ -1,20 +1,18 @@
 import fp from 'fastify-plugin';
-// import schema from './schema';
+import schema from './schema';
 
 export default fp((server, {}, next) => {
   server.get(
     '/v2/viewer/:channelId',
     {
-      // schema,
+      schema,
       preValidation: [server.authenticateViewer],
     },
     async (request, reply) => {
       try {
         const { channelId } = request.params;
-        const playerConfig = await server.playerConfig.get(channelId);
-        const { profiles } = playerConfig;
+        const { profiles } = await server.playerConfig.get(channelId);
         const data = await server.viewer.getData(profiles);
-        console.log(data);
         reply.code(200).send({
           channelId,
           data,

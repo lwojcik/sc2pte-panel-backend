@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin';
 import { PlayerObject } from '../@types/fastify';
+import StarCraft2API from 'starcraft2-api';
 
 const ranks = [
   'bronze',
@@ -14,19 +15,12 @@ const ranks = [
 export default fp(async (server, {}, next) => {
   const calculateHighestRank = (soloRank?: string, teamRank?: string) => {
     const soloRankIndex = soloRank
-      ? ranks.indexOf(soloRank)
+      ? ranks.indexOf(soloRank.toLowerCase())
       : -1;
+
     const teamRankIndex = teamRank
-      ? ranks.indexOf(teamRank)
+      ? ranks.indexOf(teamRank.toLowerCase())
       : -1;
-    // const soloRankIndex = soloRank && ranks.includes(soloRank)
-    //   ? ranks.indexOf(soloRank.toLowerCase())
-    //   : -1;
-    // console.log(soloRankIndex);
-    // const teamRankIndex = teamRank && ranks.includes(teamRank)
-    //   ? ranks.indexOf(teamRank.toLowerCase())
-    //   : -1;
-    // console.log(soloRankIndex);
 
     return soloRankIndex > teamRankIndex
       ? soloRank
@@ -37,7 +31,7 @@ export default fp(async (server, {}, next) => {
         : '';
   };
 
-  const getHeading = (apiData: any) => {
+  const getHeading = (apiData: any, regionName: string) => {
     const { data } = apiData;
     const {
       summary,
@@ -58,21 +52,20 @@ export default fp(async (server, {}, next) => {
           tag: summary.clanTag,
         },
         name: summary.displayName,
-        server: 'eu',
+        server: regionName,
       },
     };
   };
 
   const getProfileData = async (profile: PlayerObject) => {
     try {
-      console.log(profile);
       const data = await server.sas.getProfile(profile);
-      const heading = getHeading(data);
+      const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
+      const heading = getHeading(data, regionName);
       return {
         heading,
       };
-    } catch (error) {
-      console.log(error);
+    } catch {
       return {
         heading: {},
         details: {
@@ -89,7 +82,9 @@ export default fp(async (server, {}, next) => {
       const profileData = await Promise.all(
         profiles.map(async profile => await getProfileData(profile)),
       );
-      return profileData;
+      return {
+        profiles: profileData,
+      };
     } catch {
       return [];
     }

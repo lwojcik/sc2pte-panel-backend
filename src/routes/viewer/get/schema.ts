@@ -20,6 +20,111 @@ const response = {
                         url: {
                           type: 'string',
                         },
+                        frame: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                    player: {
+                      type: 'object',
+                      properties: {
+                        clan: {
+                          type: 'object',
+                          properties: {
+                            name: {
+                              type: 'string',
+                            },
+                            tag: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        name: {
+                          type: 'string',
+                        },
+                        server: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  },
+                },
+                details: {
+                  type: 'object',
+                  properties: {
+                    snapshot: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          mode: {
+                            type: 'string',
+                          },
+                          rank: {
+                            type: 'number',
+                          },
+                          wins: {
+                            type: 'number',
+                          },
+                          losses: {
+                            type: 'number',
+                          },
+                          race: {
+                            type: 'string',
+                          },
+                          mmr: {
+                            type: 'number',
+                          },
+                          divisionRank: {
+                            type: 'number',
+                          },
+                          teamMembers: {
+                            type: 'array',
+                            items: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                    stats: {
+                      type: 'object',
+                      properties: {
+                        totalCareerGames: {
+                          type: 'string',
+                          totalGamesThisSeason: {
+                            type: 'number',
+                          },
+                          totalRankedGamesThisSeason: {
+                            type: 'number',
+                          },
+                          highestSoloRank: {
+                            type: 'number',
+                          },
+                          highestTeamRank: {
+                            type: 'number',
+                          },
+                        },
+                      },
+                    },
+                    history: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          mapName: {
+                            type: 'string',
+                          },
+                          mode: {
+                            type: 'string',
+                          },
+                          result: {
+                            type: 'string',
+                          },
+                          date: {
+                            type: 'number',
+                          },
+                        },
                       },
                     },
                   },
