@@ -88,7 +88,7 @@ export default fp(async (server, {}, next) => {
     return data.map(matchObject => ({
       mapName: matchObject.map,
       mode: matchObject.type,
-      result: matchObject.decision,
+      result: matchObject.decision.toLowerCase(),
       date: matchObject.date,
     }));
   };
