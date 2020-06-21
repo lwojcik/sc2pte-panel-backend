@@ -31,12 +31,23 @@ export default fp(async (server, {}, next) => {
         : '';
   };
 
+  const calculateWins = (seasonSnapshot: any) =>
+    Object.keys(seasonSnapshot).map(
+      gameMode => seasonSnapshot[gameMode].totalWins,
+    ).reduce((sum, value) => sum + value);
+
+  const calculateSeasonWinRatio = (apiData: any) => {
+    const wins = calculateWins(apiData.seasonSnapshot);
+    console.log(wins);
+    const totalGames = apiData.totalRankedSeasonGamesPlayed;
+    return Math.round(Number(wins) * 100 / totalGames);
+  };
+
   const getHeading = (apiData: any, regionName: string) => {
-    const { data } = apiData;
     const {
       summary,
       career,
-    } = data;
+    } = apiData.data;
 
     return {
       portrait: {
@@ -57,13 +68,45 @@ export default fp(async (server, {}, next) => {
     };
   };
 
+  const getStats = (apiData: any) => {
+    const {
+      snapshot,
+      career,
+    } = apiData.data;
+    const { seasonSnapshot } = snapshot;
+    return {
+      totalCareerGames: career.totalCareerGames,
+      totalRankedGamesThisSeason: seasonSnapshot.totalRankedSeasonGamesPlayed || 0,
+      seasonWinRatio: calculateSeasonWinRatio(snapshot) || 0,
+      highestSoloRank: career.best1v1Finish.leagueName.toLowerCase(),
+      highestTeamRank: career.bestTeamFinish.leagueName.toLowerCase(),
+    };
+  };
+
+  const getMatchHistory = (apiData: any) => {
+    const data = apiData.data.matches as any[];
+    return data.map(matchObject => ({
+      mapName: matchObject.map,
+      mode: matchObject.type,
+      result: matchObject.decision,
+      date: matchObject.date,
+    }));
+  };
+
   const getProfileData = async (profile: PlayerObject) => {
     try {
-      const data = await server.sas.getProfile(profile);
+      const profileData = await server.sas.getProfile(profile);
+      const matchHistoryData = await server.sas.getLegacyMatchHistory(profile);
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
-      const heading = getHeading(data, regionName);
+      const heading = getHeading(profileData, regionName);
+      const stats = getStats(profileData);
+      const history = getMatchHistory(matchHistoryData);
       return {
         heading,
+        details: {
+          stats,
+          history,
+        },
       };
     } catch {
       return {
@@ -88,57 +131,7 @@ export default fp(async (server, {}, next) => {
     } catch {
       return [];
     }
-    // const profileData = [] as any[];
-
-    // // profiles.map((profile) => {
-    //   // console.log('lol iterating');
-    //   // const profileDataObject = await getProfileData(profile);
-    //   // profileData.push(profileDataObject);
-    //   // const index = profiles.indexOf(profile);
-    //   // const timeoutInterval = index * 1000;
-
-    // for (const profile of profiles) {
-    //   console.log(profile);
-    //   getProfileData(profile);
-    //   console.log(profile.summary);
-    //   // console.log('yo interuje!!!');
-    //   // console.log(profile);
-    //   // const dataObject = await getProfileData(profile);
-    //   // console.log(dataObject);
-    //   // console.log(profileData);
-    //   // await profileData.push(dataObject);
-    // }
-
-    // return profileData;
   };
-    // return {
-    //   lol: 'lul',
-    // };
-    // const profileData = [];
-    // return await Promise.all(
-    //   profiles.map(profile =>
-    //     new Promise((resolve, {}) => {
-    //       console.log('pushing data...');
-    //       const profileDataObject = getProfileData(profile);
-    //       setTimeout(
-    //         () => {
-    //           profileData.push(profileDataObject);
-    //           resolve();
-    //         },
-    //         profiles.indexOf(profile) * 1000,
-    //       );
-    //     }),
-    //   ),
-    // );
-    // try {
-    //   Promise.all(
-    //   )
-    // } catch (error) {
-    //   console.log(error);
-    //   return {
-    //     profiles: [],
-    //   };
-    // }
 
   server.decorate('viewer', { getData });
 

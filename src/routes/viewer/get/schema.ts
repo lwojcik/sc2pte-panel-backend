@@ -90,20 +90,20 @@ const response = {
                     stats: {
                       type: 'object',
                       properties: {
+                        highestSoloRank: {
+                          type: 'number',
+                        },
+                        highestTeamRank: {
+                          type: 'number',
+                        },
+                        totalRankedGamesThisSeason: {
+                          type: 'number',
+                        },
+                        seasonWinRatio: {
+                          type: 'number',
+                        },
                         totalCareerGames: {
-                          type: 'string',
-                          totalGamesThisSeason: {
-                            type: 'number',
-                          },
-                          totalRankedGamesThisSeason: {
-                            type: 'number',
-                          },
-                          highestSoloRank: {
-                            type: 'number',
-                          },
-                          highestTeamRank: {
-                            type: 'number',
-                          },
+                          type: 'number',
                         },
                       },
                     },
