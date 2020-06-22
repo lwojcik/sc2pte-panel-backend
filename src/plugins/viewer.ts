@@ -75,11 +75,11 @@ export default fp(async (server, {}, next) => {
     } = apiData.data;
     const { seasonSnapshot } = snapshot;
     return {
-      totalCareerGames: career.totalCareerGames,
-      totalRankedGamesThisSeason: seasonSnapshot.totalRankedSeasonGamesPlayed || 0,
+      totalCareerGames: career?.totalCareerGames || 0,
+      totalRankedGamesThisSeason: seasonSnapshot?.totalRankedSeasonGamesPlayed || 0,
       seasonWinRatio: calculateSeasonWinRatio(snapshot) || 0,
-      highestSoloRank: career.best1v1Finish.leagueName.toLowerCase(),
-      highestTeamRank: career.bestTeamFinish.leagueName.toLowerCase(),
+      highestSoloRank: career?.best1v1Finish?.leagueName?.toLowerCase() || '',
+      highestTeamRank: career?.bestTeamFinish?.leagueName?.toLowerCase() || '',
     };
   };
 
@@ -89,7 +89,7 @@ export default fp(async (server, {}, next) => {
       mapName: matchObject.map,
       mode: matchObject.type,
       result: matchObject.decision.toLowerCase(),
-      date: matchObject.date,
+      date: matchObject.date * 1000,
     }));
   };
 

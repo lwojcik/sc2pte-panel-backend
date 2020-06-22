@@ -91,10 +91,10 @@ const response = {
                       type: 'object',
                       properties: {
                         highestSoloRank: {
-                          type: 'number',
+                          type: 'string',
                         },
                         highestTeamRank: {
-                          type: 'number',
+                          type: 'string',
                         },
                         totalRankedGamesThisSeason: {
                           type: 'number',
