@@ -73,10 +73,10 @@ export default fp(async (server, {}, next) => {
       snapshot,
       career,
     } = apiData.data;
-    const { seasonSnapshot } = snapshot;
+
     return {
       totalCareerGames: career?.totalCareerGames || 0,
-      totalRankedGamesThisSeason: seasonSnapshot?.totalRankedSeasonGamesPlayed || 0,
+      totalRankedGamesThisSeason: snapshot?.totalRankedSeasonGamesPlayed,
       seasonWinRatio: calculateSeasonWinRatio(snapshot) || 0,
       highestSoloRank: career?.best1v1Finish?.leagueName?.toLowerCase() || '',
       highestTeamRank: career?.bestTeamFinish?.leagueName?.toLowerCase() || '',
