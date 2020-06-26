@@ -18,7 +18,7 @@ export default fp((server, {}, next) => {
           data,
         });
       } catch (error) {
-        console.log(error);
+        server.log.error(error);
         reply.send({
           status: 400,
           message: 'Data fetch error',

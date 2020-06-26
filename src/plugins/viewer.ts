@@ -38,7 +38,6 @@ export default fp(async (server, {}, next) => {
 
   const calculateSeasonWinRatio = (apiData: any) => {
     const wins = calculateWins(apiData.seasonSnapshot);
-    console.log(wins);
     const totalGames = apiData.totalRankedSeasonGamesPlayed;
     return Math.round(Number(wins) * 100 / totalGames);
   };
@@ -83,6 +82,12 @@ export default fp(async (server, {}, next) => {
     };
   };
 
+  const getSnapshot = (apiData: any, profile: any) => {
+    console.log(profile);
+    console.log(apiData.data.allLadderMemberships);
+    return {};
+  };
+
   const getMatchHistory = (apiData: any) => {
     const data = apiData.data.matches as any[];
     return data.map(matchObject => ({
@@ -97,13 +102,17 @@ export default fp(async (server, {}, next) => {
     try {
       const profileData = await server.sas.getProfile(profile);
       const matchHistoryData = await server.sas.getLegacyMatchHistory(profile);
+      const ladderSummaryData = await server.sas.getLadderSummary(profile);
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
       const heading = getHeading(profileData, regionName);
+      const snapshot = getSnapshot(ladderSummaryData, profile);
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
+
       return {
         heading,
         details: {
+          snapshot,
           stats,
           history,
         },
