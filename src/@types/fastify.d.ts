@@ -95,6 +95,7 @@ declare module 'fastify' {
       ) => Promise<ApiResponse>;
       getLadder: (
         object: PlayerLadder,
+        ladderId: number,
         refresh?: boolean,
       ) => Promise<ApiResponse>;
       getLeague: (

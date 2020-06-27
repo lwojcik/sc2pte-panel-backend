@@ -63,10 +63,21 @@ const sas = fp(
     const getLegacyMatchHistory = ({ regionId, realmId, profileId }: PlayerObject) =>
       getFromApi(`/legacy/matches/${regionId}/${realmId}/${profileId}`);
 
+    const getLadder = (
+      {
+        regionId,
+        realmId,
+        profileId,
+      }: PlayerObject,
+      ladderId: string | number,
+    ) =>
+      getFromApi(`/profile/ladder/${regionId}/${realmId}/${profileId}/${ladderId}`);
+
     fastify.decorate('sas', {
       getProfile,
       getLadderSummary,
       getLegacyMatchHistory,
+      getLadder,
     });
 
     checkOnStartup();

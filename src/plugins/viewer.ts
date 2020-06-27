@@ -82,10 +82,24 @@ export default fp(async (server, {}, next) => {
     };
   };
 
-  const getSnapshot = (apiData: any, profile: any) => {
+  const getPlayerLadderInfo = (apiData: any) => {
+    return apiData;
+  };
+
+  const getLadderData = async (profile: any, ladderId: number) => {
     console.log(profile);
-    console.log(apiData.data.allLadderMemberships);
-    return {};
+    console.log(ladderId);
+    const ladderApiData = await server.sas.getLadder(profile, ladderId);
+    const playerLadderInfo = getPlayerLadderInfo(ladderApiData);
+    console.log(playerLadderInfo);
+    return ladderId;
+  };
+
+  const getSnapshot = (apiData: any, profile: any) => {
+    const { allLadderMemberships } = apiData.data;
+    const ladderIds =
+      allLadderMemberships.map((ladderMembership: any) => ladderMembership.ladderId);
+    return Promise.all(ladderIds.map((ladderId: any) => getLadderData(profile, ladderId)));
   };
 
   const getMatchHistory = (apiData: any) => {
