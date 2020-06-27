@@ -1,6 +1,7 @@
 import fp from 'fastify-plugin';
 import { PlayerObject } from '../@types/fastify';
 import StarCraft2API from 'starcraft2-api';
+import jsonQuery from 'json-query-next';
 
 const ranks = [
   'bronze',
@@ -82,29 +83,69 @@ export default fp(async (server, {}, next) => {
     };
   };
 
-  const getPlayerLadderInfo = (apiData: any) => {
-    return apiData;
+  const getPlayerLadderInfo = (apiData: any, profileId: number) => {
+    const {
+      ladderTeams,
+      ranksAndPools,
+      currentLadderMembership,
+    } = apiData.data;
+
+    const {
+      rank,
+      mmr,
+    } = ranksAndPools[0];
+    const localizedGameMode = currentLadderMembership.localizedGameMode.split(' ');
+    const mode = localizedGameMode[0].toLowerCase();
+    const rankName = localizedGameMode[1].toLowerCase();
+    console.log(rankName);
+    const playerLadderData = ladderTeams[rank - 1];
+    const {
+      wins,
+      losses,
+      teamMembers,
+    } = playerLadderData;
+    const teamMemberNames = teamMembers.map((teamMember:any) => teamMember.displayName);
+
+    const race = jsonQuery(
+      `teamMembers[id=${profileId}].favoriteRace`,
+      { data: playerLadderData },
+    ).value.toLowerCase() || '';
+
+    return {
+      mode,
+      rank: rankName,
+      wins,
+      losses,
+      race,
+      mmr,
+      divisionRank: rank,
+      teamMembers: teamMemberNames,
+    };
   };
 
   const getLadderData = async (profile: any, ladderId: number) => {
-    console.log(profile);
-    console.log(ladderId);
+    const { profileId } = profile;
     const ladderApiData = await server.sas.getLadder(profile, ladderId);
-    const playerLadderInfo = getPlayerLadderInfo(ladderApiData);
-    console.log(playerLadderInfo);
-    return ladderId;
+    const playerLadderInfo = getPlayerLadderInfo(ladderApiData, profileId);
+    return playerLadderInfo;
   };
 
   const getSnapshot = (apiData: any, profile: any) => {
     const { allLadderMemberships } = apiData.data;
     const ladderIds =
       allLadderMemberships.map((ladderMembership: any) => ladderMembership.ladderId);
-    return Promise.all(ladderIds.map((ladderId: any) => getLadderData(profile, ladderId)));
+    return Promise.all(
+      ladderIds.map(
+        async (ladderId: any) => await getLadderData(profile, ladderId),
+      ),
+    );
   };
 
   const getMatchHistory = (apiData: any) => {
     const data = apiData.data.matches as any[];
-    return data.map(matchObject => ({
+    const filteredMatchHistory = data.filter(match => match.type !== 'Custom');
+
+    return filteredMatchHistory.map(matchObject => ({
       mapName: matchObject.map,
       mode: matchObject.type,
       result: matchObject.decision.toLowerCase(),
@@ -119,7 +160,7 @@ export default fp(async (server, {}, next) => {
       const ladderSummaryData = await server.sas.getLadderSummary(profile);
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
       const heading = getHeading(profileData, regionName);
-      const snapshot = getSnapshot(ladderSummaryData, profile);
+      const snapshot = await getSnapshot(ladderSummaryData, profile);
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
 

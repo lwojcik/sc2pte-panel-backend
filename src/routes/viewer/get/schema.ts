@@ -61,7 +61,7 @@ const response = {
                             type: 'string',
                           },
                           rank: {
-                            type: 'number',
+                            type: 'string',
                           },
                           wins: {
                             type: 'number',
