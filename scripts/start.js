@@ -56,7 +56,7 @@ const opts = {
   twitch: {
     clientId: env.SC2PTE_TWITCH_EXTENSION_CLIENT_ID || '',
     secret: env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
-    enableOnauthorized: env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
+    enableOnAuthorized: env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
   },
   maxProfiles: Number(env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3,
 }

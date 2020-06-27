@@ -6,7 +6,7 @@ export default fp((server, {}, next) => {
     '/v2/config/:channelId',
     {
       // schema,
-      preValidation: [server.authenticateConfig],
+      preValidation: [server.twitch.validateConfig],
     },
     async (request, reply) => {
       try {

@@ -5,7 +5,7 @@ export default fp((server, {}, next) => {
   server.get(
     '/v2/config/:channelId',
     { // schema,
-      preValidation: [server.authenticateConfig],
+      preValidation: [server.twitch.validateConfig],
     },
     async (request, reply) => {
       const { channelId } = request.params;

@@ -6,7 +6,7 @@ export default fp((server, {}, next) => {
     '/v2/viewer/:channelId',
     {
       schema,
-      preValidation: [server.authenticateViewer],
+      preValidation: [server.twitch.validateViewer],
     },
     async (request, reply) => {
       try {

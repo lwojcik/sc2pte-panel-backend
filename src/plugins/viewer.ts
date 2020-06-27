@@ -97,7 +97,6 @@ export default fp(async (server, {}, next) => {
     const localizedGameMode = currentLadderMembership.localizedGameMode.split(' ');
     const mode = localizedGameMode[0].toLowerCase();
     const rankName = localizedGameMode[1].toLowerCase();
-    console.log(rankName);
     const playerLadderData = ladderTeams[rank - 1];
     const {
       wins,

@@ -10,6 +10,7 @@ interface PluginOptions {
 
 export default fp(async (server, opts: PluginOptions, next) => {
   const disabled = !opts.enableOnAuthorized;
+  console.log(opts.enableOnAuthorized);
   server.register(twitchEbsTools, {
     secret: opts.secret,
     disabled,
@@ -48,22 +49,21 @@ export default fp(async (server, opts: PluginOptions, next) => {
   };
 
   server.decorate(
-    'authenticateConfig',
-    (
-      request: FastifyRequest,
-      reply: FastifyReply<ServerResponse>,
-      done: CallableFunction) =>
+    'twitch',
+    {
+      validateConfig: (
+        request: FastifyRequest,
+        reply: FastifyReply<ServerResponse>,
+        done: CallableFunction,
+      ) =>
         validatePermission(request, reply, done, ['broadcaster']),
-    );
-
-  server.decorate(
-    'authenticateViewer',
-    (
-      request: FastifyRequest,
-      reply: FastifyReply<ServerResponse>,
-      done: CallableFunction,
-    ) =>
-        validatePermission(request, reply, done, ['viewer', 'broadcaster']),
+      validateViewer: (
+          request: FastifyRequest,
+          reply: FastifyReply<ServerResponse>,
+          done: CallableFunction,
+        ) =>
+          validatePermission(request, reply, done, ['viewer', 'broadcaster']),
+    },
   );
 
   next();

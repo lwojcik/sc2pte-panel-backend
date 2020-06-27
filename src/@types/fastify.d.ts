@@ -56,8 +56,10 @@ declare module 'fastify' {
     viewer: {
       getData: any;
     };
-    authenticateConfig: fastify.FastifyMiddleware,
-    authenticateViewer: fastify.FastifyMiddleware,
+    twitch: {
+      validateConfig: fastify.FastifyMiddleware,
+      validateViewer: fastify.FastifyMiddleware,
+    },
     log(): void;
     close(): Promise<any>;
     accessToken: {
@@ -81,14 +83,6 @@ declare module 'fastify' {
       getProfile: (
         object: PlayerObject,
       ) => Promise<ApiResponse>;
-      getStaticProfileData: (
-        regionId,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
-      getProfileMetadata: (
-        object: PlayerObject,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
       getLadderSummary: (
         object: PlayerObject,
         refresh?: boolean,
@@ -98,37 +92,10 @@ declare module 'fastify' {
         ladderId: number,
         refresh?: boolean,
       ) => Promise<ApiResponse>;
-      getLeague: (
-        object: LeagueObject,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
-      getGrandmasterLeaderboard: (
-        regionId,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
-      getSeason: (regionId, refresh?: boolean) => Promise<ApiResponse>;
-      getLegacyProfile: (
-        object: PlayerObject,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
-      getLegacyLadders: (
-        object: PlayerObject,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
-      getLegacyLadder: (
-        regionId,
-        ladderId,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
       getLegacyMatchHistory: (
         object: PlayerObject,
         refresh?: boolean,
       ) => Promise<ApiResponse>;
-      getLegacyAchievements: (
-        regionId,
-        refresh?: boolean,
-      ) => Promise<ApiResponse>;
-      getLegacyRewards: (regionId, refresh?: boolean) => Promise<ApiResponse>;
     };
   }
 }
