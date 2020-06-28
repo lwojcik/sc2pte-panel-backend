@@ -3,12 +3,12 @@ import fp from 'fastify-plugin';
 import twitchEbsTools from 'fastify-twitch-ebs-tools';
 import { ServerResponse } from 'http';
 
-interface PluginOptions {
+export interface TwitchPluginOptions {
   secret: string;
   enableOnAuthorized: boolean;
 }
 
-export default fp(async (server, opts: PluginOptions, next) => {
+export default fp(async (server, opts: TwitchPluginOptions, next) => {
   const disabled = !opts.enableOnAuthorized;
   console.log(opts.enableOnAuthorized);
   server.register(twitchEbsTools, {

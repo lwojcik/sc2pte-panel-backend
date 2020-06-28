@@ -23,6 +23,8 @@ const envSchema = {
     'SC2PTE_REDIS_CACHE_SEGMENT',
     'SC2PTE_MONGODB_CONNECTION_STRING',
     'SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET',
+    'SC2PTE_CLOUDFLARE_ENABLE',
+    'SC2PTE_CLOUDFLARE_API_TOKEN',
     'SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED',
     'SC2PTE_MAXIMUM_PROFILE_COUNT',
   ],
@@ -73,6 +75,13 @@ const envSchema = {
     SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET: {
       type: 'string',
     },
+    SC2PTE_CLOUDFLARE_ENABLE: {
+      type: 'string',
+      default: 'true',
+    },
+    SC2PTE_CLOUDFLARE_API_TOKEN: {
+      type: 'string',
+    },
     SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED: {
       type: 'string',
       default: 'http://localhost:8081',
@@ -111,6 +120,10 @@ const opts = {
   twitch: {
     secret: env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
     enableOnAuthorized: env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
+  },
+  cloudflare: {
+    enable: env.SC2PTE_CLOUDFLARE_ENABLE === 'true' || false,
+    apiToken: env.SC2PTE_CLOUDFLARE_API_TOKEN || '',
   },
   maxProfiles: Number(env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3,
 }

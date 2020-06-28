@@ -9,7 +9,7 @@ import db from './plugins/db';
 import sas, { SasOptions } from './plugins/sas';
 import playerConfig from './plugins/playerConfig';
 import viewer from './plugins/viewer';
-import twitchConfigValidator from './plugins/twitchConfigValidator';
+import twitchConfigValidator, { TwitchPluginOptions } from './plugins/twitchConfigValidator';
 
 interface ServerOptions {
   app: {
@@ -18,12 +18,13 @@ interface ServerOptions {
   db: {
     uri: string;
   };
-  twitch: {
-    secret: string;
-    enableOnAuthorized: boolean;
-  };
+  twitch: TwitchPluginOptions;
   sas: SasOptions;
   maxProfiles: number;
+  cloudflare: {
+    apiToken: string;
+    enable: boolean;
+  };
 }
 
 const api = fp(

@@ -28,6 +28,9 @@ const getConfig = (enableRedis: boolean) => {
       replyCachePeriod: 2000,
       ttl: 20,
     },
+    cloudflare: {
+      apiToken: 'test_access_token',
+    },
     maxProfiles: 3,
   };
 };
