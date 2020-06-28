@@ -2,16 +2,6 @@ import fp from 'fastify-plugin';
 import { PlayerObject } from '../@types/fastify';
 import StarCraft2API from 'starcraft2-api';
 
-const ranks = [
-  'bronze',
-  'silver',
-  'gold',
-  'platinum',
-  'diamond',
-  'master',
-  'grandmaster',
-] as string[];
-
 interface DataObject {
   segment: string;
   data: object;
@@ -21,6 +11,16 @@ interface DataObject {
 interface ViewerOptions {
   ttl: number;
 }
+
+const ranks = [
+  'bronze',
+  'silver',
+  'gold',
+  'platinum',
+  'diamond',
+  'master',
+  'grandmaster',
+] as string[];
 
 export default fp(async (server, { ttl }: ViewerOptions, next) => {
   const cache = server.redis;
@@ -161,11 +161,11 @@ export default fp(async (server, { ttl }: ViewerOptions, next) => {
     };
   };
 
-  const getLadderData = async (profile: any, ladderId: number, index: number) => {
+  const getLadderData = async (profile: PlayerObject, ladderId: number, index: number) => {
     await sleep((index + 1) * 1000);
     const { profileId } = profile;
     const ladderApiData = await server.sas.getLadder(profile, ladderId);
-    const playerLadderInfo = getPlayerLadderInfo(ladderApiData, profileId);
+    const playerLadderInfo = getPlayerLadderInfo(ladderApiData, profileId as number);
     return playerLadderInfo;
   };
 

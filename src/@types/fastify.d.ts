@@ -1,6 +1,5 @@
 import * as fastify from 'fastify';
 import * as http from 'http';
-import profile from '../routes/profile/profile';
 
 interface ApiResponse {
   status: number;
@@ -12,10 +11,6 @@ export interface PlayerObject {
   regionId: string | number;
   realmId: string | number;
   profileId: string | number;
-}
-
-export interface PlayerLadder extends PlayerObject {
-  ladderId: string;
 }
 
 export interface LeagueObject {
@@ -89,7 +84,7 @@ declare module 'fastify' {
         refresh?: boolean,
       ) => Promise<ApiResponse>;
       getLadder: (
-        object: PlayerLadder,
+        object: PlayerObject,
         ladderId: number,
         refresh?: boolean,
       ) => Promise<ApiResponse>;
