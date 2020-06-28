@@ -16,7 +16,6 @@ const getConfig = (enableRedis: boolean) => {
       uri: 'http://localhost/db',
     },
     twitch: {
-      clientId: 'fake_client_id',
       secret: 'fake_client_secret',
       enableOnAuthorized: true,
     },

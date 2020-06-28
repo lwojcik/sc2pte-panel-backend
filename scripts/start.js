@@ -109,7 +109,6 @@ const opts = {
     uri: env.SC2PTE_MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017/sc2pte'
   },
   twitch: {
-    clientId: env.SC2PTE_TWITCH_EXTENSION_CLIENT_ID || '',
     secret: env.SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET || '',
     enableOnAuthorized: env.SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED === 'true' || false,
   },
