@@ -55,6 +55,7 @@ declare module 'fastify' {
     };
     viewer: {
       getData: any;
+      getFreshData: any;
     };
     twitch: {
       validateConfig: fastify.FastifyMiddleware,

@@ -18,15 +18,18 @@ interface DataObject {
   ttl: number;
 }
 
-export default fp(async (server, {}, next) => {
+interface ViewerOptions {
+  ttl: number;
+}
+
+export default fp(async (server, { ttl }: ViewerOptions, next) => {
   const cache = server.redis;
   const cacheActive = Boolean(server.redis);
 
   const isDataCached = async (segment: string) => {
-    if (cacheActive) {
-      return (await server.redis.get(segment)) ? true : false;
-    }
-    return Promise.resolve(false);
+    return cacheActive
+      ? await server.redis.get(segment) ? true : false
+      : Promise.resolve(false);
   };
 
   const cacheObject = async ({ segment, data, ttl }: DataObject) => {
@@ -142,27 +145,9 @@ export default fp(async (server, {}, next) => {
     } = playerLadderData;
     const teamMemberNames = teamMembers.map((teamMember:any) => teamMember.displayName);
 
-    // const race = jsonQuery(
-    //   `teamMembers[id=${profileId}].favoriteRace`,
-    //   { data: playerLadderData },
-    // ).value || '';
-
-    const race = playerLadderData.teamMembers.filter((teamMember: any) =>
+    const race = teamMembers.filter((teamMember: any) =>
       teamMember.id === profileId,
     )[0].favoriteRace;
-
-    console.log(race.toLowerCase());
-
-    console.log(JSON.stringify({
-      mode,
-      rank: rankName,
-      wins,
-      losses,
-      race,
-      mmr,
-      divisionRank: rank,
-      teamMembers: teamMemberNames,
-    }));
 
     return {
       mode,
@@ -237,10 +222,13 @@ export default fp(async (server, {}, next) => {
   };
 
   const getFreshData = async (profiles: PlayerObject[], cacheSegment: string) => {
+    console.log('hello!');
+    console.log(profiles);
+    console.log(cacheSegment);
     try {
       const profileData = await Promise.all(
         profiles.map(async (profile, index) =>
-          await getProfileData(profile, index)
+          await getProfileData(profile, index),
         ),
       );
 
@@ -249,14 +237,13 @@ export default fp(async (server, {}, next) => {
         data: {
           profiles: profileData,
         },
-        ttl: 60000,
+        ttl,
       });
 
       return {
         profiles: profileData,
       };
-    } catch (error) {
-      console.log(error);
+    } catch {
       return [];
     }
   };
@@ -280,7 +267,10 @@ export default fp(async (server, {}, next) => {
     return data;
   };
 
-  server.decorate('viewer', { getData });
+  server.decorate('viewer', {
+    getData,
+    getFreshData,
+  });
 
   next();
 });

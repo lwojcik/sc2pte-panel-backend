@@ -16,6 +16,7 @@ export default fp((server, opts, next) => {
         const configSaved = await server.playerConfig.save({ channelId, data });
 
         if (configSaved) {
+          server.viewer.getFreshData(data, `viewer-${channelId}`);
           reply.code(200).send({
             status: 200,
             message: 'Config saved',

@@ -5,6 +5,7 @@ const fastifyRedis = require('fastify-redis');
 const fastifyEnv = require('fastify-env');
 const fastifyCors = require('fastify-cors');
 const server = require('../dist/index');
+const { stringify } = require('querystring');
 
 const envSchema = {
   type: 'object',
@@ -20,6 +21,7 @@ const envSchema = {
     'SC2PTE_REDIS_PORT',
     'SC2PTE_REDIS_PASSWORD',
     'SC2PTE_REDIS_DB',
+    'SC2PTE_REDIS_TTL',
     'SC2PTE_REDIS_CACHE_SEGMENT',
     'SC2PTE_MONGODB_CONNECTION_STRING',
     'SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET',
@@ -68,6 +70,10 @@ const envSchema = {
       type: 'string',
       default: 'sc2pte2',
     },
+    SC2PTE_REDIS_TTL: {
+      type: 'string',
+      default: '600000',
+    },
     SC2PTE_MONGODB_CONNECTION_STRING: {
       type: 'string',
       default: 'mongodb://localhost:27017/sc2pte',
@@ -112,7 +118,7 @@ const opts = {
     password: env.SC2PTE_REDIS_PASSWORD || '',
     db: env.SC2PTE_REDIS_DB || '0',
     cacheSegment: env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte2',
-    ttl: env.SC2PTE_REDIS_TTL ||  1000 * 60 * 5, // miliseconds
+    ttl: Number(env.SC2PTE_REDIS_TTL) ||  1000 * 60 * 10, // miliseconds
   },
   db: {
     uri: env.SC2PTE_MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017/sc2pte'

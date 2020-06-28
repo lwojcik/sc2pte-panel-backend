@@ -18,6 +18,9 @@ interface ServerOptions {
   db: {
     uri: string;
   };
+  redis: {
+    ttl: number;
+  };
   twitch: TwitchPluginOptions;
   sas: SasOptions;
   maxProfiles: number;
@@ -35,6 +38,7 @@ const api = fp(
   ) => {
     const {
       app,
+      redis,
       maxProfiles,
       twitch,
     } = opts;
@@ -46,7 +50,7 @@ const api = fp(
     fastify.register(sas, opts.sas);
     fastify.register(playerConfig, { maxProfiles });
     fastify.register(twitchConfigValidator, twitch);
-    fastify.register(viewer);
+    fastify.register(viewer, { ttl: redis.ttl });
     fastify.register(statusRoutes);
     fastify.register(configRoutes.get, { urlPrefix: app.urlPrefix });
     fastify.register(configRoutes.post, { urlPrefix: app.urlPrefix });
