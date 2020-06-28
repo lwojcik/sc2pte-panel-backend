@@ -25,7 +25,7 @@ const getConfig = (enableRedis: boolean) => {
       port: '6379',
       password: '',
       db: '0',
-      ttl: '600000',
+      ttl: 600000,
     },
     cloudflare: {
       enable: true,
