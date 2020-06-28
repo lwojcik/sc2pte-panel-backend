@@ -13,7 +13,10 @@ export default fp((server, opts, next) => {
       try {
         const { channelId } = request.params;
         const { profiles } = await server.playerConfig.get(channelId);
-        const data = await server.viewer.getData(profiles);
+        const data = await server.viewer.getData({
+          channelId,
+          profiles,
+        });
         reply.code(200).send({
           channelId,
           data,

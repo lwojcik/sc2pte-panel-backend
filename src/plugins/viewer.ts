@@ -1,7 +1,6 @@
 import fp from 'fastify-plugin';
 import { PlayerObject } from '../@types/fastify';
 import StarCraft2API from 'starcraft2-api';
-import jsonQuery from 'json-query-next';
 
 const ranks = [
   'bronze',
@@ -13,7 +12,40 @@ const ranks = [
   'grandmaster',
 ] as string[];
 
+interface DataObject {
+  segment: string;
+  data: object;
+  ttl: number;
+}
+
 export default fp(async (server, {}, next) => {
+  const cache = server.redis;
+  const cacheActive = Boolean(server.redis);
+
+  const isDataCached = async (segment: string) => {
+    if (cacheActive) {
+      return (await server.redis.get(segment)) ? true : false;
+    }
+    return Promise.resolve(false);
+  };
+
+  const cacheObject = async ({ segment, data, ttl }: DataObject) => {
+    if (!cacheActive) return 'Object not cached (Cache disabled)';
+    await cache.set(segment, JSON.stringify(data));
+    await cache.expire(segment, ttl);
+    return 'Object cached successfully';
+  };
+
+  const getCachedObject = (segment: string) =>
+    cacheActive
+      ? server.redis.get(segment)
+      : JSON.stringify({});
+
+  const sleep = (ms: number) => {
+    server.log.info(`Sleeping for ${ms}ms...`);
+    new Promise(resolve => setTimeout(resolve, ms));
+  };
+
   const calculateHighestRank = (soloRank?: string, teamRank?: string) => {
     const soloRankIndex = soloRank
       ? ranks.indexOf(soloRank.toLowerCase())
@@ -97,7 +129,12 @@ export default fp(async (server, {}, next) => {
     const localizedGameMode = currentLadderMembership.localizedGameMode.split(' ');
     const mode = localizedGameMode[0].toLowerCase();
     const rankName = localizedGameMode[1].toLowerCase();
-    const playerLadderData = ladderTeams[rank - 1];
+
+    const playerLadderData = ladderTeams.filter((ladderTeam: any) =>
+      ladderTeam.teamMembers.some((teamMember: any) =>
+        teamMember.id === profileId),
+    )[0];
+
     const {
       wins,
       losses,
@@ -105,10 +142,27 @@ export default fp(async (server, {}, next) => {
     } = playerLadderData;
     const teamMemberNames = teamMembers.map((teamMember:any) => teamMember.displayName);
 
-    const race = jsonQuery(
-      `teamMembers[id=${profileId}].favoriteRace`,
-      { data: playerLadderData },
-    ).value.toLowerCase() || '';
+    // const race = jsonQuery(
+    //   `teamMembers[id=${profileId}].favoriteRace`,
+    //   { data: playerLadderData },
+    // ).value || '';
+
+    const race = playerLadderData.teamMembers.filter((teamMember: any) =>
+      teamMember.id === profileId,
+    )[0].favoriteRace;
+
+    console.log(race.toLowerCase());
+
+    console.log(JSON.stringify({
+      mode,
+      rank: rankName,
+      wins,
+      losses,
+      race,
+      mmr,
+      divisionRank: rank,
+      teamMembers: teamMemberNames,
+    }));
 
     return {
       mode,
@@ -122,7 +176,8 @@ export default fp(async (server, {}, next) => {
     };
   };
 
-  const getLadderData = async (profile: any, ladderId: number) => {
+  const getLadderData = async (profile: any, ladderId: number, index: number) => {
+    await sleep((index + 1) * 1000);
     const { profileId } = profile;
     const ladderApiData = await server.sas.getLadder(profile, ladderId);
     const playerLadderInfo = getPlayerLadderInfo(ladderApiData, profileId);
@@ -133,9 +188,11 @@ export default fp(async (server, {}, next) => {
     const { allLadderMemberships } = apiData.data;
     const ladderIds =
       allLadderMemberships.map((ladderMembership: any) => ladderMembership.ladderId);
+
     return Promise.all(
       ladderIds.map(
-        async (ladderId: any) => await getLadderData(profile, ladderId),
+        async (ladderId: any, index: number) =>
+          await getLadderData(profile, ladderId, index),
       ),
     );
   };
@@ -152,13 +209,16 @@ export default fp(async (server, {}, next) => {
     }));
   };
 
-  const getProfileData = async (profile: PlayerObject) => {
+  const getProfileData = async (profile: PlayerObject, index:number) => {
     try {
       const profileData = await server.sas.getProfile(profile);
+      await sleep((index + 1) * 1000);
       const matchHistoryData = await server.sas.getLegacyMatchHistory(profile);
+      await sleep((index + 1) * 1000);
       const ladderSummaryData = await server.sas.getLadderSummary(profile);
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
       const heading = getHeading(profileData, regionName);
+      await sleep((index + 1) * 1000);
       const snapshot = await getSnapshot(ladderSummaryData, profile);
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
@@ -172,28 +232,52 @@ export default fp(async (server, {}, next) => {
         },
       };
     } catch {
-      return {
-        heading: {},
-        details: {
-          snapshot: {},
-          stats: {},
-          history: {},
-        },
-      };
+      return {};
     }
   };
 
-  const getData = async (profiles: PlayerObject[]) => {
+  const getFreshData = async (profiles: PlayerObject[], cacheSegment: string) => {
     try {
       const profileData = await Promise.all(
-        profiles.map(async profile => await getProfileData(profile)),
+        profiles.map(async (profile, index) =>
+          await getProfileData(profile, index)
+        ),
       );
+
+      cacheActive && cacheObject({
+        segment: cacheSegment,
+        data: {
+          profiles: profileData,
+        },
+        ttl: 60000,
+      });
+
       return {
         profiles: profileData,
       };
-    } catch {
+    } catch (error) {
+      console.log(error);
       return [];
     }
+  };
+
+  interface GetDataParams {
+    channelId: string;
+    profiles: PlayerObject[];
+    refresh?: boolean;
+  }
+
+  const getData = async ({ channelId, profiles }: GetDataParams) => {
+    const cacheSegment = `viewer-${channelId}`;
+    const isItCached = await isDataCached(cacheSegment);
+
+    if (cacheActive && isItCached) {
+      const cachedData = await getCachedObject(cacheSegment);
+      return JSON.parse(cachedData);
+    }
+
+    const data = await getFreshData(profiles, cacheSegment);
+    return data;
   };
 
   server.decorate('viewer', { getData });

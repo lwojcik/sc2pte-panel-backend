@@ -10,7 +10,7 @@ export interface TwitchPluginOptions {
 
 export default fp(async (server, opts: TwitchPluginOptions, next) => {
   const disabled = !opts.enableOnAuthorized;
-  console.log(opts.enableOnAuthorized);
+
   server.register(twitchEbsTools, {
     secret: opts.secret,
     disabled,
