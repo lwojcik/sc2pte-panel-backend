@@ -12,6 +12,9 @@ import viewer from './plugins/viewer';
 import twitchConfigValidator from './plugins/twitchConfigValidator';
 
 interface ServerOptions {
+  app: {
+    urlPrefix: string;
+  };
   db: {
     uri: string;
   };
@@ -29,7 +32,11 @@ const api = fp(
     opts: ServerOptions,
     next: CallableFunction,
   ) => {
-    const { maxProfiles, twitch } = opts;
+    const {
+      app,
+      maxProfiles,
+      twitch,
+    } = opts;
     fastify.register(cache);
     fastify.register(db, {
       ...opts.db,
@@ -40,9 +47,9 @@ const api = fp(
     fastify.register(twitchConfigValidator, twitch);
     fastify.register(viewer);
     fastify.register(statusRoutes);
-    fastify.register(configRoutes.get);
-    fastify.register(configRoutes.post);
-    fastify.register(viewerRoutes.get);
+    fastify.register(configRoutes.get, { urlPrefix: app.urlPrefix });
+    fastify.register(configRoutes.post, { urlPrefix: app.urlPrefix });
+    fastify.register(viewerRoutes.get, { urlPrefix: app.urlPrefix });
     next();
   },
 );

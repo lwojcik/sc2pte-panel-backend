@@ -7,18 +7,6 @@ const response = {
       timestamp: { type: 'string' },
     },
   },
-  400: {
-    type: 'object',
-    properties: {
-      status: { type: 'number' },
-    },
-  },
-  500: {
-    type: 'object',
-    properties: {
-      status: { type: 'number' },
-    },
-  },
 };
 
 const schema = {

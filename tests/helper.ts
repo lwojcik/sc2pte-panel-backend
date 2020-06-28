@@ -3,6 +3,7 @@ const getConfig = (enableRedis: boolean) => {
     app: {
       nodeEnv: 'test',
       port: '8123',
+      urlPrefix: 'v2test',
     },
     sas: {
       url: 'http://localhost:8081',

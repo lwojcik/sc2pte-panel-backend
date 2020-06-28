@@ -2,8 +2,27 @@ const response = {
   200: {
     type: 'object',
     properties: {
-      status: { type: 'number' },
-      message: { type: 'string' },
+      channelId: { type: 'string' },
+      profiles: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            locale: {
+              type: 'string',
+            },
+            regionId: {
+              type: 'string',
+            },
+            realmId: {
+              type: 'string',
+            },
+            profileId: {
+              type: 'string',
+            },
+          },
+        },
+      },
     },
   },
   400: {

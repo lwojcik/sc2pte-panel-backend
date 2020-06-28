@@ -10,22 +10,76 @@ const envSchema = {
   type: 'object',
   required: [
     'NODE_ENV',
-    'SC2PTE_NODE_HOST',
     'SC2PTE_NODE_PORT',
+    'SC2PTE_URL_PREFIX',
     'SC2PTE_SAS_URL',
     'SC2PTE_SAS_STATUS_ENDPOINT',
     'SC2PTE_REDIS_ENABLE',
+    'SC2PTE_REDIS_CONNECTION_STRING',
     'SC2PTE_REDIS_HOST',
     'SC2PTE_REDIS_PORT',
     'SC2PTE_REDIS_PASSWORD',
     'SC2PTE_REDIS_DB',
+    'SC2PTE_REDIS_CACHE_SEGMENT',
     'SC2PTE_MONGODB_CONNECTION_STRING',
+    'SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET',
     'SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED',
+    'SC2PTE_MAXIMUM_PROFILE_COUNT',
   ],
   properties: {
     NODE_ENV: {
       type: 'string',
       default: 'development',
+    },
+    SC2PTE_NODE_PORT: {
+      type: 'string',
+      default: '8080',
+    },
+    SC2PTE_SAS_URL: {
+      type: 'string',
+      default: 'http://localhost:8081',
+    },
+    SC2PTE_SAS_STATUS_ENDPOINT: {
+      type: 'string',
+      default: 'status',
+    },
+    SC2PTE_REDIS_ENABLE: {
+      type: 'string',
+      default: 'true',
+    },
+    SC2PTE_REDIS_HOST: {
+      type: 'string',
+      default: '127.0.0.1',
+    },
+    SC2PTE_REDIS_PORT: {
+      type: 'string',
+      default: '6379',
+    },
+    SC2PTE_REDIS_PASSWORD: {
+      type: 'string',
+    },
+    SC2PTE_REDIS_DB: {
+      type: 'string',
+      default: '2',
+    },
+    SC2PTE_REDIS_CACHE_SEGMENT: {
+      type: 'string',
+      default: 'sc2pte2',
+    },
+    SC2PTE_MONGODB_CONNECTION_STRING: {
+      type: 'string',
+      default: 'mongodb://localhost:27017/sc2pte',
+    },
+    SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET: {
+      type: 'string',
+    },
+    SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED: {
+      type: 'string',
+      default: 'http://localhost:8081',
+    },
+    SC2PTE_MAXIMUM_PROFILE_COUNT: {
+      type: 'string',
+      default: '3',
     },
   }
 }
@@ -36,6 +90,7 @@ const opts = {
   app: {
     nodeEnv: env.NODE_ENV || 'development',
     port: env.SC2PTE_NODE_PORT || '8080',
+    urlPrefix: env.SC2PTE_URL_PREFIX || 'v2',
   },
   sas: {
     url: env.SC2PTE_SAS_URL || 'http://localhost:8081',

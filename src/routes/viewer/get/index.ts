@@ -1,9 +1,10 @@
 import fp from 'fastify-plugin';
 import schema from './schema';
 
-export default fp((server, {}, next) => {
+export default fp((server, opts, next) => {
+  const { urlPrefix } = opts;
   server.get(
-    '/v2/viewer/:channelId',
+    `/${urlPrefix}/viewer/:channelId`,
     {
       schema,
       preValidation: [server.twitch.validateViewer],

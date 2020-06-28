@@ -1,10 +1,11 @@
 import fp from 'fastify-plugin';
-// import schema from "./schema";
+import schema from './schema';
 
-export default fp((server, {}, next) => {
+export default fp((server, opts, next) => {
+  const { urlPrefix } = opts;
   server.get(
-    '/v2/config/:channelId',
-    { // schema,
+    `/${urlPrefix}/config/:channelId`,
+    { schema,
       preValidation: [server.twitch.validateConfig],
     },
     async (request, reply) => {
