@@ -29,6 +29,7 @@ const getConfig = (enableRedis: boolean) => {
       ttl: 20,
     },
     cloudflare: {
+      enable: true,
       apiToken: 'test_access_token',
     },
     maxProfiles: 3,
