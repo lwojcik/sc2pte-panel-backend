@@ -222,9 +222,6 @@ export default fp(async (server, { ttl }: ViewerOptions, next) => {
   };
 
   const getFreshData = async (profiles: PlayerObject[], cacheSegment: string) => {
-    console.log('hello!');
-    console.log(profiles);
-    console.log(cacheSegment);
     try {
       const profileData = await Promise.all(
         profiles.map(async (profile, index) =>
