@@ -26,6 +26,7 @@ const envSchema = {
     'SC2PTE_MONGODB_CONNECTION_STRING',
     'SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET',
     'SC2PTE_CLOUDFLARE_ENABLE',
+    'SC2PTE_CLOUDFLARE_ZONE_ID',
     'SC2PTE_CLOUDFLARE_API_TOKEN',
     'SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED',
     'SC2PTE_MAXIMUM_PROFILE_COUNT',
@@ -85,6 +86,9 @@ const envSchema = {
       type: 'string',
       default: 'true',
     },
+    SC2PTE_CLOUDFLARE_ZONE_ID: {
+      type: 'string',
+    },
     SC2PTE_CLOUDFLARE_API_TOKEN: {
       type: 'string',
     },
@@ -129,7 +133,10 @@ const opts = {
   },
   cloudflare: {
     enable: env.SC2PTE_CLOUDFLARE_ENABLE === 'true' || false,
-    apiToken: env.SC2PTE_CLOUDFLARE_API_TOKEN || '',
+    token: env.SC2PTE_CLOUDFLARE_API_TOKEN || '',
+    zoneId: env.SC2PTE_CLOUDFLARE_ZONE_ID || '',
+    viewerRoute: `${env.SC2PTE_URL_PREFIX || 'v2'}/viewer`,
+    productionDomain: env.SC2PTE_CLOUDFLARE_PRODUCTION_DOMAIN || 'api.sc2pte.eu',
   },
   maxProfiles: Number(env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3,
 }
@@ -165,7 +172,8 @@ fastifyInstance.register(server, opts);
 const start = () => fastifyInstance.listen(env.SC2PTE_NODE_PORT, (err) => {
   if (err) throw new Error(err);
   fastifyInstance.log.info(`Redis cache enabled: ${opts.redis.enable}`);
-  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${opts.twitch.enableOnauthorized}`)
+  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${opts.twitch.enableOnauthorized}`);
+  fastifyInstance.log.info(`Cloudflare enabled: ${opts.cloudflare.enable}`)
 });
 
 start();

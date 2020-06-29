@@ -1,12 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-
 import { default as statusRoutes } from './routes/status/index';
 import { default as configRoutes } from './routes/config';
 import { default as viewerRoutes } from './routes/viewer';
 import cache from './plugins/cache';
 import db from './plugins/db';
 import sas, { SasOptions } from './plugins/sas';
+import cloudflare from './plugins/cloudflare';
 import playerConfig from './plugins/playerConfig';
 import viewer from './plugins/viewer';
 import twitchConfigValidator, { TwitchPluginOptions } from './plugins/twitchConfigValidator';
@@ -25,8 +25,11 @@ interface ServerOptions {
   sas: SasOptions;
   maxProfiles: number;
   cloudflare: {
-    apiToken: string;
     enable: boolean;
+    token: string;
+    zoneId: string;
+    productionDomain: string;
+    viewerRoute: string;
   };
 }
 
@@ -47,6 +50,11 @@ const api = fp(
       ...opts.db,
       maxProfiles,
     });
+
+    if (opts.cloudflare.enable) {
+      fastify.register(cloudflare, opts.cloudflare);
+    }
+
     fastify.register(sas, opts.sas);
     fastify.register(playerConfig, { maxProfiles });
     fastify.register(twitchConfigValidator, twitch);

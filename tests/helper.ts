@@ -29,7 +29,10 @@ const getConfig = (enableRedis: boolean) => {
     },
     cloudflare: {
       enable: true,
-      apiToken: 'test_access_token',
+      token: 'test_access_token',
+      zoneId: 'test_zone_id',
+      productionDomain: 'testProductionDomain',
+      viewerRoute: 'testViewerRoute',
     },
     maxProfiles: 3,
   };

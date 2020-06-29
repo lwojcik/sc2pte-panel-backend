@@ -93,5 +93,8 @@ declare module 'fastify' {
         refresh?: boolean,
       ) => Promise<ApiResponse>;
     };
+    cloudflare: {
+      purgeByChannelId: any;
+    };
   }
 }

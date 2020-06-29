@@ -17,6 +17,8 @@ export default fp((server, opts, next) => {
 
         if (configSaved) {
           server.viewer.getFreshData(data, `viewer-${channelId}`);
+          server.cloudflare.purgeByChannelId(channelId);
+
           reply.code(200).send({
             status: 200,
             message: 'Config saved',
