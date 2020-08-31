@@ -1,11 +1,9 @@
 (process.env.NODE_ENV !== 'production') && require('dotenv').config();
 const fastify = require('fastify');
-// const fp = require('fastify-plugin');
 const fastifyRedis = require('fastify-redis');
 const fastifyEnv = require('fastify-env');
 const fastifyCors = require('fastify-cors');
 const server = require('../dist/index');
-const { stringify } = require('querystring');
 
 const envSchema = {
   type: 'object',

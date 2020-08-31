@@ -3,7 +3,6 @@ import fp from 'fastify-plugin';
 import { default as statusRoutes } from './routes/status/index';
 import { default as configRoutes } from './routes/config';
 import { default as viewerRoutes } from './routes/viewer';
-import cache from './plugins/cache';
 import db from './plugins/db';
 import sas, { SasOptions } from './plugins/sas';
 import cloudflare from './plugins/cloudflare';
@@ -45,7 +44,7 @@ const api = fp(
       maxProfiles,
       twitch,
     } = opts;
-    fastify.register(cache);
+    const { urlPrefix } = app;
     fastify.register(db, {
       ...opts.db,
       maxProfiles,
@@ -60,9 +59,9 @@ const api = fp(
     fastify.register(twitchConfigValidator, twitch);
     fastify.register(viewer, { ttl: redis.ttl });
     fastify.register(statusRoutes);
-    fastify.register(configRoutes.get, { urlPrefix: app.urlPrefix });
-    fastify.register(configRoutes.post, { urlPrefix: app.urlPrefix });
-    fastify.register(viewerRoutes.get, { urlPrefix: app.urlPrefix });
+    fastify.register(configRoutes.get, { urlPrefix });
+    fastify.register(configRoutes.post, { urlPrefix });
+    fastify.register(viewerRoutes.get, { urlPrefix });
     next();
   },
 );

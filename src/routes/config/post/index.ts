@@ -1,9 +1,17 @@
+import { FastifyPlugin } from 'fastify';
 import fp from 'fastify-plugin';
 import schema from './schema';
+import {
+  RouteOptions,
+  RouteParams,
+} from '../../../@types/fastify';
 
-export default fp((server, opts, next) => {
+const route: FastifyPlugin<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
-  server.post(
+  server.post<{
+    Params: RouteParams,
+    Body: string,
+  }>(
     `/${urlPrefix}/config/:channelId`,
     {
       schema,
@@ -39,4 +47,6 @@ export default fp((server, opts, next) => {
     },
   );
   next();
-});
+};
+
+export default fp(route);

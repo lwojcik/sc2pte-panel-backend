@@ -25,6 +25,14 @@ export interface ConfigObject {
   data: PlayerObject[];
 }
 
+export interface RouteOptions {
+  urlPrefix: string;
+}
+
+export interface RouteParams {
+  channelId: string;
+}
+
 declare module 'fastify' {
   export interface FastifyInstance<
     HttpServer = http.Server,
