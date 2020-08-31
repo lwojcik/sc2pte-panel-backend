@@ -3,7 +3,6 @@ import fp from 'fastify-plugin';
 import { default as statusRoutes } from './routes/status/index';
 import { default as configRoutes } from './routes/config';
 import { default as viewerRoutes } from './routes/viewer';
-import cache from './plugins/cache';
 import db from './plugins/db';
 import sas, { SasOptions } from './plugins/sas';
 import cloudflare from './plugins/cloudflare';
@@ -46,7 +45,6 @@ const api = fp(
       twitch,
     } = opts;
     const { urlPrefix } = app;
-    fastify.register(cache);
     fastify.register(db, {
       ...opts.db,
       maxProfiles,
