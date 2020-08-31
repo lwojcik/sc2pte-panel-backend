@@ -45,6 +45,7 @@ const api = fp(
       maxProfiles,
       twitch,
     } = opts;
+    const { urlPrefix } = app;
     fastify.register(cache);
     fastify.register(db, {
       ...opts.db,
@@ -60,9 +61,9 @@ const api = fp(
     fastify.register(twitchConfigValidator, twitch);
     fastify.register(viewer, { ttl: redis.ttl });
     fastify.register(statusRoutes);
-    fastify.register(configRoutes.get, { urlPrefix: app.urlPrefix });
-    fastify.register(configRoutes.post, { urlPrefix: app.urlPrefix });
-    fastify.register(viewerRoutes.get, { urlPrefix: app.urlPrefix });
+    fastify.register(configRoutes.get, { urlPrefix });
+    fastify.register(configRoutes.post, { urlPrefix });
+    fastify.register(viewerRoutes.get, { urlPrefix });
     next();
   },
 );
