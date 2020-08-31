@@ -41,6 +41,10 @@ const envSchema = {
       type: 'string',
       default: 'http://localhost:8081',
     },
+    SC2PTE_URL_PREFIX: {
+      type: 'string',
+      default: 'v2',
+    },
     SC2PTE_SAS_STATUS_ENDPOINT: {
       type: 'string',
       default: 'status',
