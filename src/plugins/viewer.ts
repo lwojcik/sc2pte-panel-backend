@@ -133,7 +133,9 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
       } = ranksAndPools[0];
       const localizedGameMode = currentLadderMembership.localizedGameMode.split(' ');
       const mode = localizedGameMode[0].toLowerCase();
-      const rankName = localizedGameMode[1].toLowerCase();
+      const rankName = localizedGameMode[1].toLowerCase() === 'random'
+        ? localizedGameMode[2].toLowerCase()
+        : localizedGameMode[1].toLowerCase();
 
       const playerLadderData = ladderTeams.filter((ladderTeam: any) =>
         ladderTeam.teamMembers.some((teamMember: any) =>
