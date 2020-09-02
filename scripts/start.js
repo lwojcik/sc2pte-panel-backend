@@ -95,7 +95,7 @@ const envSchema = {
     },
     SC2PTE_ENABLE_TWITCH_EXT_ONAUTHORIZED: {
       type: 'string',
-      default: 'http://localhost:8081',
+      default: 'true',
     },
     SC2PTE_MAXIMUM_PROFILE_COUNT: {
       type: 'string',
