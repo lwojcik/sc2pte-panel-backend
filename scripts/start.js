@@ -165,7 +165,7 @@ if (env.SC2PTE_REDIS_ENABLE === 'true') {
 }
 
 fastifyInstance.register(fastifyCors, { 
-  origin: [ /localhost/, /127.0.0.1/, /ext-twitch.tv/ ],
+  origin: [ /localhost/, /127.0.0.1/, /ext-twitch.tv/, /twitch.tv/ ],
 });
 
 fastifyInstance.register(server, opts);
