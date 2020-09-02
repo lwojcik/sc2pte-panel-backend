@@ -29,8 +29,9 @@ const cloudflarePlugin: FastifyPlugin<CloudFlareOptions> =
     const cf = new Cloudflare({ token });
 
     const purgeByChannelId = async (channelId: string) => {
-      const status = cf.zones.purgeCache(zoneId, {
+      const status = await cf.zones.purgeCache(zoneId, {
         files: [
+          `http://${productionDomain}/${viewerRoute}/${channelId}`,
           `https://${productionDomain}/${viewerRoute}/${channelId}`,
         ],
       });
