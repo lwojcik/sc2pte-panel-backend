@@ -50,6 +50,7 @@ const twitchConfigValidatorPlugin: FastifyPlugin<TwitchPluginOptions>
           token,
           channelid,
           roles,
+          true,
         );
 
         if (channelIdCorrect && payloadValid) {
