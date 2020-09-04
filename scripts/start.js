@@ -18,7 +18,7 @@ const envSchema = {
     'SC2PTE_REDIS_PORT',
     'SC2PTE_REDIS_PASSWORD',
     'SC2PTE_REDIS_DB',
-    'SC2PTE_REDIS_TTL',
+    'SC2PTE_REDIS_TTL_SECS',
     'SC2PTE_REDIS_CACHE_SEGMENT',
     'SC2PTE_MONGODB_CONNECTION_STRING',
     'SC2PTE_TWITCH_EXTENSION_CLIENT_SECRET',
@@ -72,9 +72,9 @@ const envSchema = {
       type: 'string',
       default: 'sc2pte2',
     },
-    SC2PTE_REDIS_TTL: {
+    SC2PTE_REDIS_TTL_SECS: {
       type: 'string',
-      default: '600000',
+      default: '2000',
     },
     SC2PTE_MONGODB_CONNECTION_STRING: {
       type: 'string',
@@ -123,7 +123,7 @@ const opts = {
     password: env.SC2PTE_REDIS_PASSWORD || '',
     db: env.SC2PTE_REDIS_DB || '0',
     cacheSegment: env.SC2PTE_REDIS_CACHE_SEGMENT || 'sc2pte2',
-    ttl: Number(env.SC2PTE_REDIS_TTL) ||  1000 * 60 * 10, // miliseconds
+    ttl: Number(env.SC2PTE_REDIS_TTL_SECS) ||  1000 * 60, // seconds
   },
   db: {
     uri: env.SC2PTE_MONGODB_CONNECTION_STRING || 'mongodb://localhost:27017/sc2pte'
