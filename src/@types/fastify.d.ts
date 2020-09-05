@@ -81,7 +81,7 @@ declare module 'fastify' {
     };
     twitchEbs: {
       verifyBroadcaster: (payload: string) => boolean;
-      validatePermission: (token: string, channelid: string, role: string | string[]) => boolean;
+      validatePermission: (token: string, channelid: string, role: string | string[], acceptExpired?: boolean) => boolean;
     }
     sas: {
       getProfile: (
