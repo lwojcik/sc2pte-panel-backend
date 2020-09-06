@@ -173,7 +173,7 @@ fastifyInstance.register(server, opts);
 const start = () => fastifyInstance.listen(env.SC2PTE_NODE_PORT, (err) => {
   if (err) throw new Error(err);
   fastifyInstance.log.info(`Redis cache enabled: ${opts.redis.enable}`);
-  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${opts.twitch.enableOnauthorized}`);
+  fastifyInstance.log.info(`Twitch.ext.onauthorized: ${opts.twitch.enableOnAuthorized}`);
   fastifyInstance.log.info(`Cloudflare enabled: ${opts.cloudflare.enable}`)
 });
 
