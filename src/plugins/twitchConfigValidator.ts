@@ -41,6 +41,7 @@ const twitchConfigValidatorPlugin: FastifyPlugin<TwitchPluginOptions>
       reply: FastifyReply,
       done: CallableFunction,
       roles: string | string[],
+      ignoreExpiration?: boolean,
     ) => {
       try {
         const channelIdInUrl = request.params.channelId;
@@ -50,7 +51,7 @@ const twitchConfigValidatorPlugin: FastifyPlugin<TwitchPluginOptions>
           token,
           channelid,
           roles,
-          true,
+          ignoreExpiration,
         );
 
         if (channelIdCorrect && payloadValid) {
@@ -77,7 +78,7 @@ const twitchConfigValidatorPlugin: FastifyPlugin<TwitchPluginOptions>
             reply: FastifyReply,
             done: CallableFunction,
           ) =>
-            validatePermission(request, reply, done, ['viewer', 'broadcaster']),
+            validatePermission(request, reply, done, ['viewer', 'broadcaster'], true),
       },
     );
 
