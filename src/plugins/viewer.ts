@@ -124,6 +124,7 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
       const {
         ladderTeams,
         ranksAndPools,
+        league,
         currentLadderMembership,
       } = apiData.data;
 
@@ -131,11 +132,9 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
         rank,
         mmr,
       } = ranksAndPools[0];
-      const localizedGameMode = currentLadderMembership.localizedGameMode.split(' ');
-      const mode = localizedGameMode[0].toLowerCase();
-      const rankName = localizedGameMode[1].toLowerCase() === 'random'
-        ? localizedGameMode[2].toLowerCase()
-        : localizedGameMode[1].toLowerCase();
+      const { localizedGameMode } = currentLadderMembership;
+      const mode = localizedGameMode.split(' ')[0];
+      const rankName = league;
 
       const playerLadderData = ladderTeams.filter((ladderTeam: any) =>
         ladderTeam.teamMembers.some((teamMember: any) =>
@@ -211,7 +210,8 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
         const snapshot = await getSnapshot(ladderSummaryData, profile);
         const stats = getStats(profileData);
         const history = getMatchHistory(matchHistoryData);
-
+        console.log('HIIIIIIIIIIIIIIIIIIII');
+        console.log(snapshot);
         return {
           heading,
           details: {
@@ -220,18 +220,22 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
             history,
           },
         };
-      } catch {
+      } catch (error) {
+        console.log(error);
         return {};
       }
     };
 
     const getFreshData = async (profiles: PlayerObject[], cacheSegment: string) => {
       try {
+        console.log('getFreshData!');
         const profileData = await Promise.all(
           profiles.map(async (profile, index) =>
             await getProfileData(profile, index),
           ),
         );
+
+        console.log(profileData);
 
         cacheActive && cacheObject({
           segment: cacheSegment,
@@ -244,7 +248,8 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
         return {
           profiles: profileData,
         };
-      } catch {
+      } catch (error) {
+        console.log(error);
         return [];
       }
     };
@@ -263,7 +268,7 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
         const cachedData = await getCachedObject(cacheSegment);
         return JSON.parse(cachedData);
       }
-
+      console.log('getData!');
       const data = await getFreshData(profiles, cacheSegment);
       return data;
     };
