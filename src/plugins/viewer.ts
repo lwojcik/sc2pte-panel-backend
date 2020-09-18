@@ -210,8 +210,6 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
         const snapshot = await getSnapshot(ladderSummaryData, profile);
         const stats = getStats(profileData);
         const history = getMatchHistory(matchHistoryData);
-        console.log('HIIIIIIIIIIIIIIIIIIII');
-        console.log(snapshot);
         return {
           heading,
           details: {
@@ -221,21 +219,17 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
           },
         };
       } catch (error) {
-        console.log(error);
         return {};
       }
     };
 
     const getFreshData = async (profiles: PlayerObject[], cacheSegment: string) => {
       try {
-        console.log('getFreshData!');
         const profileData = await Promise.all(
           profiles.map(async (profile, index) =>
             await getProfileData(profile, index),
           ),
         );
-
-        console.log(profileData);
 
         cacheActive && cacheObject({
           segment: cacheSegment,
@@ -249,7 +243,6 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
           profiles: profileData,
         };
       } catch (error) {
-        console.log(error);
         return [];
       }
     };
@@ -268,7 +261,6 @@ const viewerPlugin: FastifyPlugin<ViewerOptions> =
         const cachedData = await getCachedObject(cacheSegment);
         return JSON.parse(cachedData);
       }
-      console.log('getData!');
       const data = await getFreshData(profiles, cacheSegment);
       return data;
     };
