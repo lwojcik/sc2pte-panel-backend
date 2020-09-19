@@ -1,4 +1,4 @@
-# @sc2pte/backend
+# @sc2pte/panel-backend
 
 Readme under construction.
 
