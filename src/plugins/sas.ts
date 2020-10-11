@@ -1,7 +1,7 @@
-import { FastifyPlugin } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 import http from 'http';
-import { PlayerObject } from '../@types/fastify';
+import { PlayerObject } from '../@types/fastify.d';
 
 export interface SasOptions {
   url: String;
@@ -14,25 +14,26 @@ interface OKReply {
   timestamp: string;
 }
 
-const sasPlugin: FastifyPlugin<SasOptions> = (fastify, opts, next) => {
+const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
   const { url, statusEndpoint } = opts;
   const statusUrl = `${url}/${statusEndpoint}`;
 
-  const get = (url: string) =>
+  const get = (urlToGet: string) =>
     new Promise((resolve, reject) => {
       http
-        .get(url, (res) => {
+        .get(urlToGet, (res) => {
           res.setEncoding('utf8');
           let body = '';
-          res.on('data', chunk => (body += chunk));
+          // eslint-disable-next-line no-return-assign
+          res.on('data', (chunk) => (body += chunk));
           res.on('end', () => resolve(JSON.parse(body)));
         })
         .on('error', reject);
     });
 
-  const checkIfHostIsUp = async (url: string) => {
+  const checkIfHostIsUp = async (urlToCheck: string) => {
     try {
-      const response = await get(url) as OKReply;
+      const response = await get(urlToCheck) as OKReply;
       if (response.status && response.status !== 200) return false;
       return true;
     } catch (error) {
@@ -44,9 +45,11 @@ const sasPlugin: FastifyPlugin<SasOptions> = (fastify, opts, next) => {
 
   const checkOnStartup = async () => {
     const isSASup = await checkIfHostIsUp(statusUrl);
-    isSASup
-      ? fastify.log.info('sc2-api-service status: running')
-      : fastify.log.info('sc2-api-service status: down or starting');
+    if (isSASup) {
+      fastify.log.info('sc2-api-service status: running');
+    } else {
+      fastify.log.info('sc2-api-service status: down or starting');
+    }
   };
 
   const getProfile = ({ regionId, realmId, profileId }: PlayerObject) =>

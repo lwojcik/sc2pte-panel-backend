@@ -1,12 +1,12 @@
-import { FastifyPlugin } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 import schema from './schema';
 import {
   RouteOptions,
   RouteParams,
-} from '../../../@types/fastify';
+} from '../../../@types/fastify.d';
 
-const route: FastifyPlugin<RouteOptions> = (server, opts, next) => {
+const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
   server.post<{
     Params: RouteParams,
@@ -19,7 +19,7 @@ const route: FastifyPlugin<RouteOptions> = (server, opts, next) => {
     },
     async (request, reply) => {
       try {
-        const channelId = request.params.channelId;
+        const { channelId } = request.params;
         const data = JSON.parse(request.body);
         const configSaved = await server.playerConfig.save({ channelId, data });
 

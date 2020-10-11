@@ -1,12 +1,12 @@
-import { FastifyPlugin } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 import schema from './schema';
 import {
   RouteOptions,
   RouteParams,
-} from '../../../@types/fastify';
+} from '../../../@types/fastify.d';
 
-const route: FastifyPlugin<RouteOptions> = (server, opts, next) => {
+const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
   server.get<{
     Params: RouteParams,
@@ -35,7 +35,8 @@ const route: FastifyPlugin<RouteOptions> = (server, opts, next) => {
           message: 'Data fetch error',
         });
       }
-    });
+    },
+  );
 
   next();
 };

@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { default as statusRoutes } from './routes/status/index';
-import { default as configRoutes } from './routes/config';
-import { default as viewerRoutes } from './routes/viewer';
+import statusRoutes from './routes/status/index';
+import configRoutes from './routes/config';
+import viewerRoutes from './routes/viewer';
 import db from './plugins/db';
 import sas, { SasOptions } from './plugins/sas';
 import cloudflare from './plugins/cloudflare';
