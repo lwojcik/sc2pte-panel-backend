@@ -1,5 +1,5 @@
 import {
-  FastifyPlugin,
+  FastifyPluginCallback,
   FastifyRequest,
   FastifyReply,
 } from 'fastify';
@@ -21,68 +21,71 @@ interface ViewerRequest {
   };
 }
 
-const twitchConfigValidatorPlugin: FastifyPlugin<TwitchPluginOptions>
-  = (server, opts, next) => {
-    const disabled = !opts.enableOnAuthorized;
+const twitchConfigValidatorPlugin: FastifyPluginCallback<TwitchPluginOptions> = (
+  server,
+  opts,
+  next,
+) => {
+  const disabled = !opts.enableOnAuthorized;
 
-    server.register(twitchEbsTools, {
-      secret: opts.secret,
-      disabled,
+  server.register(twitchEbsTools, {
+    secret: opts.secret,
+    disabled,
+  });
+
+  const handle401 = (reply: FastifyReply) =>
+    reply.code(401).send({
+      status: 401,
+      message: 'Unauthorized',
     });
 
-    const handle401 = (reply: FastifyReply) =>
-      reply.code(401).send({
-        status: 401,
-        message: 'Unauthorized',
-      });
+  const validatePermission = (
+    request: FastifyRequest<ViewerRequest>,
+    reply: FastifyReply,
+    done: CallableFunction,
+    roles: string | string[],
+    ignoreExpiration?: boolean,
+  ) => {
+    try {
+      const channelIdInUrl = request.params.channelId;
+      const { channelid, token } = request.headers;
+      const channelIdCorrect = disabled ? true : channelIdInUrl === channelid;
+      const payloadValid = server.twitchEbs.validatePermission(
+        token,
+        channelid,
+        roles,
+        ignoreExpiration,
+      );
 
-    const validatePermission = (
-      request: FastifyRequest<ViewerRequest>,
-      reply: FastifyReply,
-      done: CallableFunction,
-      roles: string | string[],
-      ignoreExpiration?: boolean,
-    ) => {
-      try {
-        const channelIdInUrl = request.params.channelId;
-        const { channelid, token } = request.headers;
-        const channelIdCorrect = disabled ? true : channelIdInUrl === channelid;
-        const payloadValid = server.twitchEbs.validatePermission(
-          token,
-          channelid,
-          roles,
-          ignoreExpiration,
-        );
-
-        if (channelIdCorrect && payloadValid) {
-          done();
-        } else {
-          handle401(reply);
-        }
-      } catch (error) {
+      if (channelIdCorrect && payloadValid) {
+        done();
+      } else {
         handle401(reply);
       }
-    };
-
-    server.decorate(
-      'twitch',
-      {
-        validateConfig: (
-          request: FastifyRequest<ViewerRequest>,
-          reply: FastifyReply,
-          done: CallableFunction,
-        ) =>
-          validatePermission(request, reply, done, ['broadcaster']),
-        validateViewer: (
-            request: FastifyRequest<ViewerRequest>,
-            reply: FastifyReply,
-            done: CallableFunction,
-          ) =>
-            validatePermission(request, reply, done, ['viewer', 'broadcaster'], true),
-      },
-    );
-
-    next();
+    } catch (error) {
+      handle401(reply);
+    }
   };
+
+  server.decorate(
+    'twitch',
+    {
+      validateConfig: (
+        request: FastifyRequest<ViewerRequest>,
+        reply: FastifyReply,
+        done: CallableFunction,
+      ) =>
+        validatePermission(request, reply, done, ['broadcaster']),
+      validateViewer: (
+        request: FastifyRequest<ViewerRequest>,
+        reply: FastifyReply,
+        done: CallableFunction,
+      ) =>
+        validatePermission(request, reply, done, ['viewer', 'broadcaster'], true),
+    },
+  );
+
+  next();
+};
 
 export default fp(twitchConfigValidatorPlugin);

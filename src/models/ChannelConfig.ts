@@ -1,10 +1,9 @@
-// tslint:disable: variable-name
 import { Document } from 'mongoose';
 import { createSchema, Type, typedModel } from 'ts-mongoose';
 import StarCraft2API from 'starcraft2-api';
 
-const regionIds = StarCraft2API.getAllRegionIds().map(regionId => regionId.toString());
-const realmIds = StarCraft2API.getAllAvailableSc2Realms().map(realmId => realmId.toString());
+const regionIds = StarCraft2API.getAllRegionIds().map((regionId) => regionId.toString());
+const realmIds = StarCraft2API.getAllAvailableSc2Realms().map((realmId) => realmId.toString());
 
 const maxProfiles = Number(process.env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3;
 
@@ -72,6 +71,7 @@ const ChannelConfigSchema = createSchema(
   },
 );
 
+// eslint-disable-next-line func-names
 ChannelConfigSchema.pre<ChannelConfig>('save', function (next): void {
   this.updatedAt = new Date();
   next();

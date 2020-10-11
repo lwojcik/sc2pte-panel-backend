@@ -1,5 +1,4 @@
 import * as fastify from 'fastify';
-import * as http from 'http';
 
 interface ApiResponse {
   status: number;
@@ -34,11 +33,7 @@ export interface RouteParams {
 }
 
 declare module 'fastify' {
-  export interface FastifyInstance<
-    HttpServer = http.Server,
-    HttpRequest = http.IncomingMessage,
-    HttpResponse = http.ServerResponse,
-  > {
+  export interface FastifyInstance {
     cache: {
       has: (key) => boolean;
       set: (key, value, cachePeriod) => any;
@@ -81,7 +76,12 @@ declare module 'fastify' {
     };
     twitchEbs: {
       verifyBroadcaster: (payload: string) => boolean;
-      validatePermission: (token: string, channelid: string, role: string | string[], acceptExpired?: boolean) => boolean;
+      validatePermission: (
+        token: string,
+        channelid: string,
+        role: string | string[],
+        acceptExpired?: boolean,
+      ) => boolean;
     }
     sas: {
       getProfile: (

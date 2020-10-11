@@ -1,19 +1,20 @@
-import { FastifyPlugin } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 import schema from './schema';
-import { RouteOptions } from '../../../@types/fastify';
+import { RouteOptions } from '../../../@types/fastify.d';
 
 interface RouteParams {
   channelId: string;
 }
 
-const route: FastifyPlugin<RouteOptions> = (server, opts, next) => {
+const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
   server.get<{
     Params: RouteParams,
   }>(
     `/${urlPrefix}/config/:channelId`,
-    { schema,
+    {
+      schema,
       preValidation: [server.twitch.validateConfig],
     },
     async (request, reply) => {

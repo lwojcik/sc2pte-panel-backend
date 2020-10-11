@@ -1,4 +1,4 @@
-import { FastifyPlugin } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 import Cloudflare from 'cloudflare';
 
@@ -9,40 +9,43 @@ interface CloudFlareOptions {
   viewerRoute: string;
 }
 
-const cloudflarePlugin: FastifyPlugin<CloudFlareOptions> =
-  (server, opts: CloudFlareOptions, next) => {
-    const {
-      token,
-      zoneId,
-      productionDomain,
-      viewerRoute,
-    } = opts;
+const cloudflarePlugin: FastifyPluginCallback<CloudFlareOptions> = (
+  server,
+  opts: CloudFlareOptions,
+  next,
+) => {
+  const {
+    token,
+    zoneId,
+    productionDomain,
+    viewerRoute,
+  } = opts;
 
-    if (!token) {
-      throw new Error('Missing API token');
-    }
+  if (!token) {
+    throw new Error('Missing API token');
+  }
 
-    if (!zoneId) {
-      throw new Error('Missing zone id');
-    }
+  if (!zoneId) {
+    throw new Error('Missing zone id');
+  }
 
-    const cf = new Cloudflare({ token });
+  const cf = new Cloudflare({ token });
 
-    const purgeByChannelId = async (channelId: string) => {
-      const status = await cf.zones.purgeCache(zoneId, {
-        files: [
-          `http://${productionDomain}/${viewerRoute}/${channelId}`,
-          `https://${productionDomain}/${viewerRoute}/${channelId}`,
-        ],
-      });
-      return status;
-    };
-
-    server.decorate('cloudflare', {
-      purgeByChannelId,
+  const purgeByChannelId = async (channelId: string) => {
+    const status = await cf.zones.purgeCache(zoneId, {
+      files: [
+        `http://${productionDomain}/${viewerRoute}/${channelId}`,
+        `https://${productionDomain}/${viewerRoute}/${channelId}`,
+      ],
     });
-
-    next();
+    return status;
   };
+
+  server.decorate('cloudflare', {
+    purgeByChannelId,
+  });
+
+  next();
+};
 
 export default fp(cloudflarePlugin);
