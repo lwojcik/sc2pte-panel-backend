@@ -177,6 +177,25 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     return playerLadderInfo;
   };
 
+  const getFallbackSnapshot = (apiData: any) => {
+    const { seasonSnapshot } = apiData.data.snapshot;
+    const gameModes = Object.keys(seasonSnapshot);
+    return gameModes.map((mode) => {
+      if (seasonSnapshot[mode]?.rank !== -1) {
+        return {
+          mode,
+          rank: seasonSnapshot[mode].leagueName?.toLowerCase() || '',
+          wins: seasonSnapshot[mode].totalWins,
+          losses: seasonSnapshot[mode].totalGames - seasonSnapshot[mode].totalWins,
+          race: 'n/a',
+          mmr: 'n/a',
+          divisionRank: seasonSnapshot[mode].rank,
+        };
+      }
+      return null;
+    }).filter((el) => el !== null);
+  };
+
   const getSnapshot = (apiData: any, profile: any) => {
     const { allLadderMemberships } = apiData.data;
     const ladderIds = allLadderMemberships
@@ -212,7 +231,10 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
       const heading = getHeading(profileData, regionName);
       await sleep((index + 1) * 100);
-      const snapshot = await getSnapshot(ladderSummaryData, profile);
+      const snapshot = (ladderSummaryData as any)?.allLadderMemberships
+        ? await getSnapshot(ladderSummaryData, profile)
+        : getFallbackSnapshot(profileData);
+
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
       return {
@@ -234,7 +256,6 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
         profiles.map((profile, index) =>
           getProfileData(profile, index)),
       );
-
       if (cacheActive) {
         cacheObject({
           segment: cacheSegment,
