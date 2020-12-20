@@ -1,4 +1,6 @@
 # @sc2pte/panel-backend
+[![Build status](https://ci.appveyor.com/api/projects/status/cbxfknydkgv4ggno/branch/master?svg=true)](https://ci.appveyor.com/project/lwojcik/panel-backend/branch/master)
+[![codecov](https://codecov.io/gh/sc2pte/panel-backend/branch/master/graph/badge.svg?token=oCn9AZEmuK)](https://codecov.io/gh/sc2pte/panel-backend)
 
 Readme under construction.
 
