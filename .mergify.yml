@@ -1,5 +1,5 @@
 pull_request_rules:
-  - name: Automatic merge of Snyk dependency upgrades (bot)
+  - name: Automatic merge of Snyk dependency upgrades
     conditions:
       - "author=snyk-bot"
       - "-conflict"
@@ -10,9 +10,11 @@ pull_request_rules:
       merge:
         method: squash
         strict: true
-  - name: Automatic merge of Snyk dependency upgrades (me)
+  - name: Automatic merge of Snyk dependency upgrades (snyk on behalf of repo admin)
     conditions:
       - "author=lwojcik"
+      - "title~=[Snyk]"
+      - "title~=Upgrade"
       - "-conflict"
       - "status-success=continuous-integration/appveyor/branch"
       - "status-success=continuous-integration/appveyor/pr"
