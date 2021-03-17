@@ -64,6 +64,6 @@
     "ts-jest": "26.5.2",
     "ts-mongoose": "0.0.24",
     "tsc-watch": "4.2.9",
-    "typescript": "4.1.5"
+    "typescript": "4.2.2"
   }
 }
