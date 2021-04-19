@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sc2pte/backend.git"
+    "url": "git+https://github.com/sc2pte/panel-backend.git"
   },
   "keywords": [
     "starcraft",
