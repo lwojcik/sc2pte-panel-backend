@@ -1,6 +1,6 @@
 import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
-import StarCraft2API from 'starcraft2-api';
+import { StarCraft2API } from 'starcraft2-api';
 import { ConfigObject, PlayerObject } from '../@types/fastify.d';
 
 interface PlayerConfigPluginOptions {

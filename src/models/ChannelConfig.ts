@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 import { createSchema, Type, typedModel } from 'ts-mongoose';
-import StarCraft2API from 'starcraft2-api';
+import { StarCraft2API } from 'starcraft2-api';
 
 const regionIds = StarCraft2API.getAllRegionIds().map((regionId) => regionId.toString());
 const realmIds = StarCraft2API.getAllAvailableSc2Realms().map((realmId) => realmId.toString());
