@@ -55,7 +55,7 @@
     "fastify-redis": "4.3.1",
     "fastify-redis-mock": "1.1.0",
     "fastify-twitch-ebs-tools": "2.0.5",
-    "mongoose": "5.13.5",
+    "mongoose": "5.13.6",
     "starcraft2-api": "2.0.0",
     "jest": "27.0.6",
     "npm-parallel": "2.0.1",
