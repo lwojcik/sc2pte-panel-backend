@@ -57,7 +57,7 @@
     "fastify-twitch-ebs-tools": "2.0.5",
     "mongoose": "5.13.6",
     "starcraft2-api": "2.0.0",
-    "jest": "27.0.6",
+    "jest": "27.1.0",
     "npm-parallel": "2.0.1",
     "pino-pretty": "5.1.3",
     "rimraf": "3.0.2",
