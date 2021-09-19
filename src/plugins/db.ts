@@ -36,17 +36,7 @@ const dbPlugin: FastifyPluginCallback<DbPluginOptions> = async (
     server.log.info('MongoDB reconnected');
   });
 
-  await mongoose.connect(
-    uri,
-    {
-      family: 4,
-      useNewUrlParser: true,
-      keepAlive: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
-    },
-  );
+  await mongoose.connect(uri);
 
   const save = async ({ channelId, data }: ConfigObject) => {
     try {

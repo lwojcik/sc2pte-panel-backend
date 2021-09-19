@@ -35,8 +35,7 @@
   },
   "homepage": "https://github.com/sc2pte/panel-backend#readme",
   "dependencies": {
-    "@types/jest": "26.0.24",
-    "@types/mongoose": "5.11.97",
+    "@types/jest": "27.0.1",
     "@types/node": "^16.7.4",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.3",
@@ -55,7 +54,7 @@
     "fastify-redis": "4.3.1",
     "fastify-redis-mock": "1.1.0",
     "fastify-twitch-ebs-tools": "2.0.5",
-    "mongoose": "5.13.6",
+    "mongoose": "6.0.4",
     "starcraft2-api": "2.0.0",
     "jest": "27.1.0",
     "npm-parallel": "2.0.1",
