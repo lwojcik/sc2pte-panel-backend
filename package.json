@@ -36,7 +36,7 @@
   "homepage": "https://github.com/sc2pte/panel-backend#readme",
   "dependencies": {
     "@types/jest": "27.0.1",
-    "@types/node": "^16.7.4",
+    "@types/node": "^16.9.4",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.3",
     "cloudflare": "2.8.0",
