@@ -51,7 +51,7 @@
     "fastify-ioredis": "0.1.1",
     "fastify-log": "1.2.1",
     "fastify-plugin": "3.0.0",
-    "fastify-redis": "4.3.1",
+    "fastify-redis": "4.3.2",
     "fastify-redis-mock": "1.1.0",
     "fastify-twitch-ebs-tools": "2.0.5",
     "mongoose": "6.0.7",
