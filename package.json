@@ -60,7 +60,7 @@
     "npm-parallel": "2.0.1",
     "pino-pretty": "5.1.3",
     "rimraf": "3.0.2",
-    "ts-jest": "27.0.5",
+    "ts-jest": "27.0.6",
     "ts-mongoose": "0.0.24",
     "tsc-watch": "4.5.0",
     "typescript": "4.4.4"
