@@ -23,6 +23,8 @@
         "onlyFunctionsWithAsyncKeyword": true
       }
     ],
-    "jest/no-hooks": "off"
+    "jest/no-hooks": "off",
+    "jest/require-hook": "off",
+    "jest/prefer-lowercase-title": "off"
   }
 }
