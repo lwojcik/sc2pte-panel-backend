@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document as MongooseDocument } from 'mongoose';
 import { createSchema, Type, typedModel } from 'ts-mongoose';
 import { StarCraft2API } from 'starcraft2-api';
 
@@ -14,7 +14,7 @@ interface PlayerProfile {
   locale: string;
 }
 
-interface ChannelConfig extends Document {
+interface ChannelConfig extends MongooseDocument {
   channelId: string;
   profiles: PlayerProfile[];
   createdAt: Date;
