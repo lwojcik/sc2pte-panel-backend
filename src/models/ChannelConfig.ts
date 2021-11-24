@@ -1,5 +1,5 @@
-import { Document as MongooseDocument } from 'mongoose';
-import { createSchema, Type, typedModel } from 'ts-mongoose';
+import { Document as MongooseDocument, Schema, model } from 'mongoose';
+// import { createSchema, Type, typedModel } from 'ts-mongoose';
 import { StarCraft2API } from 'starcraft2-api';
 
 const regionIds = StarCraft2API.getAllRegionIds().map((regionId) => regionId.toString());
@@ -7,14 +7,14 @@ const realmIds = StarCraft2API.getAllAvailableSc2Realms().map((realmId) => realm
 
 const maxProfiles = Number(process.env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3;
 
-interface PlayerProfile {
+interface PlayerProfile extends MongooseDocument {
   regionId: string;
   realmId: string;
   profileId: string;
   locale: string;
 }
 
-interface ChannelConfig extends MongooseDocument {
+interface ChannelConfig extends MongooseDocument  {
   channelId: string;
   profiles: PlayerProfile[];
   createdAt: Date;
@@ -24,18 +24,26 @@ interface ChannelConfig extends MongooseDocument {
 
 const arrayLimit = (val: unknown[]) => val.length <= maxProfiles;
 
-const PlayerProfileSchema = createSchema(
+const PlayerProfileSchema = new Schema<PlayerProfile>(
   {
-    regionId: Type.string({
+    regionId: {
+      type: String,
       required: true,
       enum: regionIds,
-    }),
-    realmId: Type.string({
+    },
+    realmId: {
+      type: String,
       required: true,
       enum: realmIds,
-    }),
-    profileId: Type.string({ required: true }),
-    locale: Type.string({ required: true }),
+    },
+    profileId: { 
+      type: String,
+      required: true,
+    },
+    locale: {
+      type: String,
+      required: true,
+    },
   },
   {
     id: false,
@@ -43,39 +51,26 @@ const PlayerProfileSchema = createSchema(
   },
 );
 
-const ChannelConfigSchema = createSchema(
+const ChannelConfigSchema = new Schema<ChannelConfig>(
   {
-    channelId: Type.string({
+    channelId: {
+      type: String,
       required: true,
       unique: true,
       index: true,
-    }),
-    profiles: Type.array({
-      required: true,
-      validate: [
-        arrayLimit,
-        `profile array exceeds the limit of ${maxProfiles}`,
-      ],
-    }).of(PlayerProfileSchema),
-    createdAt: Type.date({
-      default: Date.now,
-    }),
-    updatedAt: Type.date({
-      default: Date.now,
-    }),
+    },
+    profiles: {
+      type: [{
+        type: PlayerProfileSchema,
+        ref: 'playerProfileModel',
+      }],
+      validate: [arrayLimit, `{PATH} exceeds the limit of ${maxProfiles}`],
+    },
   },
   {
-    timestamps: {
-      createdAt: true,
-    },
+    timestamps: true,
   },
 );
 
-// eslint-disable-next-line func-names
-ChannelConfigSchema.pre<ChannelConfig>('save', function (next): void {
-  this.updatedAt = new Date();
-  next();
-});
-
-export default typedModel('ChannelConfig', ChannelConfigSchema);
+export default model('ChannelConfig', ChannelConfigSchema);
 // tslint:enable: variable-name
