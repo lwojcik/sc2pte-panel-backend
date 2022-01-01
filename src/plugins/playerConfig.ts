@@ -1,7 +1,7 @@
 import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
-import { StarCraft2API } from 'starcraft2-api';
-import { ConfigObject, PlayerObject } from '../@types/fastify.d';
+import { StarCraft2API, PlayerObject } from 'starcraft2-api';
+import { ConfigObject } from '../@types/fastify.d';
 
 interface PlayerConfigPluginOptions {
   maxProfiles: number;
@@ -27,12 +27,15 @@ const playerConfigPlugin: FastifyPluginCallback<PlayerConfigPluginOptions> = (
     try {
       const { regionId, realmId, profileId } = playerObject;
 
-      const profileIdValid = profileId > 0
-        && profileId.toString() === parseInt(profileId as string, 10).toString();
+      const profileIdValid =
+        profileId > 0 &&
+        profileId.toString() === parseInt(profileId as string, 10).toString();
 
-      return StarCraft2API.validateRegionId(regionId)
-        && StarCraft2API.validateSc2Realm(realmId)
-        && profileIdValid;
+      return (
+        StarCraft2API.validateRegionId(regionId) &&
+        StarCraft2API.validateSc2Realm(realmId) &&
+        profileIdValid
+      );
     } catch (error) {
       return false;
     }
@@ -42,12 +45,11 @@ const playerConfigPlugin: FastifyPluginCallback<PlayerConfigPluginOptions> = (
     playerObjects.map((playerObject) => isPlayerObjectValid(playerObject));
 
   const isDataValid = (data: PlayerObject[]) =>
-    minimumOneElement(data)
-      && maximumElementCount(data)
-      && allElementsValid(data);
+    minimumOneElement(data) &&
+    maximumElementCount(data) &&
+    allElementsValid(data);
 
-  const saveToDb = (config: ConfigObject) =>
-    server.db.save(config);
+  const saveToDb = (config: ConfigObject) => server.db.save(config);
 
   const validate = ({ channelId, data }: ConfigObject) =>
     isChannelIdValid(channelId) && isDataValid(data);
@@ -60,8 +62,7 @@ const playerConfigPlugin: FastifyPluginCallback<PlayerConfigPluginOptions> = (
     return false;
   };
 
-  const get = (channelId: number) =>
-    server.db.get(channelId);
+  const get = (channelId: number) => server.db.get(channelId);
 
   server.decorate('playerConfig', { save, get });
 
