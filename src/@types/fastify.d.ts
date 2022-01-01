@@ -1,22 +1,9 @@
 import * as fastify from 'fastify';
+import { PlayerObject } from 'starcraft2-api';
 
 interface ApiResponse {
   status: number;
   data: object;
-}
-
-export interface PlayerObject {
-  [key: string]: string | number;
-  regionId: string | number;
-  realmId: string | number;
-  profileId: string | number;
-}
-
-export interface LeagueObject {
-  seasonId: number;
-  queueId: number;
-  teamType: string;
-  leagueId: string;
 }
 
 export interface ConfigObject {
@@ -37,9 +24,7 @@ declare module 'fastify' {
     cache: {
       has: (key) => boolean;
       set: (key, value, cachePeriod) => any;
-      get: (
-        key,
-      ) => Promise<{
+      get: (key) => Promise<{
         item: string;
         stored: number;
         ttl: number;
@@ -56,9 +41,9 @@ declare module 'fastify' {
       getFreshData: any;
     };
     twitch: {
-      validateConfig: fastify.FastifyMiddleware,
-      validateViewer: fastify.FastifyMiddleware,
-    },
+      validateConfig: fastify.FastifyMiddleware;
+      validateViewer: fastify.FastifyMiddleware;
+    };
     log(): void;
     close(): Promise<any>;
     accessToken: {
@@ -80,25 +65,23 @@ declare module 'fastify' {
         token: string,
         channelid: string,
         role: string | string[],
-        acceptExpired?: boolean,
+        acceptExpired?: boolean
       ) => boolean;
-    }
+    };
     sas: {
-      getProfile: (
-        object: PlayerObject,
-      ) => Promise<ApiResponse>;
+      getProfile: (object: PlayerObject) => Promise<ApiResponse>;
       getLadderSummary: (
         object: PlayerObject,
-        refresh?: boolean,
+        refresh?: boolean
       ) => Promise<ApiResponse>;
       getLadder: (
         object: PlayerObject,
         ladderId: number,
-        refresh?: boolean,
+        refresh?: boolean
       ) => Promise<ApiResponse>;
       getLegacyMatchHistory: (
         object: PlayerObject,
-        refresh?: boolean,
+        refresh?: boolean
       ) => Promise<ApiResponse>;
     };
     cloudflare: {

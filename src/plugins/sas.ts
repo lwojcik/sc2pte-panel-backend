@@ -1,7 +1,7 @@
 import { FastifyPluginCallback } from 'fastify';
 import fp from 'fastify-plugin';
 import http from 'http';
-import { PlayerObject } from '../@types/fastify.d';
+import { PlayerObject } from 'starcraft2-api';
 
 export interface SasOptions {
   url: String;
@@ -33,7 +33,7 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
 
   const checkIfHostIsUp = async (urlToCheck: string) => {
     try {
-      const response = await get(urlToCheck) as OKReply;
+      const response = (await get(urlToCheck)) as OKReply;
       if (response.status && response.status !== 200) return false;
       return true;
     } catch (error) {
@@ -58,18 +58,20 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
   const getLadderSummary = ({ regionId, realmId, profileId }: PlayerObject) =>
     getFromApi(`/profile/ladderSummary/${regionId}/${realmId}/${profileId}`);
 
-  const getLegacyMatchHistory = ({ regionId, realmId, profileId }: PlayerObject) =>
+  const getLegacyMatchHistory = ({
+    regionId,
+    realmId,
+    profileId,
+  }: PlayerObject) =>
     getFromApi(`/legacy/matches/${regionId}/${realmId}/${profileId}`);
 
   const getLadder = (
-    {
-      regionId,
-      realmId,
-      profileId,
-    }: PlayerObject,
+    { regionId, realmId, profileId }: PlayerObject,
     ladderId: string | number,
   ) =>
-    getFromApi(`/profile/ladder/${regionId}/${realmId}/${profileId}/${ladderId}`);
+    getFromApi(
+      `/profile/ladder/${regionId}/${realmId}/${profileId}/${ladderId}`,
+    );
 
   fastify.decorate('sas', {
     getProfile,
