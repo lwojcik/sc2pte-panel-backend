@@ -1,128 +1,128 @@
 const response = {
   200: {
-    type: 'object',
+    type: "object",
     properties: {
-      channelId: { type: 'string' },
+      channelId: { type: "string" },
       data: {
-        type: 'object',
+        type: "object",
         properties: {
           profiles: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'object',
+              type: "object",
               properties: {
                 heading: {
-                  type: 'object',
+                  type: "object",
                   properties: {
                     portrait: {
-                      type: 'object',
+                      type: "object",
                       properties: {
                         url: {
-                          type: 'string',
+                          type: "string",
                         },
                         frame: {
-                          type: 'string',
+                          type: "string",
                         },
                       },
                     },
                     player: {
-                      type: 'object',
+                      type: "object",
                       properties: {
                         clan: {
-                          type: 'object',
+                          type: "object",
                           properties: {
                             name: {
-                              type: 'string',
+                              type: "string",
                             },
                             tag: {
-                              type: 'string',
+                              type: "string",
                             },
                           },
                         },
                         name: {
-                          type: 'string',
+                          type: "string",
                         },
                         server: {
-                          type: 'string',
+                          type: "string",
                         },
                       },
                     },
                   },
                 },
                 details: {
-                  type: 'object',
+                  type: "object",
                   properties: {
                     snapshot: {
-                      type: 'array',
+                      type: "array",
                       items: {
-                        type: 'object',
+                        type: "object",
                         properties: {
                           mode: {
-                            type: 'string',
+                            type: "string",
                           },
                           rank: {
-                            type: 'string',
+                            type: "string",
                           },
                           wins: {
-                            type: 'number',
+                            type: "number",
                           },
                           losses: {
-                            type: 'number',
+                            type: "number",
                           },
                           race: {
-                            type: 'string',
+                            type: "string",
                           },
                           mmr: {
-                            type: 'number',
+                            type: "number",
                           },
                           divisionRank: {
-                            type: 'number',
+                            type: "number",
                           },
                           teamMembers: {
-                            type: 'array',
+                            type: "array",
                             items: {
-                              type: 'string',
+                              type: "string",
                             },
                           },
                         },
                       },
                     },
                     stats: {
-                      type: 'object',
+                      type: "object",
                       properties: {
                         highestSoloRank: {
-                          type: 'string',
+                          type: "string",
                         },
                         highestTeamRank: {
-                          type: 'string',
+                          type: "string",
                         },
                         totalRankedGamesThisSeason: {
-                          type: 'number',
+                          type: "number",
                         },
                         seasonWinRatio: {
-                          type: 'number',
+                          type: "number",
                         },
                         totalCareerGames: {
-                          type: 'number',
+                          type: "number",
                         },
                       },
                     },
                     history: {
-                      type: 'array',
+                      type: "array",
                       items: {
-                        type: 'object',
+                        type: "object",
                         properties: {
                           mapName: {
-                            type: 'string',
+                            type: "string",
                           },
                           mode: {
-                            type: 'string',
+                            type: "string",
                           },
                           result: {
-                            type: 'string',
+                            type: "string",
                           },
                           date: {
-                            type: 'number',
+                            type: "number",
                           },
                         },
                       },
@@ -137,15 +137,15 @@ const response = {
     },
   },
   400: {
-    type: 'object',
+    type: "object",
     properties: {
-      status: { type: 'number' },
+      status: { type: "number" },
     },
   },
   500: {
-    type: 'object',
+    type: "object",
     properties: {
-      status: { type: 'number' },
+      status: { type: "number" },
     },
   },
 };

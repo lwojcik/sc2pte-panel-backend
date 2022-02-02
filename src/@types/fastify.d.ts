@@ -1,5 +1,6 @@
-import * as fastify from 'fastify';
-import { PlayerObject } from 'starcraft2-api';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as fastify from "fastify";
+import { PlayerObject } from "starcraft2-api";
 
 interface ApiResponse {
   status: number;
@@ -19,7 +20,7 @@ export interface RouteParams {
   channelId: string;
 }
 
-declare module 'fastify' {
+declare module "fastify" {
   export interface FastifyInstance {
     cache: {
       has: (key) => boolean;

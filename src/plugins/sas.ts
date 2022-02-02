@@ -1,16 +1,16 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import http from 'http';
-import { PlayerObject } from 'starcraft2-api';
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import http from "http";
+import { PlayerObject } from "starcraft2-api";
 
 export interface SasOptions {
-  url: String;
-  statusEndpoint: String;
+  url: string;
+  statusEndpoint: string;
 }
 
 interface OKReply {
   status: 200;
-  message: 'ok';
+  message: "ok";
   timestamp: string;
 }
 
@@ -22,13 +22,13 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
     new Promise((resolve, reject) => {
       http
         .get(urlToGet, (res) => {
-          res.setEncoding('utf8');
-          let body = '';
+          res.setEncoding("utf8");
+          let body = "";
           // eslint-disable-next-line no-return-assign
-          res.on('data', (chunk) => (body += chunk));
-          res.on('end', () => resolve(JSON.parse(body)));
+          res.on("data", (chunk) => (body += chunk));
+          res.on("end", () => resolve(JSON.parse(body)));
         })
-        .on('error', reject);
+        .on("error", reject);
     });
 
   const checkIfHostIsUp = async (urlToCheck: string) => {
@@ -46,9 +46,9 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
   const checkOnStartup = async () => {
     const isSASup = await checkIfHostIsUp(statusUrl);
     if (isSASup) {
-      fastify.log.info('sc2-api-service status: running');
+      fastify.log.info("sc2-api-service status: running");
     } else {
-      fastify.log.info('sc2-api-service status: down or starting');
+      fastify.log.info("sc2-api-service status: down or starting");
     }
   };
 
@@ -67,13 +67,13 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
 
   const getLadder = (
     { regionId, realmId, profileId }: PlayerObject,
-    ladderId: string | number,
+    ladderId: string | number
   ) =>
     getFromApi(
-      `/profile/ladder/${regionId}/${realmId}/${profileId}/${ladderId}`,
+      `/profile/ladder/${regionId}/${realmId}/${profileId}/${ladderId}`
     );
 
-  fastify.decorate('sas', {
+  fastify.decorate("sas", {
     getProfile,
     getLadderSummary,
     getLegacyMatchHistory,

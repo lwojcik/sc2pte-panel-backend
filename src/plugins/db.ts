@@ -1,8 +1,9 @@
-import { FastifyPluginCallback } from 'fastify';
-import mongoose from 'mongoose';
-import fp from 'fastify-plugin';
-import { ConfigObject } from '../@types/fastify.d';
-import ChannelConfig from '../models/ChannelConfig';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FastifyPluginCallback } from "fastify";
+import mongoose from "mongoose";
+import fp from "fastify-plugin";
+import { ConfigObject } from "../@types/fastify.d";
+import ChannelConfig from "../models/ChannelConfig";
 
 interface DbPluginOptions {
   uri: string;
@@ -12,28 +13,28 @@ interface DbPluginOptions {
 const dbPlugin: FastifyPluginCallback<DbPluginOptions> = async (
   server,
   opts: DbPluginOptions,
-  next,
+  next
 ) => {
   const { uri, maxProfiles } = opts;
 
-  mongoose.connection.on('error', (err) => {
+  mongoose.connection.on("error", (err) => {
     server.log.error(`MongoDB error: ${err}`);
   });
 
-  mongoose.connection.once('open', () => {
-    server.log.info('MongoDB open');
+  mongoose.connection.once("open", () => {
+    server.log.info("MongoDB open");
   });
 
-  mongoose.connection.on('connected', () => {
-    server.log.info('MongoDB connected');
+  mongoose.connection.on("connected", () => {
+    server.log.info("MongoDB connected");
   });
 
-  mongoose.connection.on('disconnected', () => {
-    server.log.warn('MongoDB disconnected');
+  mongoose.connection.on("disconnected", () => {
+    server.log.warn("MongoDB disconnected");
   });
 
-  mongoose.connection.on('reconnected', () => {
-    server.log.info('MongoDB reconnected');
+  mongoose.connection.on("reconnected", () => {
+    server.log.info("MongoDB reconnected");
   });
 
   await mongoose.connect(uri);
@@ -48,7 +49,7 @@ const dbPlugin: FastifyPluginCallback<DbPluginOptions> = async (
         {
           upsert: true,
           runValidators: true,
-        },
+        }
       );
       return true;
     } catch (error) {
@@ -68,7 +69,7 @@ const dbPlugin: FastifyPluginCallback<DbPluginOptions> = async (
       }
       return {
         status: 404,
-        message: 'No config found',
+        message: "No config found",
       };
     } catch (error) {
       return {
@@ -77,7 +78,7 @@ const dbPlugin: FastifyPluginCallback<DbPluginOptions> = async (
     }
   };
 
-  server.decorate('db', { save, get });
+  server.decorate("db", { save, get });
 
   next();
 };

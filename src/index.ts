@@ -1,14 +1,16 @@
-import { FastifyInstance } from 'fastify';
-import fp from 'fastify-plugin';
-import statusRoutes from './routes/status/index';
-import configRoutes from './routes/config';
-import viewerRoutes from './routes/viewer';
-import db from './plugins/db';
-import sas, { SasOptions } from './plugins/sas';
-import cloudflare from './plugins/cloudflare';
-import playerConfig from './plugins/playerConfig';
-import viewer from './plugins/viewer';
-import twitchConfigValidator, { TwitchPluginOptions } from './plugins/twitchConfigValidator';
+import { FastifyInstance } from "fastify";
+import fp from "fastify-plugin";
+import statusRoutes from "./routes/status/index";
+import configRoutes from "./routes/config";
+import viewerRoutes from "./routes/viewer";
+import db from "./plugins/db";
+import sas, { SasOptions } from "./plugins/sas";
+import cloudflare from "./plugins/cloudflare";
+import playerConfig from "./plugins/playerConfig";
+import viewer from "./plugins/viewer";
+import twitchConfigValidator, {
+  TwitchPluginOptions,
+} from "./plugins/twitchConfigValidator";
 
 interface ServerOptions {
   app: {
@@ -33,17 +35,8 @@ interface ServerOptions {
 }
 
 const api = fp(
-  (
-    fastify: FastifyInstance,
-    opts: ServerOptions,
-    next: CallableFunction,
-  ) => {
-    const {
-      app,
-      redis,
-      maxProfiles,
-      twitch,
-    } = opts;
+  (fastify: FastifyInstance, opts: ServerOptions, next: CallableFunction) => {
+    const { app, redis, maxProfiles, twitch } = opts;
     const { urlPrefix } = app;
     fastify.register(db, {
       ...opts.db,
@@ -63,7 +56,7 @@ const api = fp(
     fastify.register(configRoutes.post, { urlPrefix });
     fastify.register(viewerRoutes.get, { urlPrefix });
     next();
-  },
+  }
 );
 
 export = api;

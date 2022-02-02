@@ -1,16 +1,13 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import schema from './schema';
-import {
-  RouteOptions,
-  RouteParams,
-} from '../../../@types/fastify.d';
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import schema from "./schema";
+import { RouteOptions, RouteParams } from "../../../@types/fastify.d";
 
 const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
   server.post<{
-    Params: RouteParams,
-    Body: string,
+    Params: RouteParams;
+    Body: string;
   }>(
     `/${urlPrefix}/config/:channelId`,
     {
@@ -29,22 +26,22 @@ const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
 
           reply.code(200).send({
             status: 200,
-            message: 'Config saved',
+            message: "Config saved",
           });
         } else {
           reply.code(400).send({
             status: 400,
-            message: 'Failed to save config',
+            message: "Failed to save config",
           });
         }
       } catch (error) {
         server.log.error(error);
         reply.code(400).send({
           status: 400,
-          message: 'Incorrect or malformed request',
+          message: "Incorrect or malformed request",
         });
       }
-    },
+    }
   );
   next();
 };

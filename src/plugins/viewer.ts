@@ -1,6 +1,7 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import { StarCraft2API, PlayerObject } from 'starcraft2-api';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import { StarCraft2API, PlayerObject } from "starcraft2-api";
 
 interface DataObject {
   segment: string;
@@ -13,19 +14,19 @@ interface ViewerOptions {
 }
 
 const ranks = [
-  'bronze',
-  'silver',
-  'gold',
-  'platinum',
-  'diamond',
-  'master',
-  'grandmaster',
+  "bronze",
+  "silver",
+  "gold",
+  "platinum",
+  "diamond",
+  "master",
+  "grandmaster",
 ] as string[];
 
 const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
   server,
   { ttl }: ViewerOptions,
-  next,
+  next
 ) => {
   const cache = server.redis;
   const cacheActive = Boolean(server.redis);
@@ -36,10 +37,10 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     cacheActive ? server.redis.get(segment) : Promise.resolve(false);
 
   const cacheObject = async ({ segment, data, ttlTime }: DataObject) => {
-    if (!cacheActive) return 'Object not cached (Cache disabled)';
+    if (!cacheActive) return "Object not cached (Cache disabled)";
     await cache.set(segment, JSON.stringify(data));
     await cache.expire(segment, ttlTime);
-    return 'Object cached successfully';
+    return "Object cached successfully";
   };
 
   // eslint-disable-next-line no-confusing-arrow
@@ -48,7 +49,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
 
   const sleep = (ms: number) => {
     server.log.info(`Sleeping for ${ms}ms...`);
-    // eslint-disable-next-line no-new
+    // eslint-disable-next-line no-new, no-promise-executor-return
     new Promise((resolve) => setTimeout(resolve, ms));
   };
 
@@ -61,10 +62,10 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     return soloRankIndex > teamRankIndex
       ? soloRank
         ? soloRank.toLowerCase()
-        : ''
+        : ""
       : teamRank
-        ? teamRank.toLowerCase()
-        : '';
+      ? teamRank.toLowerCase()
+      : "";
   };
 
   const calculateWins = (seasonSnapshot: any) =>
@@ -86,7 +87,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
         url: summary.portrait,
         frame: calculateHighestRank(
           career.current1v1LeagueName,
-          career.currentBestTeamLeagueName,
+          career.currentBestTeamLeagueName
         ),
       },
       player: {
@@ -107,8 +108,8 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
       totalCareerGames: career?.totalCareerGames || 0,
       totalRankedGamesThisSeason: snapshot?.totalRankedSeasonGamesPlayed,
       seasonWinRatio: calculateSeasonWinRatio(snapshot) || 0,
-      highestSoloRank: career?.best1v1Finish?.leagueName?.toLowerCase() || '',
-      highestTeamRank: career?.bestTeamFinish?.leagueName?.toLowerCase() || '',
+      highestSoloRank: career?.best1v1Finish?.leagueName?.toLowerCase() || "",
+      highestTeamRank: career?.bestTeamFinish?.leagueName?.toLowerCase() || "",
     };
   };
 
@@ -118,22 +119,22 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
 
     const { rank, mmr } = ranksAndPools[0];
     const { localizedGameMode } = currentLadderMembership;
-    const mode = localizedGameMode.split(' ')[0];
+    const mode = localizedGameMode.split(" ")[0];
     const rankName = league;
 
     const playerLadderData = ladderTeams.filter((ladderTeam: any) =>
       ladderTeam.teamMembers.some(
-        (teamMember: any) => teamMember.id === profileId,
-      ),
+        (teamMember: any) => teamMember.id === profileId
+      )
     )[0];
 
     const { wins, losses, teamMembers } = playerLadderData;
     const teamMemberNames = teamMembers.map(
-      (teamMember: any) => teamMember.displayName,
+      (teamMember: any) => teamMember.displayName
     );
 
     const race = teamMembers.filter(
-      (teamMember: any) => teamMember.id === profileId,
+      (teamMember: any) => teamMember.id === profileId
     )[0].favoriteRace;
 
     return {
@@ -151,14 +152,14 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
   const getLadderData = async (
     profile: PlayerObject,
     ladderId: number,
-    index: number,
+    index: number
   ) => {
     await sleep((index + 1) * 1000);
     const { profileId } = profile;
     const ladderApiData = await server.sas.getLadder(profile, ladderId);
     const playerLadderInfo = getPlayerLadderInfo(
       ladderApiData,
-      profileId as number,
+      profileId as number
     );
     return playerLadderInfo;
   };
@@ -171,12 +172,12 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
         if (seasonSnapshot[mode]?.rank !== -1) {
           return {
             mode,
-            rank: seasonSnapshot[mode].leagueName?.toLowerCase() || '',
+            rank: seasonSnapshot[mode].leagueName?.toLowerCase() || "",
             wins: seasonSnapshot[mode].totalWins,
             losses:
               seasonSnapshot[mode].totalGames - seasonSnapshot[mode].totalWins,
-            race: 'n/a',
-            mmr: 'n/a',
+            race: "n/a",
+            mmr: "n/a",
             divisionRank: seasonSnapshot[mode].rank,
           };
         }
@@ -188,20 +189,20 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
   const getSnapshot = (apiData: any, profile: any) => {
     const { allLadderMemberships } = apiData.data;
     const ladderIds = allLadderMemberships.map(
-      (ladderMembership: any) => ladderMembership.ladderId,
+      (ladderMembership: any) => ladderMembership.ladderId
     );
 
     return Promise.all(
       ladderIds.map((ladderId: any, index: number) =>
-        getLadderData(profile, ladderId, index),
-      ),
+        getLadderData(profile, ladderId, index)
+      )
     );
   };
 
   const getMatchHistory = (apiData: any) => {
     const data = apiData.data.matches as any[];
     const filteredMatchHistory = data.filter(
-      (match) => match.type !== 'Custom',
+      (match) => match.type !== "Custom"
     );
 
     return filteredMatchHistory.map((matchObject) => ({
@@ -243,11 +244,11 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
 
   const getFreshData = async (
     profiles: PlayerObject[],
-    cacheSegment: string,
+    cacheSegment: string
   ) => {
     try {
       const profileData = await Promise.all(
-        profiles.map((profile, index) => getProfileData(profile, index)),
+        profiles.map((profile, index) => getProfileData(profile, index))
       );
       if (cacheActive) {
         cacheObject({
@@ -285,7 +286,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     return data;
   };
 
-  server.decorate('viewer', {
+  server.decorate("viewer", {
     getData,
     getFreshData,
   });
