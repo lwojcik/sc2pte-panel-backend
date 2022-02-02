@@ -1,37 +1,37 @@
 const getConfig = (enableRedis: boolean) => ({
   app: {
-    nodeEnv: 'test',
-    port: '8123',
-    urlPrefix: 'v2test',
+    nodeEnv: "test",
+    port: "8123",
+    urlPrefix: "v2test",
   },
   sas: {
-    url: 'http://localhost:8081',
-    statusEndpoint: 'status',
+    url: "http://localhost:8081",
+    statusEndpoint: "status",
   },
   bnet: {
-    region: 'us',
+    region: "us",
   },
   db: {
-    uri: 'http://localhost/db',
+    uri: "http://localhost/db",
   },
   twitch: {
-    secret: 'fake_client_secret',
+    secret: "fake_client_secret",
     enableOnAuthorized: true,
   },
   redis: {
     enable: enableRedis,
-    host: '127.0.0.1',
-    port: '6379',
-    password: '',
-    db: '0',
+    host: "127.0.0.1",
+    port: "6379",
+    password: "",
+    db: "0",
     ttl: 600000,
   },
   cloudflare: {
     enable: true,
-    token: 'test_access_token',
-    zoneId: 'test_zone_id',
-    productionDomain: 'testProductionDomain',
-    viewerRoute: 'testViewerRoute',
+    token: "test_access_token",
+    zoneId: "test_zone_id",
+    productionDomain: "testProductionDomain",
+    viewerRoute: "testViewerRoute",
   },
   maxProfiles: 3,
 });

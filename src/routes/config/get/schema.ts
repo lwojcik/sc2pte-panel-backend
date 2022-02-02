@@ -1,24 +1,24 @@
 const response = {
   200: {
-    type: 'object',
+    type: "object",
     properties: {
-      channelId: { type: 'string' },
+      channelId: { type: "string" },
       profiles: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'object',
+          type: "object",
           properties: {
             locale: {
-              type: 'string',
+              type: "string",
             },
             regionId: {
-              type: 'string',
+              type: "string",
             },
             realmId: {
-              type: 'string',
+              type: "string",
             },
             profileId: {
-              type: 'string',
+              type: "string",
             },
           },
         },
@@ -26,15 +26,15 @@ const response = {
     },
   },
   400: {
-    type: 'object',
+    type: "object",
     properties: {
-      status: { type: 'number' },
+      status: { type: "number" },
     },
   },
   500: {
-    type: 'object',
+    type: "object",
     properties: {
-      status: { type: 'number' },
+      status: { type: "number" },
     },
   },
 };

@@ -1,1 +1,1 @@
-declare module 'cloudflare';
+declare module "cloudflare";

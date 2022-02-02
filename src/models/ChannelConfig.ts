@@ -1,9 +1,13 @@
-import { Document as MongooseDocument, Schema, model } from 'mongoose';
+import { Document as MongooseDocument, Schema, model } from "mongoose";
 // import { createSchema, Type, typedModel } from 'ts-mongoose';
-import { StarCraft2API } from 'starcraft2-api';
+import { StarCraft2API } from "starcraft2-api";
 
-const regionIds = StarCraft2API.getAllRegionIds().map((regionId) => regionId.toString());
-const realmIds = StarCraft2API.getAllAvailableSc2Realms().map((realmId) => realmId.toString());
+const regionIds = StarCraft2API.getAllRegionIds().map((regionId) =>
+  regionId.toString()
+);
+const realmIds = StarCraft2API.getAllAvailableSc2Realms().map((realmId) =>
+  realmId.toString()
+);
 
 const maxProfiles = Number(process.env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3;
 
@@ -14,7 +18,7 @@ interface PlayerProfile extends MongooseDocument {
   locale: string;
 }
 
-interface ChannelConfig extends MongooseDocument  {
+interface ChannelConfig extends MongooseDocument {
   channelId: string;
   profiles: PlayerProfile[];
   createdAt: Date;
@@ -36,7 +40,7 @@ const PlayerProfileSchema = new Schema<PlayerProfile>(
       required: true,
       enum: realmIds,
     },
-    profileId: { 
+    profileId: {
       type: String,
       required: true,
     },
@@ -48,7 +52,7 @@ const PlayerProfileSchema = new Schema<PlayerProfile>(
   {
     id: false,
     timestamps: false,
-  },
+  }
 );
 
 const ChannelConfigSchema = new Schema<ChannelConfig>(
@@ -60,17 +64,19 @@ const ChannelConfigSchema = new Schema<ChannelConfig>(
       index: true,
     },
     profiles: {
-      type: [{
-        type: PlayerProfileSchema,
-        ref: 'playerProfileModel',
-      }],
+      type: [
+        {
+          type: PlayerProfileSchema,
+          ref: "playerProfileModel",
+        },
+      ],
       validate: [arrayLimit, `{PATH} exceeds the limit of ${maxProfiles}`],
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export default model('ChannelConfig', ChannelConfigSchema);
+export default model("ChannelConfig", ChannelConfigSchema);
 // tslint:enable: variable-name

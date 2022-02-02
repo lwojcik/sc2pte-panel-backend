@@ -1,10 +1,6 @@
-import {
-  FastifyPluginCallback,
-  FastifyRequest,
-  FastifyReply,
-} from 'fastify';
-import fp from 'fastify-plugin';
-import twitchEbsTools from 'fastify-twitch-ebs-tools';
+import { FastifyPluginCallback, FastifyRequest, FastifyReply } from "fastify";
+import fp from "fastify-plugin";
+import twitchEbsTools from "fastify-twitch-ebs-tools";
 
 export interface TwitchPluginOptions {
   secret: string;
@@ -21,11 +17,9 @@ interface ViewerRequest {
   };
 }
 
-const twitchConfigValidatorPlugin: FastifyPluginCallback<TwitchPluginOptions> = (
-  server,
-  opts,
-  next,
-) => {
+const twitchConfigValidatorPlugin: FastifyPluginCallback<
+  TwitchPluginOptions
+> = (server, opts, next) => {
   const disabled = !opts.enableOnAuthorized;
 
   server.register(twitchEbsTools, {
@@ -36,7 +30,7 @@ const twitchConfigValidatorPlugin: FastifyPluginCallback<TwitchPluginOptions> = 
   const handle401 = (reply: FastifyReply) =>
     reply.code(401).send({
       status: 401,
-      message: 'Unauthorized',
+      message: "Unauthorized",
     });
 
   const validatePermission = (
@@ -44,7 +38,7 @@ const twitchConfigValidatorPlugin: FastifyPluginCallback<TwitchPluginOptions> = 
     reply: FastifyReply,
     done: CallableFunction,
     roles: string | string[],
-    ignoreExpiration?: boolean,
+    ignoreExpiration?: boolean
   ) => {
     try {
       const channelIdInUrl = request.params.channelId;
@@ -54,7 +48,7 @@ const twitchConfigValidatorPlugin: FastifyPluginCallback<TwitchPluginOptions> = 
         token,
         channelid,
         roles,
-        ignoreExpiration,
+        ignoreExpiration
       );
 
       if (channelIdCorrect && payloadValid) {
@@ -67,23 +61,19 @@ const twitchConfigValidatorPlugin: FastifyPluginCallback<TwitchPluginOptions> = 
     }
   };
 
-  server.decorate(
-    'twitch',
-    {
-      validateConfig: (
-        request: FastifyRequest<ViewerRequest>,
-        reply: FastifyReply,
-        done: CallableFunction,
-      ) =>
-        validatePermission(request, reply, done, ['broadcaster']),
-      validateViewer: (
-        request: FastifyRequest<ViewerRequest>,
-        reply: FastifyReply,
-        done: CallableFunction,
-      ) =>
-        validatePermission(request, reply, done, ['viewer', 'broadcaster'], true),
-    },
-  );
+  server.decorate("twitch", {
+    validateConfig: (
+      request: FastifyRequest<ViewerRequest>,
+      reply: FastifyReply,
+      done: CallableFunction
+    ) => validatePermission(request, reply, done, ["broadcaster"]),
+    validateViewer: (
+      request: FastifyRequest<ViewerRequest>,
+      reply: FastifyReply,
+      done: CallableFunction
+    ) =>
+      validatePermission(request, reply, done, ["viewer", "broadcaster"], true),
+  });
 
   next();
 };

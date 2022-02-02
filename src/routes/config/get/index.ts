@@ -1,7 +1,7 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import schema from './schema';
-import { RouteOptions } from '../../../@types/fastify.d';
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import schema from "./schema";
+import { RouteOptions } from "../../../@types/fastify.d";
 
 interface RouteParams {
   channelId: string;
@@ -10,7 +10,7 @@ interface RouteParams {
 const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
   server.get<{
-    Params: RouteParams,
+    Params: RouteParams;
   }>(
     `/${urlPrefix}/config/:channelId`,
     {
@@ -26,10 +26,10 @@ const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
         server.log.error(error);
         reply.code(400).send({
           status: 400,
-          message: 'Incorrect or malformed request',
+          message: "Incorrect or malformed request",
         });
       }
-    },
+    }
   );
   next();
 };

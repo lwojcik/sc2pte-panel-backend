@@ -1,6 +1,6 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import Cloudflare from 'cloudflare';
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import Cloudflare from "cloudflare";
 
 interface CloudFlareOptions {
   token: string;
@@ -12,21 +12,16 @@ interface CloudFlareOptions {
 const cloudflarePlugin: FastifyPluginCallback<CloudFlareOptions> = (
   server,
   opts: CloudFlareOptions,
-  next,
+  next
 ) => {
-  const {
-    token,
-    zoneId,
-    productionDomain,
-    viewerRoute,
-  } = opts;
+  const { token, zoneId, productionDomain, viewerRoute } = opts;
 
   if (!token) {
-    throw new Error('Missing API token');
+    throw new Error("Missing API token");
   }
 
   if (!zoneId) {
-    throw new Error('Missing zone id');
+    throw new Error("Missing zone id");
   }
 
   const cf = new Cloudflare({ token });
@@ -41,7 +36,7 @@ const cloudflarePlugin: FastifyPluginCallback<CloudFlareOptions> = (
     return status;
   };
 
-  server.decorate('cloudflare', {
+  server.decorate("cloudflare", {
     purgeByChannelId,
   });
 

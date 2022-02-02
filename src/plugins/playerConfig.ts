@@ -1,7 +1,7 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import { StarCraft2API, PlayerObject } from 'starcraft2-api';
-import { ConfigObject } from '../@types/fastify.d';
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import { StarCraft2API, PlayerObject } from "starcraft2-api";
+import { ConfigObject } from "../@types/fastify.d";
 
 interface PlayerConfigPluginOptions {
   maxProfiles: number;
@@ -10,7 +10,7 @@ interface PlayerConfigPluginOptions {
 const playerConfigPlugin: FastifyPluginCallback<PlayerConfigPluginOptions> = (
   server,
   opts: PlayerConfigPluginOptions,
-  next,
+  next
 ) => {
   const { maxProfiles } = opts;
 
@@ -64,7 +64,7 @@ const playerConfigPlugin: FastifyPluginCallback<PlayerConfigPluginOptions> = (
 
   const get = (channelId: number) => server.db.get(channelId);
 
-  server.decorate('playerConfig', { save, get });
+  server.decorate("playerConfig", { save, get });
 
   next();
 };

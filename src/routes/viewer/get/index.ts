@@ -1,15 +1,12 @@
-import { FastifyPluginCallback } from 'fastify';
-import fp from 'fastify-plugin';
-import schema from './schema';
-import {
-  RouteOptions,
-  RouteParams,
-} from '../../../@types/fastify.d';
+import { FastifyPluginCallback } from "fastify";
+import fp from "fastify-plugin";
+import schema from "./schema";
+import { RouteOptions, RouteParams } from "../../../@types/fastify.d";
 
 const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   const { urlPrefix } = opts;
   server.get<{
-    Params: RouteParams,
+    Params: RouteParams;
   }>(
     `/${urlPrefix}/viewer/:channelId`,
     {
@@ -32,10 +29,10 @@ const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
         server.log.error(error);
         reply.send({
           status: 400,
-          message: 'Data fetch error',
+          message: "Data fetch error",
         });
       }
-    },
+    }
   );
 
   next();
