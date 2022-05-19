@@ -54,12 +54,12 @@
     "fastify-twitch-ebs-tools": "2.0.6",
     "mongoose": "6.3.1",
     "starcraft2-api": "2.2.1",
-    "jest": "27.5.1",
+    "jest": "28.0.0",
     "npm-parallel": "2.0.1",
     "pino-pretty": "7.6.1",
     "prettier": "^2.5.1",
     "rimraf": "3.0.2",
-    "ts-jest": "27.1.4",
+    "ts-jest": "28.0.2",
     "tsc-watch": "5.0.3",
     "typescript": "4.6.3"
   }
