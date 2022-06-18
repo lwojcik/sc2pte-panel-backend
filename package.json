@@ -41,7 +41,7 @@
     "cloudflare": "2.9.1",
     "eslint": "8.16.0",
     "eslint-config-airbnb-typescript-prettier": "5.0.0",
-    "eslint-plugin-jest": "26.2.2",
+    "eslint-plugin-jest": "26.4.2",
     "fastify": "3.29.0",
     "fastify-caching": "6.3.0",
     "fastify-cors": "6.1.0",
