@@ -13,18 +13,19 @@ services:
     command: npm run dev
     env_file: .env
     depends_on:
-      - mongo
+      - mongodb
       - redis
       - sas
       - bas
 
-  mongo:
+  mongodb:
     image: mongo:4.4.15
+    container_name: mongodb
     restart: always
     environment:
-      MONGO_INITDB_DATABASE: sc2pte
-      MONGO_INITDB_ROOT_USERNAME: sc2pte
-      MONGO_INITDB_ROOT_PASSWORD: sc2pte
+      - MONGO_INITDB_DATABASE=sc2pte
+      - MONGO_INITDB_ROOT_USERNAME=sc2pte
+      - MONGO_INITDB_ROOT_PASSWORD=sc2pte
     deploy:
       replicas: 1
     volumes:
