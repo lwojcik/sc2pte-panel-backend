@@ -1,6 +1,6 @@
 {
   "name": "@sc2pte/panel-backend",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "StarCraft II Profile Twitch extension - backend service (EBS)",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "runsas": "npm --prefix ../sc2-api-service run dev",
     "watch": "tsc-watch --onSuccess \"npm start\"",
-    "dev": "parallel runsas watch | pino-pretty",
+    "dev": "npm run watch | pino-pretty",
     "test": "jest",
     "clearTestCache": "jest --clearCache",
     "start": "node scripts/start.js"
