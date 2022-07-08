@@ -39,7 +39,7 @@
     "@types/jest": "28.1.1",
     "@types/node": "18.0.0",
     "cloudflare": "2.9.1",
-    "eslint": "8.17.0",
+    "eslint": "8.18.0",
     "eslint-config-airbnb-typescript-prettier": "5.0.0",
     "eslint-plugin-jest": "26.5.3",
     "fastify": "3.29.0",
