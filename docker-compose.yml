@@ -34,7 +34,7 @@ services:
 
   redis:
     image: "redis:alpine"
-    restart: on-failure:5
+    restart: always
     ports:
       - ${SC2PTE_REDIS_PORT}:${SC2PTE_REDIS_PORT}
 
