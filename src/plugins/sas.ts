@@ -8,15 +8,8 @@ export interface SasOptions {
   statusEndpoint: string;
 }
 
-interface OKReply {
-  status: 200;
-  message: "ok";
-  timestamp: string;
-}
-
 const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
-  const { url, statusEndpoint } = opts;
-  const statusUrl = `${url}/${statusEndpoint}`;
+  const { url } = opts;
 
   const get = (urlToGet: string) =>
     new Promise((resolve, reject) => {
@@ -31,32 +24,13 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
         .on("error", reject);
     });
 
-  const checkIfHostIsUp = async (urlToCheck: string) => {
-    try {
-      const response = (await get(urlToCheck)) as OKReply;
-      if (response.status && response.status !== 200) return false;
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
-
   const getFromApi = (endpoint: string) => get(`${url}${endpoint}`);
-
-  const checkOnStartup = async () => {
-    const isSASup = await checkIfHostIsUp(statusUrl);
-    if (isSASup) {
-      fastify.log.info("sc2-api-service status: running");
-    } else {
-      fastify.log.info("sc2-api-service status: down or starting");
-    }
-  };
 
   const getProfile = ({ regionId, realmId, profileId }: PlayerObject) =>
     getFromApi(`/profile/profile/${regionId}/${realmId}/${profileId}`);
 
   const getLadderSummary = ({ regionId, realmId, profileId }: PlayerObject) =>
-    getFromApi(`/profile/ladderSummary/${regionId}/${realmId}/${profileId}`);
+    getFromApi(`/profile/laddersummary/${regionId}/${realmId}/${profileId}`);
 
   const getLegacyMatchHistory = ({
     regionId,
@@ -79,8 +53,6 @@ const sasPlugin: FastifyPluginCallback<SasOptions> = (fastify, opts, next) => {
     getLegacyMatchHistory,
     getLadder,
   });
-
-  checkOnStartup();
 
   next();
 };

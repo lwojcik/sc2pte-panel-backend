@@ -216,16 +216,19 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
   const getProfileData = async (profile: PlayerObject, index: number) => {
     try {
       const profileData = await server.sas.getProfile(profile);
-      await sleep((index + 1) * 100);
       const matchHistoryData = await server.sas.getLegacyMatchHistory(profile);
       await sleep((index + 1) * 100);
       const ladderSummaryData = await server.sas.getLadderSummary(profile);
+
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
       const heading = getHeading(profileData, regionName);
       await sleep((index + 1) * 100);
-      const snapshot = (ladderSummaryData as any)?.allLadderMemberships
-        ? await getSnapshot(ladderSummaryData, profile)
-        : getFallbackSnapshot(profileData);
+      const snapshot =
+        (ladderSummaryData as any)?.data?.allLadderMemberships.length >= 1
+          ? await getSnapshot(ladderSummaryData, profile)
+          : getFallbackSnapshot(profileData);
+
+      console.log(snapshot);
 
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
@@ -238,6 +241,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
         },
       };
     } catch (error) {
+      console.log(error);
       return {};
     }
   };

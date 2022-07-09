@@ -1,6 +1,6 @@
 import { FastifyPluginCallback } from "fastify";
 import fp from "fastify-plugin";
-import schema from "./schema";
+// import schema from "./schema";
 import { RouteOptions, RouteParams } from "../../../@types/fastify.d";
 
 const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
@@ -10,16 +10,16 @@ const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
   }>(
     `/${urlPrefix}/viewer/:channelId`,
     {
-      schema,
+      // schema,
       preValidation: [server.twitch.validateViewer],
     },
     async (request, reply) => {
       try {
         const { channelId } = request.params;
-        const { profiles } = await server.playerConfig.get(channelId);
+        const config = await server.playerConfig.get(channelId);
         const data = await server.viewer.getData({
           channelId,
-          profiles,
+          profiles: config.profiles,
         });
         reply.code(200).send({
           channelId,

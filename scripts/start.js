@@ -2,6 +2,8 @@
 // eslint-disable-next-line no-unused-expressions, import/no-extraneous-dependencies, global-require
 process.env.NODE_ENV !== "production" && require("dotenv").config();
 
+const fs = require("fs");
+const path = require("path");
 const fastify = require("fastify");
 const fastifyRedis = require("fastify-redis");
 const fastifyEnv = require("fastify-env");
@@ -145,6 +147,11 @@ const opts = {
 };
 
 const fastifyInstance = fastify({
+  http2: true,
+  https: {
+    key: fs.readFileSync(path.join(__dirname, "..", "certs", "key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "..", "certs", "cert.pem")),
+  },
   logger: process.env.NODE_ENV === "development",
 });
 
@@ -195,7 +202,6 @@ fastifyInstance.register(server, opts);
 const start = () =>
   fastifyInstance.listen(env.SC2PTE_NODE_PORT, "0.0.0.0", (err) => {
     if (err) throw new Error(err);
-    fastifyInstance.log.info(`Redis cache enabled: ${opts.redis.enable}`);
     fastifyInstance.log.info(
       `Twitch.ext.onauthorized: ${opts.twitch.enableOnAuthorized}`
     );

@@ -21,50 +21,55 @@ services:
   mongodb:
     image: mongo:4.4.15
     container_name: mongodb
-    restart: always
+    hostname: mongodb
+    restart: on-failure
     environment:
-      - MONGO_INITDB_DATABASE=sc2pte
-      - MONGO_INITDB_ROOT_USERNAME=sc2pte
-      - MONGO_INITDB_ROOT_PASSWORD=sc2pte
+      MONGO_INITDB_DATABASE: sc2pte
+      MONGO_INITDB_ROOT_USERNAME: sc2pte
+      MONGO_INITDB_ROOT_PASSWORD: sc2pte
     deploy:
       replicas: 1
     volumes:
       - mongodb_data_container:/data/db
     ports:
-      - 27017:27017
+      - "27017-27019:27017-27019"
 
   redis:
     image: "redis:alpine"
+    container_name: redis
+    hostname: redis
     restart: always
     ports:
       - ${SC2PTE_REDIS_PORT}:${SC2PTE_REDIS_PORT}
 
   sas:
     image: "sc2pte/sc2-api-service:2"
+    container_name: sas
     hostname: sas
-    restart: on-failure:5
+    restart: always
     ports:
-      - 3001:3001
+      - 3002:3002
     environment:
       - NODE_ENV=production
-      - SAS_APP_PORT=3001
+      - SAS_APP_PORT=3002
       - SAS_BATTLENET_REGION=${SC2PTE_BATTLENET_REGION}
       - SAS_BATTLENET_CLIENT_ID=${SC2PTE_BATTLENET_CLIENT_ID}
       - SAS_BATTLENET_CLIENT_SECRET=${SC2PTE_BATTLENET_CLIENT_SECRET}
       - SAS_REDIS_ENABLE=true
       - SAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
       - SAS_REDIS_DB=1
-      - SAS_BAS_URL=http://bas:3002
+      - SAS_BAS_URL=http://bas:3003
 
   bas:
     image: "sc2pte/bnet-auth-service:2"
-    restart: on-failure:5
+    container_name: bas
+    restart: always
     hostname: bas
     ports:
-      - 3002:3002
+      - 3003:3003
     environment:
       - NODE_ENV=production
-      - BAS_APP_PORT=3001
+      - BAS_APP_PORT=3003
       - BAS_BATTLENET_REGION=${SC2PTE_BATTLENET_REGION}
       - BAS_BATTLENET_CLIENT_ID=${SC2PTE_BATTLENET_CLIENT_ID}
       - BAS_BATTLENET_CLIENT_SECRET=${SC2PTE_BATTLENET_CLIENT_SECRET}
