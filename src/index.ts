@@ -35,10 +35,14 @@ interface ServerOptions {
 }
 
 const api = fp(
-  (fastify: FastifyInstance, opts: ServerOptions, next: CallableFunction) => {
+  async (
+    fastify: FastifyInstance,
+    opts: ServerOptions,
+    next: CallableFunction
+  ) => {
     const { app, redis, maxProfiles, twitch } = opts;
     const { urlPrefix } = app;
-    fastify.register(db, {
+    await fastify.register(db, {
       ...opts.db,
       maxProfiles,
     });

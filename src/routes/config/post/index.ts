@@ -18,12 +18,15 @@ const route: FastifyPluginCallback<RouteOptions> = (server, opts, next) => {
       try {
         const { channelId } = request.params;
         const data = JSON.parse(request.body);
+
         const configSaved = await server.playerConfig.save({ channelId, data });
 
         if (configSaved) {
           server.viewer.getFreshData(data, `viewer-${channelId}`);
-          server.cloudflare.purgeByChannelId(channelId);
 
+          if (server.cloudflare) {
+            server.cloudflare.purgeByChannelId(channelId);
+          }
           reply.code(200).send({
             status: 200,
             message: "Config saved",

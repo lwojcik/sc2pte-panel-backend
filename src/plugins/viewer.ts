@@ -6,7 +6,7 @@ import { StarCraft2API, PlayerObject } from "starcraft2-api";
 interface DataObject {
   segment: string;
   data: object;
-  ttlTime: number;
+  ttlTime?: number;
 }
 
 interface ViewerOptions {
@@ -31,27 +31,15 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
   const cache = server.redis;
   const cacheActive = Boolean(server.redis);
 
-  // eslint-disable-next-line no-confusing-arrow
-  const isDataCached = (segment: string) =>
-    // eslint-disable-next-line no-nested-ternary
-    cacheActive ? server.redis.get(segment) : Promise.resolve(false);
-
-  const cacheObject = async ({ segment, data, ttlTime }: DataObject) => {
+  const cacheObject = async ({ segment, data }: DataObject) => {
     if (!cacheActive) return "Object not cached (Cache disabled)";
     await cache.set(segment, JSON.stringify(data));
-    await cache.expire(segment, ttlTime);
     return "Object cached successfully";
   };
 
   // eslint-disable-next-line no-confusing-arrow
   const getCachedObject = (segment: string) =>
     cacheActive ? server.redis.get(segment) : JSON.stringify({});
-
-  const sleep = (ms: number) => {
-    server.log.info(`Sleeping for ${ms}ms...`);
-    // eslint-disable-next-line no-new, no-promise-executor-return
-    new Promise((resolve) => setTimeout(resolve, ms));
-  };
 
   const calculateHighestRank = (soloRank?: string, teamRank?: string) => {
     const soloRankIndex = soloRank ? ranks.indexOf(soloRank.toLowerCase()) : -1;
@@ -149,12 +137,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     };
   };
 
-  const getLadderData = async (
-    profile: PlayerObject,
-    ladderId: number,
-    index: number
-  ) => {
-    await sleep((index + 1) * 1000);
+  const getLadderData = async (profile: PlayerObject, ladderId: number) => {
     const { profileId } = profile;
     const ladderApiData = await server.sas.getLadder(profile, ladderId);
     const playerLadderInfo = getPlayerLadderInfo(
@@ -186,17 +169,19 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
       .filter((el) => el !== null);
   };
 
-  const getSnapshot = (apiData: any, profile: any) => {
+  const getSnapshot = async (apiData: any, profile: any) => {
     const { allLadderMemberships } = apiData.data;
     const ladderIds = allLadderMemberships.map(
       (ladderMembership: any) => ladderMembership.ladderId
     );
 
-    return Promise.all(
-      ladderIds.map((ladderId: any, index: number) =>
-        getLadderData(profile, ladderId, index)
+    return (
+      await Promise.allSettled(
+        ladderIds.map((ladderId: any) => getLadderData(profile, ladderId))
       )
-    );
+    )
+      .filter((item) => item.status === "fulfilled")
+      .map((item: any) => item.value);
   };
 
   const getMatchHistory = (apiData: any) => {
@@ -213,22 +198,22 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     }));
   };
 
-  const getProfileData = async (profile: PlayerObject, index: number) => {
+  const getProfileData = async (profile: PlayerObject) => {
     try {
       const profileData = await server.sas.getProfile(profile);
-      await sleep((index + 1) * 100);
       const matchHistoryData = await server.sas.getLegacyMatchHistory(profile);
-      await sleep((index + 1) * 100);
       const ladderSummaryData = await server.sas.getLadderSummary(profile);
+
       const regionName = StarCraft2API.getRegionNameById(profile.regionId)[0];
       const heading = getHeading(profileData, regionName);
-      await sleep((index + 1) * 100);
-      const snapshot = (ladderSummaryData as any)?.allLadderMemberships
-        ? await getSnapshot(ladderSummaryData, profile)
-        : getFallbackSnapshot(profileData);
+      const snapshot =
+        (ladderSummaryData as any)?.data?.allLadderMemberships.length >= 1
+          ? await getSnapshot(ladderSummaryData, profile)
+          : getFallbackSnapshot(profileData);
 
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
+
       return {
         heading,
         details: {
@@ -242,23 +227,15 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     }
   };
 
-  const getFreshData = async (
-    profiles: PlayerObject[],
-    cacheSegment: string
-  ) => {
+  const getFreshData = async (profiles: PlayerObject[]) => {
     try {
-      const profileData = await Promise.all(
-        profiles.map((profile, index) => getProfileData(profile, index))
-      );
-      if (cacheActive) {
-        cacheObject({
-          segment: cacheSegment,
-          data: {
-            profiles: profileData,
-          },
-          ttlTime: ttl,
-        });
-      }
+      const profileData = (
+        await Promise.allSettled(
+          profiles.map((profile) => getProfileData(profile))
+        )
+      )
+        .filter((item) => item.status === "fulfilled")
+        .map((item: any) => item.value);
 
       return {
         profiles: profileData,
@@ -274,16 +251,41 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     refresh?: boolean;
   }
 
-  const getData = async ({ channelId, profiles }: GetDataParams) => {
-    const cacheSegment = `viewer-${channelId}`;
-    const isItCached = await isDataCached(cacheSegment);
+  const getDataAndRefreshCache = async (
+    profiles: PlayerObject[],
+    cacheSegment: string
+  ) => {
+    const profileData = await getFreshData(profiles);
+    const created = Math.floor(Date.now() / 1000);
 
-    if (cacheActive && isItCached) {
-      const cachedData = await getCachedObject(cacheSegment);
-      return JSON.parse(cachedData);
+    const freshData = {
+      created,
+      ...profileData,
+    };
+
+    if (cacheActive) {
+      cacheObject({
+        segment: cacheSegment,
+        data: freshData,
+      });
     }
-    const data = await getFreshData(profiles, cacheSegment);
-    return data;
+
+    return freshData;
+  };
+
+  const getData = async ({ channelId, profiles, refresh }: GetDataParams) => {
+    const cacheSegment = `viewer:${channelId}`;
+    const cachedData = await getCachedObject(cacheSegment);
+
+    const now = Math.floor(Date.now() / 1000);
+    const objectCreationDate = Number(cachedData?.created) || 0;
+    const staleData = now - objectCreationDate >= ttl;
+
+    if (!cachedData || staleData || refresh) {
+      return getDataAndRefreshCache(profiles, cacheSegment);
+    }
+
+    return cachedData;
   };
 
   server.decorate("viewer", {

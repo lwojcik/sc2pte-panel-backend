@@ -9,7 +9,7 @@ const realmIds = StarCraft2API.getAllAvailableSc2Realms().map((realmId) =>
   realmId.toString()
 );
 
-const maxProfiles = Number(process.env.SC2PTE_MAXIMUM_PROFILE_COUNT) || 3;
+const maxProfiles = 3;
 
 interface PlayerProfile extends MongooseDocument {
   regionId: string;
