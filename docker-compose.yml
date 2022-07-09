@@ -43,7 +43,7 @@ services:
       - ${SC2PTE_REDIS_PORT}:${SC2PTE_REDIS_PORT}
 
   sas:
-    image: "sc2pte/sc2-api-service:2"
+    image: sc2pte/sc2-api-service:2.0.20
     container_name: sas
     hostname: sas
     restart: always
@@ -61,7 +61,7 @@ services:
       - SAS_BAS_URL=http://bas:3003
 
   bas:
-    image: "sc2pte/bnet-auth-service:2"
+    image: sc2pte/bnet-auth-service:2.0.75
     container_name: bas
     restart: always
     hostname: bas

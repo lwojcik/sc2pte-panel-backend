@@ -154,7 +154,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     ladderId: number,
     index: number
   ) => {
-    await sleep((index + 1) * 1000);
+    await sleep((index + 1) * 500);
     const { profileId } = profile;
     const ladderApiData = await server.sas.getLadder(profile, ladderId);
     const playerLadderInfo = getPlayerLadderInfo(
@@ -217,6 +217,7 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
     try {
       const profileData = await server.sas.getProfile(profile);
       const matchHistoryData = await server.sas.getLegacyMatchHistory(profile);
+
       await sleep((index + 1) * 100);
       const ladderSummaryData = await server.sas.getLadderSummary(profile);
 
@@ -228,10 +229,9 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
           ? await getSnapshot(ladderSummaryData, profile)
           : getFallbackSnapshot(profileData);
 
-      console.log(snapshot);
-
       const stats = getStats(profileData);
       const history = getMatchHistory(matchHistoryData);
+
       return {
         heading,
         details: {
@@ -241,7 +241,6 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
         },
       };
     } catch (error) {
-      console.log(error);
       return {};
     }
   };
