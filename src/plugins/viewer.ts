@@ -6,7 +6,7 @@ import { StarCraft2API, PlayerObject } from "starcraft2-api";
 interface DataObject {
   segment: string;
   data: object;
-  ttlTime: number;
+  ttlTime?: number;
 }
 
 interface ViewerOptions {
@@ -39,7 +39,9 @@ const viewerPlugin: FastifyPluginCallback<ViewerOptions> = (
   const cacheObject = async ({ segment, data, ttlTime }: DataObject) => {
     if (!cacheActive) return "Object not cached (Cache disabled)";
     await cache.set(segment, JSON.stringify(data));
-    await cache.expire(segment, ttlTime);
+    if (ttlTime) {
+      await cache.expire(segment, ttlTime);
+    }
     return "Object cached successfully";
   };
 
