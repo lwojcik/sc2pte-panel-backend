@@ -21,7 +21,6 @@ const envSchema = {
     "SC2PTE_REDIS_ENABLE",
     "SC2PTE_REDIS_HOST",
     "SC2PTE_REDIS_PORT",
-    "SC2PTE_REDIS_PASSWORD",
     "SC2PTE_REDIS_DB",
     "SC2PTE_REDIS_TTL_SECS",
     "SC2PTE_REDIS_CACHE_SEGMENT",
@@ -64,9 +63,6 @@ const envSchema = {
     SC2PTE_REDIS_PORT: {
       type: "string",
       default: "6379",
-    },
-    SC2PTE_REDIS_PASSWORD: {
-      type: "string",
     },
     SC2PTE_REDIS_DB: {
       type: "string",
