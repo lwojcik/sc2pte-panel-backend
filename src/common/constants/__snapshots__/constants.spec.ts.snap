@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constants should be defined 1`] = `
+Object {
+  "DATA_KEYS": Object {
+    "data": Object {
+      "getLeague": "data:league",
+    },
+    "ladder": Object {
+      "getGrandmaster": "ladder:grandmaster",
+      "getSeason": "ladder:season",
+    },
+    "legacy": Object {
+      "getAchievements": "legacy:achievements",
+      "getLadder": "legacy:ladder",
+      "getLadders": "legacy:ladders",
+      "getMatches": "legacy:matches",
+      "getProfile": "legacy:profile",
+      "getRewards": "legacy:rewards",
+    },
+    "profile": Object {
+      "getLadderSummary": "profile:laddersummary",
+      "getMetadata": "profile:metadata",
+      "getPlayerLadder": "profile:playerladder",
+      "getProfile": "profile:profile",
+      "getStatic": "profile:static",
+    },
+  },
+  "SC2API_METHOD_MAPPINGS": Object {
+    "data:league": "queryLeagueData",
+    "ladder:grandmaster": "queryGrandmasterLeaderboard",
+    "ladder:season": "querySeason",
+    "legacy:achievements": "queryLegacyAchievements",
+    "legacy:ladder": "queryLegacyLadder",
+    "legacy:ladders": "queryLegacyLadders",
+    "legacy:matches": "queryLegacyMatchHistory",
+    "legacy:profile": "queryLegacyProfile",
+    "legacy:rewards": "queryLegacyRewards",
+    "profile:laddersummary": "queryLadderSummary",
+    "profile:metadata": "queryProfileMetadata",
+    "profile:playerladder": "queryPlayerLadder",
+    "profile:profile": "queryProfile",
+    "profile:static": "queryStaticProfileData",
+  },
+}
+`;
