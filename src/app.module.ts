@@ -7,10 +7,6 @@ import { StatusModule } from './status/status.module';
 import { MainModule } from './main/main.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard, PassthroughGuard } from './auth/guards';
-import { ProfileModule } from './profile/profile.module';
-import { LadderModule } from './ladder/ladder.module';
-import { DataModule } from './data/data.module';
-import { LegacyModule } from './legacy/legacy.module';
 import { configValidationSchema } from './config/config-validation.schema';
 import { throttleConfig } from './config';
 
@@ -34,10 +30,6 @@ import { throttleConfig } from './config';
     AuthModule,
     MainModule,
     StatusModule,
-    ProfileModule,
-    LadderModule,
-    DataModule,
-    LegacyModule,
   ],
   controllers: [AppController],
   providers: [

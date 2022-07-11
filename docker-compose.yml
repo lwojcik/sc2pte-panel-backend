@@ -1,6 +1,6 @@
 services:
-  sc2-api-service:
-    container_name: sc2-api-service
+  panel-backend:
+    container_name: panel-backend
     restart: on-failure:5
     build:
       context: .
@@ -9,11 +9,12 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - ${SAS_APP_PORT}:${SAS_APP_PORT}
+      - ${SC2PTE_APP_PORT}:${SC2PTE_APP_PORT}
     command: npm run start:dev
     env_file: .env
     depends_on:
       - redis
+      - sas
       - bas
 
   redis:
@@ -22,17 +23,32 @@ services:
     ports:
       - ${SAS_REDIS_PORT}:${SAS_REDIS_PORT}
 
-  bas:
-    image: sc2pte/bnet-auth-service:2
+  sas:
+    image: sc2pte/sc2-api-service:2
     restart: on-failure:5
     ports:
       - 3001:3001
     environment:
       - NODE_ENV=production
-      - BAS_APP_PORT=3001
+      - SAS_APP_PORT=3001
+      - SAS_BATTLENET_REGION=${SAS_BATTLENET_REGION}
+      - SAS_BATTLENET_CLIENT_ID=${SAS_BATTLENET_CLIENT_ID}
+      - BAS_BATTLENET_CLIENT_SECRET=${SAS_BATTLENET_CLIENT_SECRET}
+      - SAS_REDIS_ENABLE=true
+      - SAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
+      - SAS_REDIS_DB=1
+
+  bas:
+    image: sc2pte/sc2-api-service:2
+    restart: on-failure:5
+    ports:
+      - 3002:3002
+    environment:
+      - NODE_ENV=production
+      - BAS_APP_PORT=3002
       - BAS_BATTLENET_REGION=${SAS_BATTLENET_REGION}
       - BAS_BATTLENET_CLIENT_ID=${SAS_BATTLENET_CLIENT_ID}
       - BAS_BATTLENET_CLIENT_SECRET=${SAS_BATTLENET_CLIENT_SECRET}
       - BAS_REDIS_ENABLE=true
-      - BAS_REDIS_HOST=${SAS_REDIS_HOST}
+      - BAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
       - BAS_REDIS_DB=1
