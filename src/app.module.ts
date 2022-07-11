@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard, PassthroughGuard } from './auth/guards';
 import { configValidationSchema } from './config/config-validation.schema';
 import { throttleConfig } from './config';
+import { ViewerModule } from './viewer/viewer.module';
+import { ConfiguratorModule } from './configurator/configurator.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { throttleConfig } from './config';
     AuthModule,
     MainModule,
     StatusModule,
+    ConfiguratorModule,
+    ViewerModule,
   ],
   controllers: [AppController],
   providers: [
