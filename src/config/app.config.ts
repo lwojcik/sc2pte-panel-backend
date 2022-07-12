@@ -7,4 +7,5 @@ export const appConfig = registerAs('app', () => ({
   port: parseInt(process.env.SAS_APP_PORT, 10),
   enableCors: process.env.SAS_APP_CORS_ENABLE === 'true',
   corsOrigin: process.env.SAS_APP_CORS_ORIGIN,
+  maxProfile: 3,
 }));
