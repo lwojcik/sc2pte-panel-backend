@@ -30,4 +30,4 @@ export class ChannelConfig {
 
 export type ChannelConfigDocument = ChannelConfig & Document;
 
-export const ConfigSchema = SchemaFactory.createForClass(ChannelConfig);
+export const ChannelConfigSchema = SchemaFactory.createForClass(ChannelConfig);
