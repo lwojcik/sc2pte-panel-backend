@@ -10,7 +10,7 @@ import { JwtAuthGuard, PassthroughGuard } from './auth/guards';
 import { configValidationSchema } from './config/config-validation.schema';
 import { throttleConfig } from './config';
 import { ViewerModule } from './viewer/viewer.module';
-import { ConfiguratorModule } from './configurator/configurator.module';
+import { UserConfigModule } from './userconfig/userconfig.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { ConfiguratorModule } from './configurator/configurator.module';
     AuthModule,
     MainModule,
     StatusModule,
-    ConfiguratorModule,
+    UserConfigModule,
     ViewerModule,
   ],
   controllers: [AppController],

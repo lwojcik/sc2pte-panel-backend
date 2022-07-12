@@ -19,4 +19,4 @@ import { UserConfigService } from './userconfig.service';
   controllers: [UserConfigController],
   providers: [UserConfigService],
 })
-export class ConfiguratorModule {}
+export class UserConfigModule {}
