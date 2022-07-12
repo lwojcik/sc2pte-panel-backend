@@ -15,7 +15,6 @@ services:
     depends_on:
       - redis
       - sas
-      - bas
 
   redis:
     image: redis:alpine
@@ -37,6 +36,9 @@ services:
       - SAS_REDIS_ENABLE=true
       - SAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
       - SAS_REDIS_DB=1
+    depends_on:
+      - redis
+      - bas
 
   bas:
     image: sc2pte/sc2-api-service:2
@@ -52,3 +54,5 @@ services:
       - BAS_REDIS_ENABLE=true
       - BAS_REDIS_HOST=${SC2PTE_REDIS_HOST}
       - BAS_REDIS_DB=1
+    depends_on:
+      - redis
