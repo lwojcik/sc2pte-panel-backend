@@ -4,7 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import fs from 'fs';
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
@@ -50,6 +50,10 @@ async function bootstrap() {
       transform: true,
     })
   );
+
+  app.setGlobalPrefix('v2', {
+    exclude: [{ path: 'status', method: RequestMethod.GET }],
+  });
 
   await app.listen(process.env.SAS_APP_PORT, process.env.SAS_APP_HOST);
 }
