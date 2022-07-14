@@ -14,7 +14,7 @@ export class UserConfigService {
     private channelConfigModel: Model<ChannelConfigDocument>
   ) {}
 
-  get(channelId: string) {
+  async get(channelId: string) {
     const channelConfig = this.channelConfigModel.findOne({ channelId }).exec();
 
     if (!channelConfig) {
